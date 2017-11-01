@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">#212121</color>
+    <color name="primary_dark">#212121</color>
+    <color name="primary_light">#616161</color>
+    <color name="accent">#FF8F00</color>
+    <color name="windowBackground">#212121</color>
+    <color name="primary_text">#FFFFFFFF</color>
+    <color name="secondary_text">#B3FFFFFF</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#212121</color>
+
+    <color name="itemPreview">#40000000</color>
+    <color name="colorHighlightDefault">#33212121</color>
+
+    <color name="colorAccentIndigo">#e91e63</color>
+    <color name="colorSecondaryIndigo">#283593</color>
+    <color name="colorPrimaryIndigo">#1a237e</color>
+    <color name="colorPrimaryIndigoTransparent">#401a237e</color>
+
+    <color name="colorAccentBlueGrey">#e91e63</color>
+    <color name="colorSecondaryBlueGrey">#37474f</color>
+    <color name="colorPrimaryBlueGrey">#263238</color>
+    <color name="colorPrimaryBlueGreyTransparent">#40263238</color>
+
+    <color name="colorAccentTeal">#e91e63</color>
+    <color name="colorSecondaryTeal">#00695c</color>
+    <color name="colorPrimaryTeal">#004d40</color>
+    <color name="colorPrimaryTealTransparent">#40004d40</color>
+
+    <color name="colorAccenttPurple">#e91e63</color>
+    <color name="colorSecondaryPurple">#4a148c</color>
+    <color name="colorPrimaryPurple">#4a148c</color>
+    <color name="colorPrimaryPurpleTransparent">#406a1b9a</color>
+
+</resources>

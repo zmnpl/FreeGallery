@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="version">Version 0.1</string>
+    <string name="author">Created by Simon Paul</string>
+    <string name="license">Licensed under the MIT license</string>
+
+    <string name="thanks">Without external libraries this app would be pretty useless. Therefore a big thanks to the open source community in general and especially every person who contributed to one of the used libraries!</string>
+
+    <string name="glideName">Glide</string>
+    <string name="glideLink">https://github.com/bumptech/glide</string>
+    <string name="glideInfo">Glide is licensed under BSD, part MIT and Apache 2.0</string>
+
+    <string name="SSIVName">Subsampling Scale Image View</string>
+    <string name="SSIVLink">https://github.com/davemorrissey/subsampling-scale-image-view</string>
+    <string name="SSIVInfo">Subsampling Scale Image View by Dave Morrisey is licensed under Apache license, Version 2.0.</string>
+
+    <string name="lobsterPickerName">Lobsterpicker</string>
+    <string name="lobsterPickerLink">https://github.com/LarsWerkman/Lobsterpicker</string>
+    <string name="lobsterPickerInfo">Lobsterpicker by Lars Werkmann (Design: Marie Schweiz) is licensed under Apache 2.0</string>
+
+    <string name="licenseViewName">LicenseView</string>
+    <string name="licenseViewLink">https://github.com/LarsWerkman/LicenseView</string>
+    <string name="licenseViewInfo">LicenseView by Lars Werkmann is licensed under Apache 2.0</string>
+
+    <string name="materialDrawerName">Material Drawer</string>
+    <string name="materialDrawerLink">https://github.com/mikepenz/MaterialDrawer</string>
+    <string name="materialDrawerInfo">Material Drawer by Mike Penz is licensed under Apache 2.0</string>
+
+    <string name="iconicsName">Android-Iconics</string>
+    <string name="iconicsLink">https://github.com/mikepenz/Android-Iconics</string>
+    <string name="iconicsInfo">Android-Icons by Mike Penz is licensed under Apache 2.0</string>
+
+    <string name="ionicsIconsName">ionicons</string>
+    <string name="ionicsIconsLink">http://ionicons.com/</string>
+    <string name="ionicsIconsInfo">ionicons is licensed unter MIT license</string>
+</resources>

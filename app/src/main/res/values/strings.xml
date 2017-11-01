@@ -1,0 +1,115 @@
+<resources>
+    <string name="app_name">FreeGallery</string>
+    <string name="drawer_subtitle">free your memories</string>
+    <string name="title_activity_settings">Oh behave!</string>
+    <string name="collectionSelection">controlling </string>
+    <string name="DataHandlerFragmentTag">datahandler</string>
+    <string name="timelineName">Timeline</string>
+    <string name="trashName">Trash</string>
+    <string name="tagLetter">#</string>
+    <string name="tagLetterMenu">   #   </string>
+    <string name="openDrawer">open</string>
+    <string name="closeDrawer">close</string>
+    <string name="buttonOpenLicenseTexts">Show full licenses for all libraries</string>
+
+    <!-- About -->
+    <string name="aboutLibs">Libraries</string>
+
+    <!-- Temp -->
+    <string name="tempDisplayName">Libraries</string>
+
+    <!-- Menus -->
+    <string name="setaswhat">What?</string>
+    <string name="share">Share</string>
+    <string name="shareinsult">Share… As if somebody would care.</string>
+    <string name="delete">Delete</string>
+    <string name="emptyTrash">Empty Trash</string>
+    <string name="finalDeleteFromTrash">Delete</string>
+    <string name="restoreFromTrash">Restore</string>
+    <string name="setas">Set as …</string>
+    <string name="deleteSnaketag">Delete tag</string>
+    <string name="sort">Sort</string>
+    <string name="sortByDateAsc">Oldest first</string>
+    <string name="sortByDateDesc">Newest first</string>
+    <string name="actionColorizeGroup">Colorize</string>
+    <string name="actionHideGroup">Hide</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_settings">Settings</string>
+    <string name="drawer_home">Home</string>
+    <string name="drawer_tagsection">Tags</string>
+    <string name="menu_zoom">Zoom</string>
+    <string name="menu_zoom_in">Zoom +</string>
+    <string name="menu_zoom_out">Zoom -</string>
+
+    <!-- Dialogs -->
+    <!-- Image Property Dialog -->
+    <string name="ImgPropertyHeadline">Properties</string>
+    <string name="ImgPropertyFileName">Name</string>
+    <string name="ImgPropertyPath">Path</string>
+    <string name="ImgPropertySize">Size</string>
+    <string name="ImgPropertyDateAdded">Date Added</string>
+    <string name="ImgPropertyLatitude">Latitude</string>
+    <string name="ImgPropertyLongitude">Longitude</string>
+    <string name="ImgPropertyDimens">Dimensions</string>
+    <string name="ImgPropertyDone">Affirmative!</string>
+    <!-- Snaketag Dialog -->
+    <string name="SnaketagOk">Tag!</string>
+    <string name="SnaketagCancel">Cancel</string>
+    <string name="SnaketagTxt">Tag it like it\'s 2016</string>
+    <!-- Colorize Dialog -->
+    <string name="ColorizeOk">Color!</string>
+    <string name="ColorizeCancel">Cancel</string>
+    <string name="ColorizeTxt">Colors are beautiful</string>
+    <!-- Deletion Dialog -->
+    <string name="DeleteQuestion">Delete selected items?</string>
+    <string name="DeleteOk">Delete</string>
+    <string name="DeleteCancel">Cancel</string>#
+    <!-- Empty trash Dialog -->
+    <string name="EmtyTrashQuestion">Permanently delete all items in trash?</string>
+    <string name="EmtpyTrashOk">Sure thing</string>
+    <string name="EmptyTrashCancel">F*ck no!</string>
+    <!-- Snackbars -->
+    <string name="DeleteSnackbarSingleInfo">Deleted Item</string>
+    <string name="DeleteSnackbarUndo">Undo</string>
+    <!-- Toasts -->
+    <string name="SetVideoAsMakesNoSense">Setting video as …? Makes no sense.</string>
+
+
+    <!-- Preferences -->
+    <!-- Categories -->
+    <string name="prefCategoryVisual">Visuals</string>
+    <string name="prefLicense">About</string>
+    <string name="prefAccentColor">Accent Color</string>
+    <string name="prefStyleTitlebarcolorTitle">Use collection color for title bar</string>
+    <string name="prefStyleHideDrawerHeader">Hide drawer header</string>
+
+    <!-- Color -->
+    <string name="prefStyleColorTitle">Base Color</string>
+    <string name="prefStyleColorDialogTitle">Choose a color</string>
+    <string-array name="prefStyleColors">
+        <item>Default</item>
+        <item>Blue-Grey</item>
+        <item>Indigo</item>
+        <item>Teal</item>
+        <item>Purple</item>
+    </string-array>
+    <string name="prefStyleColorDefault">prefValueColorDefault</string>
+    <string-array name="prefStyleColorValues">
+        <item>prefValueColorDefault</item>
+        <item>prefValueColorBlueGrey</item>
+        <item>prefValueColorIndigo</item>
+        <item>prefValueColorTeal</item>
+        <item>prefValueColorPurple</item>
+    </string-array>
+
+    <!-- Column Count -->
+    <string name="prefStyleColumnsTitle">How many columns in portrait mode?</string>
+    <string name="prefStyleColumnDefault">4</string>
+    <string-array name="prefStyleColumValues">
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+    </string-array>
+    <string name="title_activity_license_text">LicenseTextActivity</string>
+
+</resources>
