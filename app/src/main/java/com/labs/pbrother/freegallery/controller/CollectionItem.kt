@@ -1,7 +1,5 @@
 package com.labs.pbrother.freegallery.controller
 
-import android.graphics.Color
-
 /**
  * Created by simon on 01.12.15.
  */
@@ -13,19 +11,14 @@ data class CollectionItem constructor(val id: String = "",
                                       var isLoved: Boolean = false
 ) : Comparable<CollectionItem> {
 
-    var displayName: String = ""
+    val displayName: String = makeDisplayName()
 
-    init {
-        makeDisplayName()
-    }
-
-    private fun makeDisplayName() {
+    private fun makeDisplayName(): String {
         if (type === TYPE_FOLDER) {
             val parts = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            displayName = parts[parts.size - 1]
-            return
+            return parts[parts.size - 1]
         }
-        displayName = id
+        return id
     }
 
     fun displayNameDetail(): String {
@@ -73,25 +66,12 @@ data class CollectionItem constructor(val id: String = "",
     }
 
     /**
-     * @return ColorId
-     */
-    fun color(): Int = adjustAlpha(color, 1.0f) // leaving that in; might be helpful sometime
-
-    /**
      * Setter method
      *
      * @param colorId
      */
     fun colorize(colorId: Int) {
         this.color = colorId
-    }
-
-    fun adjustAlpha(color: Int, factor: Float): Int {
-        val alpha = Math.round(Color.alpha(color) * factor)
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-        return Color.argb(alpha, red, green, blue)
     }
 
     override operator fun compareTo(ccitem: CollectionItem): Int = sortRegular(ccitem)

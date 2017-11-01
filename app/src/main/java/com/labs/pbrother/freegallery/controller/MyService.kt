@@ -59,7 +59,6 @@ class MyService : Service(), MetaUpdatorizer {
     }
 
     // Lifecycle
-
     override fun onDestroy() {
         super.onDestroy()
         initialized = false
@@ -250,7 +249,7 @@ class MyService : Service(), MetaUpdatorizer {
     override fun loveCollection(collection: CollectionItem, loved: Boolean) {
         val db = MyDb(this)
         collection.love(loved)
-        db.insertUpdateCollectionMeta(collection.id, loved, collection.color())
+        db.insertUpdateCollectionMeta(collection.id, loved, collection.color)
     }
 
     override fun colorizeCollection(collection: CollectionItem, colorid: Int?) {

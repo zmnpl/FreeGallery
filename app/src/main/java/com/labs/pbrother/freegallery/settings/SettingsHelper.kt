@@ -109,17 +109,19 @@ class SettingsHelper(val context: Context) {
     var columnsInPortrait: Int
         get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))!!
         set(value) {
-            val editor = sharedPref.edit()
-            editor.putInt(KEY_PREF_STYLE_COLUMNS, value)
-            editor.commit()
+            sharedPref.edit().apply() {
+                putInt(KEY_PREF_STYLE_COLUMNS, value)
+                commit()
+            }
         }
 
     var mainColumnsInPortrait: Int
         get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))!!
         set(value) {
-            val editor = sharedPref.edit()
-            editor.putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
-            editor.commit()
+            sharedPref.edit().apply() {
+                putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
+                commit()
+            }
         }
 
     fun colorizeTitlebar(): Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_COLORTITLE, false)

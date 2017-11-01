@@ -21,6 +21,9 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
                             private var tags: HashSet<String> = HashSet()
 ) : Comparable<Item> {
 
+    val id: String
+        get() = path
+
     fun id(): String = path
 
     fun fileUrl(): String = "file://" + path
