@@ -19,7 +19,10 @@ This app is in a very early state and very likely contains a lot of bugs. Use wi
 * Functions as default image viewer
 
 ## Screenshots
-![Overview](/home/simon/workspace/FreeGallery/screenshots/overview.png "Overview") ![Navigation Drawer](/home/simon/workspace/FreeGallery/screenshots/overview.png "Navigation Drawer") ![#Tag Collection](/home/simon/workspace/FreeGallery/screenshots/overview.png "#Tag Collection") ![Image Viewer](/home/simon/workspace/FreeGallery/screenshots/overview.png "Image Viewer")
+ <img src="https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/overview.png" width="150"> <img src="https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/drawer.png" width="150"> <img src="https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/tagcollection.png" width="150"> <img src="https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/imageslider.png" width="150">
+
+
+![Overview](https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/overview.png "Overview") ![Navigation Drawer](https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/drawer.png "Navigation Drawer") ![#Tag Collection](https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/tagcollection.png "#Tag Collection") ![Image Viewer](https://raw.githubusercontent.com/zmnpl/FreeGallery/master/screenshots/imageslider.png "Image Viewer")
 
 
 ## TODO's
