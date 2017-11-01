@@ -2,8 +2,6 @@ package com.labs.pbrother.freegallery.controller
 
 import android.provider.MediaStore
 import java.io.File
-import java.util.ArrayList
-import kotlin.collections.HashSet
 
 /**
  * Created by simon on 21.02.17.
@@ -24,13 +22,15 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     val id: String
         get() = path
 
-    fun id(): String = path
+    val fileUrl: String
+        get() = "file://" + path
 
-    fun fileUrl(): String = "file://" + path
 
-    fun fileName(): String = File(path).name
+    val fileName: String
+        get() = File(path).name
 
-    fun tags(): ArrayList<String> = ArrayList(tags.toList())
+    val tagsList: ArrayList<String>
+        get() = ArrayList(tags.toList())
 
     fun addTag(tag: String) {
         tags.add(tag)
@@ -40,7 +40,7 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
         tags.remove(tag)
     }
 
-    override operator fun compareTo(citem: Item): Int = if (dateAdded < citem.dateAdded) 1 else -1
+    override operator fun compareTo(other: Item): Int = if (dateAdded < other.dateAdded) 1 else -1
 
 }
 

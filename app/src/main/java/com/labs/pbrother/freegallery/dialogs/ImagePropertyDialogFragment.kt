@@ -63,7 +63,7 @@ class ImagePropertyDialogFragment : DialogFragment() {
         super.onStart()
 
         dialog.imgproperty_txtPath.text = item.path
-        dialog.imgproperty_txtName.text = item.fileName()
+        dialog.imgproperty_txtName.text = item.fileName
         dialog.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
         dialog.imgproperty_txtSize.text = byteSizeToNiceString(item.size)
         dialog.imgproperty_txtLatitude.text = item.latitude.toString()

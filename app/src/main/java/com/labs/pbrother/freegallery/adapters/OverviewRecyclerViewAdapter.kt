@@ -37,7 +37,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
     override fun onBindViewHolder(overviewViewHolder: ViewHolder, position: Int) {
         val collection = this.collections[position]
 
-        overviewViewHolder.headline.text = collection.displayName()
+        overviewViewHolder.headline.text = collection.displayName
         overviewViewHolder.picCount.text = collection.count.toString()
         overviewViewHolder.textBackground.setBackgroundColor(adjustColorAlpha(collection.color, 0.75F))
         overviewViewHolder.favToggle.isChecked = collection.isLoved
@@ -47,7 +47,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
         }
 
         // TODO - resizing fit to target size ?
-        Glide.with(context).load(collection.thumbUrl()).into(overviewViewHolder.thumb)
+        Glide.with(context).load(collection.thumbUrl).into(overviewViewHolder.thumb)
 
         overviewViewHolder.selectedOverlay.visibility = if (isSelected(position)) View.VISIBLE else View.INVISIBLE
     }

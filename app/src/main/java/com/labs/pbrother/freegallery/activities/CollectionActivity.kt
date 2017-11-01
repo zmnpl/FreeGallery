@@ -221,7 +221,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
 
     private fun populateUi() {
-        supportActionBar?.title = collectionItem.displayNameDetail()
+        supportActionBar?.title = collectionItem.displayNameDetail
         // Recycler
         adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, service)
         collection_rclPictureCollection.adapter = adapter

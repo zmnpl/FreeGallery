@@ -70,7 +70,7 @@ class ImagePageFragment : Fragment() {
                 startActivity(intent)
             }
 
-            Glide.with(this).load(item.fileUrl()).into(vidView)
+            Glide.with(this).load(item.fileUrl).into(vidView)
         }
 
         imageView.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }

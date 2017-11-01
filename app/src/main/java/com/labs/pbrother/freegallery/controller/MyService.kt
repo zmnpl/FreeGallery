@@ -260,7 +260,7 @@ class MyService : Service(), MetaUpdatorizer {
 
     override fun tagItem(item: Item, tag: String) {
         val db = MyDb(this)
-        db.insertTag(item.id(), tag)
+        db.insertTag(item.id, tag)
         item.addTag(tag)
         tagCache.add(tag)
     }
@@ -268,6 +268,6 @@ class MyService : Service(), MetaUpdatorizer {
     override fun untagItem(item: Item, tag: String) {
         val db = MyDb(this)
         item.untag(tag)
-        db.deleteTagForItem(item.id(), tag)
+        db.deleteTagForItem(item.id, tag)
     }
 }

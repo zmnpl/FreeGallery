@@ -16,16 +16,16 @@ data class CollectionItem constructor(val id: String = "",
     private fun makeDisplayName(): String {
         if (type === TYPE_FOLDER) {
             val parts = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            return parts[parts.size - 1]
+            return "../" + parts[parts.size - 1]
         }
         return id
     }
 
-    fun displayNameDetail(): String {
-        return if (type === TYPE_TAG) {
+    val displayNameDetail: String
+        get() = if (type === TYPE_TAG) {
             displayName
         } else nicePathNotation()
-    }
+
 
     private fun nicePathNotation(): String {
         val t = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -43,18 +43,10 @@ data class CollectionItem constructor(val id: String = "",
     }
 
     /**
-     * @return Name of collection. Can be physical folder name, or name of virtual collection.
-     */
-    fun displayName(): String {
-        return if (type === TYPE_TAG) {
-            displayName
-        } else "../" + displayName
-    }
-
-    /**
      * @return File url to thumbnail; default from first image in collection.
      */
-    fun thumbUrl(): String = "file://" + thumb
+    val thumbUrl: String
+        get() = "file://" + thumb
 
     /**
      * Love this collection
@@ -76,13 +68,12 @@ data class CollectionItem constructor(val id: String = "",
 
     override operator fun compareTo(ccitem: CollectionItem): Int = sortRegular(ccitem)
 
-    private fun sortRegular(ccitem: CollectionItem): Int {
-        return when {
-            isLoved && !ccitem.isLoved -> -1
-            !isLoved && ccitem.isLoved -> 1
-            displayName == ccitem.displayName -> -1
-            else -> displayName.compareTo(ccitem.displayName)
-        }
+    private fun sortRegular(ccitem: CollectionItem): Int = when {
+        isLoved && !ccitem.isLoved -> -1
+        !isLoved && ccitem.isLoved -> 1
+        displayName == ccitem.displayName -> -1
+        else -> displayName.compareTo(ccitem.displayName)
     }
+}
 }
 

@@ -35,7 +35,7 @@ class DrawerTagListAdapter(private val clickListener: ViewHolder.ClickListener,
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(overviewViewHolder: ViewHolder, position: Int) {
         val collection = this.collections[position]
-        val dname = collection.displayName()
+        val dname = collection.displayName
         overviewViewHolder.tagIcon.setTextColor(collection.color)
         overviewViewHolder.text.text = if (dname.startsWith(context.getString(R.string.tagLetter))) dname.substring(1) else dname
         overviewViewHolder.count.text = collection.count.toString()
