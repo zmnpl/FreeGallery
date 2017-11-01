@@ -1,7 +1,5 @@
 package com.labs.pbrother.freegallery.controller
 
-import android.graphics.Color
-
 /**
  * Created by simon on 01.12.15.
  */
