@@ -227,7 +227,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         collection_rclPictureCollection.adapter = adapter
         // Toolbar
         if (settings.colorizeTitlebar()) {
-            main_toolbar.setBackgroundColor(collectionItem.color())
+            main_toolbar.setBackgroundColor(collectionItem.color)
         }
     }
 
@@ -552,7 +552,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     override fun colorOk(color: Int) {
         service.colorizeCollection(collectionItem, color)
         if (settings.colorizeTitlebar()) {
-            main_toolbar.setBackgroundColor(collectionItem.color())
+            main_toolbar.setBackgroundColor(collectionItem.color)
         }
         val toast = Toast.makeText(this, "Set color to " + color.toString(), Toast.LENGTH_LONG)
         toast.show()

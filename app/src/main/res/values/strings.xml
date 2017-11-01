@@ -2,6 +2,7 @@
     <string name="app_name">FreeGallery</string>
     <string name="drawer_subtitle">free your memories</string>
     <string name="title_activity_settings">Oh behave!</string>
+    <string name="title_activity_license_text">License</string>
     <string name="collectionSelection"></string>
     <string name="DataHandlerFragmentTag">datahandler</string>
     <string name="timelineName">Timeline</string>
