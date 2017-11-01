@@ -26,7 +26,7 @@ fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter:
             .withIcon(Ionicons.Icon.ion_pound)
             .withBadge(item.count.toString())
             .withBadgeStyle(BadgeStyle(item.color, context.getColor(R.color.material_drawer_dark_background)))
-            .withSelectedColor(adjustColorAlpha(item.color, 0.9F))
+            .withSelectedColor(adjustColorAlpha(item.color, 0.9F)) // Set some transparancy for selection to make badge and tag shine through
             .withSelectedIconColor(item.color)
 }
 

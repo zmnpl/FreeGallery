@@ -11,7 +11,6 @@ data class CollectionMeta(val id: String, val loved: Boolean, val color: Int)
 data class ItemTag(val path: String, val tag: String)
 data class TrashLog(val originalPath: String, val trashPath: String)
 
-val skew = 131 // two minutes, eleven seconds
 val SORT_ITEMS_DESC = 0 // regular; newest to oldest
 val SORT_ITEMS_ASC = 1
 

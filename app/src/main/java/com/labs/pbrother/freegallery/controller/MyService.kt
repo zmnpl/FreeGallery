@@ -59,7 +59,6 @@ class MyService : Service(), MetaUpdatorizer {
     }
 
     // Lifecycle
-
     override fun onDestroy() {
         super.onDestroy()
         initialized = false

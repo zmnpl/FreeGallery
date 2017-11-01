@@ -4,6 +4,9 @@ Please excuse, that I cannot open source the commit history. I was too stupid in
 Warning:
 This app is in a very early state and very likely contains a lot of bugs. Use with caution and at your own risk. Especially when deleting images.
 
+I don't think the app is ready for an app store yet. If you still want to try it, you can of course build if from the sources or install a compiled version, which should always be quite current, from this Link:
+http://smnpl.de/apk/app-FreeGallery.apk
+
 ## Features
 
 * Minimal Design

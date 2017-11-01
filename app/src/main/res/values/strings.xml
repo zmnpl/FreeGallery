@@ -2,7 +2,7 @@
     <string name="app_name">FreeGallery</string>
     <string name="drawer_subtitle">free your memories</string>
     <string name="title_activity_settings">Oh behave!</string>
-    <string name="collectionSelection">controlling </string>
+    <string name="collectionSelection"></string>
     <string name="DataHandlerFragmentTag">datahandler</string>
     <string name="timelineName">Timeline</string>
     <string name="trashName">Trash</string>
@@ -53,7 +53,7 @@
     <string name="ImgPropertyDimens">Dimensions</string>
     <string name="ImgPropertyDone">Affirmative!</string>
     <!-- Snaketag Dialog -->
-    <string name="SnaketagOk">Tag!</string>
+    <string name="SnaketagOk">Tag</string>
     <string name="SnaketagCancel">Cancel</string>
     <string name="SnaketagTxt">Tag it like it\'s 2016</string>
     <!-- Colorize Dialog -->
@@ -101,15 +101,5 @@
         <item>prefValueColorTeal</item>
         <item>prefValueColorPurple</item>
     </string-array>
-
-    <!-- Column Count -->
-    <string name="prefStyleColumnsTitle">How many columns in portrait mode?</string>
-    <string name="prefStyleColumnDefault">4</string>
-    <string-array name="prefStyleColumValues">
-        <item>2</item>
-        <item>4</item>
-        <item>6</item>
-    </string-array>
-    <string name="title_activity_license_text">LicenseTextActivity</string>
 
 </resources>
