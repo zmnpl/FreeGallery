@@ -30,7 +30,7 @@ fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter:
             .withSelectedIconColor(item.color)
 }
 
-fun tagSymbcol(context: Context): IconicsDrawable {
+fun tagSymbol(context: Context): IconicsDrawable {
     return IconicsDrawable(context)
             .icon(Ionicons.Icon.ion_pound)
             .color(Color.WHITE)

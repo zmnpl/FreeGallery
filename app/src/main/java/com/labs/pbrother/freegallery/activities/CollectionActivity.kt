@@ -22,7 +22,6 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.R.id.multiimageselection_menu_tag
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.*
@@ -92,7 +91,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // floating action button
-        collection_shareFloatingActionButton.setOnClickListener { share() }
+        collection_shareFloatingActionButton.setOnClickListener { tag() }
+        collection_shareFloatingActionButton.image = tagSymbol(applicationContext)
 
         // swipe fullRefresh
         swipeRefreshCollection.setOnRefreshListener {
@@ -257,11 +257,12 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (serviceBound) {
             unbindService(mConnection)
             serviceBound = false
         }
+
+        super.onDestroy()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -319,13 +320,16 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             R.id.menu_trash_emptyTrash -> {
+                dataChanged = true
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage(R.string.EmtyTrashQuestion)
                 builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
                     doAsync {
                         service.emptyTrash()
                         uiThread {
-                            fullRefresh()
+                            //fullRefresh()
+                            setResult(DATA_CHANGED, Intent())
+                            finish()
                         }
                     }
                 }
@@ -388,8 +392,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 restoreList.add(items[i])
             }
             service.restore(restoreList)
+
             uiThread {
                 actionMode?.finish()
+                setResult(DATA_CHANGED, Intent())
                 fullRefresh()
             }
         }
@@ -486,7 +492,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             }
             mode.menuInflater.inflate(R.menu.menu_multiimageselected, menu) // TODO create menu for selction mode
             collection_shareFloatingActionButton.visibility = View.VISIBLE // TODO - better way to make it visible? A little animated?
-            menu.findItem(multiimageselection_menu_tag)?.icon = tagSymbcol(this@CollectionActivity)
             return true
         }
 
@@ -494,10 +499,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
-                R.id.multiimageselection_menu_tag -> {
-                    tag()
-                    return true
-                }
                 R.id.multiimageselection_menu_share -> {
                     share()
                     return true

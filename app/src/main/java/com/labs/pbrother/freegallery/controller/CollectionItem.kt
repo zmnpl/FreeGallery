@@ -75,5 +75,5 @@ data class CollectionItem constructor(val id: String = "",
         else -> displayName.compareTo(ccitem.displayName)
     }
 }
-}
+
 

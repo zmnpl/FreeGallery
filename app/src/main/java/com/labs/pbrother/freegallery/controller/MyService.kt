@@ -220,6 +220,8 @@ class MyService : Service(), MetaUpdatorizer {
             i++
         }
 
+        drawerCache.remove(getString(R.string.trashName))
+        overviewCache.remove(getString(R.string.trashName))
         MediaScannerConnection.scanFile(this@MyService, scanThese, null, null)
     }
 

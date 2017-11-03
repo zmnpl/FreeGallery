@@ -77,7 +77,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         // toolbar
         setSupportActionBar(singlepicture_Toolbar)
         singlepicture_Toolbar.popupTheme = settings.theme
-        singlepicture_snakeTag.background = tagSymbcol(this)
+        singlepicture_snakeTag.background = tagSymbol(this)
 
         // toolbar button clicks
         singlepicture_infoButton.setOnClickListener { showImageProperties() }
