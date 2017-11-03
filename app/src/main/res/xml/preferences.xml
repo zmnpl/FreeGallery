@@ -19,7 +19,7 @@
 
             />
 -->
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_key_style_colorize_title"
