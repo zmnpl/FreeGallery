@@ -3,7 +3,7 @@
     <PreferenceCategory
         android:key="pref_key_style_settings"
         android:title="@string/prefCategoryVisual">
-
+<!--
         <ListPreference
             android:defaultValue="@string/prefStyleColorDefault"
             android:dialogTitle="@string/prefStyleColorDialogTitle"
@@ -18,7 +18,8 @@
             android:title="@string/prefAccentColor"
 
             />
-
+-->
+        
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_key_style_colorize_title"
