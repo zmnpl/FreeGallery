@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.*
@@ -220,6 +221,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             }
             R.id.singlepicture_delete -> {
                 delete()
+                true
+            }
+            R.id.singlepicture_rot90 -> {
+                // TODO - rotation
                 true
             }
             else -> super.onOptionsItemSelected(item)
