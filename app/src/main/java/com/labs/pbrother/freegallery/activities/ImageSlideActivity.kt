@@ -13,9 +13,9 @@ import android.os.Message
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.*
@@ -308,8 +308,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             intent.type = "image/jpg"
         }
 
-        val f = File(items[pager.currentItem].path)
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f))
+        intent.putExtra(Intent.EXTRA_STREAM,
+                FileProvider.getUriForFile(
+                        this,
+                        packageName + ".provider",
+                        File(items[pager.currentItem].path)))
         startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
     }
 

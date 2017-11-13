@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
@@ -375,7 +376,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         for (i in adapter.getSelectedItems()) {
             val (_, path) = items[i]
-            uris.add(Uri.fromFile(File(path)))
+            uris.add(FileProvider.getUriForFile(this, packageName + ".provider", File(path)))
         }
 
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)

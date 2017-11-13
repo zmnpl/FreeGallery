@@ -9,7 +9,7 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -20,9 +20,6 @@ import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import kotlinx.android.synthetic.main.fragment_singlepicture_slide_page.view.*
 import java.io.File
-import android.R.attr.rotation
-import android.view.animation.AnimationUtils
-
 
 
 /**
