@@ -6,10 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
+import android.os.*
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
@@ -37,12 +34,29 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // service boundary
     private var serviceBound = false
     private lateinit var service: MyService
-    private lateinit var mConnection: ServiceConnection
+    private var mConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder = service as MyService.LocalBinder
+            this@ImageSlideActivity.service = binder.service
+            serviceBound = true
 
-    // data
+            refresh()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            serviceBound = false
+        }
+    }
+
+    // init information
+    private val CID: String = "collectionId"
     private var collectionId: String = ""
+    private val ITEM_INDEX: String = "itemIndex"
     private var itemIndex: Int = 0
+    private val DELETED_SMTTH: String = "deletedSmth"
     private var deletedSmth = false
+
+    // data holder
     private lateinit var collectionItem: CollectionItem
     private lateinit var items: ArrayList<Item>
 
@@ -60,6 +74,12 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.apply {
+            collectionId = getString(CID)
+            itemIndex = getInt(ITEM_INDEX)
+            deletedSmth = getBoolean(DELETED_SMTTH)
+            finish()
+        }
 
         // helper for settings
         settings = SettingsHelper(applicationContext)
@@ -106,27 +126,13 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // if not, service probably needs to be connected
 
     private fun buildUiSafe() {
-        mConnection = object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                val binder = service as MyService.LocalBinder
-                this@ImageSlideActivity.service = binder.service
-                serviceBound = true
-
-                refresh()
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-                serviceBound = false
-            }
-        }
-
         val intent = Intent(this, MyService::class.java)
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun refresh() {
         doAsync {
-            if (intent.getIntExtra("startingpoint", -1) == STARTED_FROM_ACTIVITY) {
+            if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
                 collectionItem = service.cachedCollectionItem(collectionId)
                 items = service.cachedItemsFor(collectionId)
             } else {
@@ -162,6 +168,17 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             setResult(-1, resultIntent)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState?.apply {
+            putString(CID, collectionId)
+            putInt(ITEM_INDEX, itemIndex)
+            putBoolean(DELETED_SMTTH, deletedSmth)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+
 
     override fun finish() {
         setResult()
@@ -342,10 +359,8 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
         override fun getItem(position: Int): Fragment {
             val f = ImagePageFragment()
-
             f.setmGestureDetector(clickDetector)
             f.setItem(items[position])
-
             return f
         }
 

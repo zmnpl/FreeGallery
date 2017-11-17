@@ -18,7 +18,8 @@ val STARTED_FROM_ACTIVITY = 1
 val EXTRA_COLLECTIONID = "collectionId"
 val EXTRA_COLLECTION_INDEX = "collectionIndex"
 val EXTRA_ITEM_INDEX = "pic"
-val EXTRA_STARTING_POINT = "startingpoint"
+val EXTRA_STARTING_POINT = "startingPoint"
+val EXTRA_SORT_ORDER = "sortOrder"
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()

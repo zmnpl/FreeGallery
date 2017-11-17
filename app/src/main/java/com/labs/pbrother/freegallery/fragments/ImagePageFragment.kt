@@ -25,7 +25,7 @@ import java.io.File
 /**
  * Created by simon on 30.12.15.
  */
-class ImagePageFragment : Fragment() {
+class ImagePageFragment() : Fragment() {
 
     private lateinit var imageView: SubsamplingScaleImageView
     private lateinit var vidView: ImageView
@@ -35,7 +35,7 @@ class ImagePageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        retainInstance = false
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -60,10 +60,12 @@ class ImagePageFragment : Fragment() {
                     vidView.visibility = View.VISIBLE
                     Glide.with(this).load(item.fileUrl).into(vidView)
                 } else {
-                    imageView.setParallelLoadingEnabled(true)
-                    imageView.setMinimumTileDpi(196) // 196 -> recommendation from franciscofranco on github
-                    imageView.setImage(ImageSource.uri(item.path))
-                    imageView.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+                    imageView.apply {
+                        setParallelLoadingEnabled(true)
+                        setMinimumTileDpi(196) // 196 -> recommendation from franciscofranco on github
+                        setImage(ImageSource.uri(item.path))
+                        setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+                    }
                 }
             }
             else -> {
@@ -77,7 +79,6 @@ class ImagePageFragment : Fragment() {
                     intent.type = "video/*"
                     val vid = File(item.path)
                     val foo = Environment.getExternalStorageDirectory().absolutePath
-
                     val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", vid)
 
                     intent.data = uri
@@ -102,6 +103,7 @@ class ImagePageFragment : Fragment() {
     fun rotate90(multi: Int) {
         // TODO - code not complete by far
         val rotation = AnimationUtils.loadAnimation(this.activity, R.anim.rotate90)
+        imageView.orientation = 90
         imageView.startAnimation(rotation)
     }
 }

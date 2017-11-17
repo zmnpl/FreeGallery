@@ -44,7 +44,21 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private var serviceBound = false
     private lateinit var settings: SettingsHelper
     private lateinit var service: MyService
-    private lateinit var mConnection: ServiceConnection
+    // service connection
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder = service as MyService.LocalBinder
+            this@CollectionActivity.service = binder.service
+            serviceBound = true
+
+            refresh(true) // refresh on connection
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            serviceBound = false
+        }
+    }
+
     // data
     private lateinit var collectionId: String
     private lateinit var collectionItem: CollectionItem
@@ -121,10 +135,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
             if (!settings.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
 
-            if (onTablet) {
-                //sectionHeader(getString(R.string.drawer_tagsection)) { }
-            }
-
             footer {
                 primaryItem(getString(R.string.menu_settings)) {
                     icon = R.drawable.ic_settings_white_24dp
@@ -175,25 +185,15 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun buildUiSafe() {
         if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
-
-        mConnection = object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                val binder = service as MyService.LocalBinder
-                this@CollectionActivity.service = binder.service
-                serviceBound = true
-                fullRefresh()
-            }
-
-            override fun onServiceDisconnected(name: ComponentName) {
-                serviceBound = false
-            }
+        if(serviceBound) {
+            refresh()
+            return
         }
-
         val intent = Intent(this, MyService::class.java)
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
     }
 
-    private fun fullRefresh() {
+    private fun refresh(full: Boolean = false) {
         doAsync {
             collectionItem = service.cachedCollectionItem(collectionId)
             items = service.itemsForCollection(collectionItem, sortOrder)
@@ -201,25 +201,11 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
             uiThread {
                 populateUi()
-                makeDrawer()
+                if (full) makeDrawer()
                 swipeRefreshCollection.isRefreshing = false
             }
         }
     }
-
-    private fun refresh() {
-        doAsync {
-            collectionItem = service.cachedCollectionItem(collectionId)
-            items = service.itemsForCollection(collectionItem, sortOrder)
-            drawerItems = this@CollectionActivity.service.drawerItems
-
-            uiThread {
-                populateUi()
-                swipeRefreshCollection.isRefreshing = false
-            }
-        }
-    }
-
 
     private fun populateUi() {
         supportActionBar?.title = collectionItem.displayNameDetail
@@ -227,16 +213,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, service)
         collection_rclPictureCollection.adapter = adapter
         // Toolbar
-        if (settings.colorizeTitlebar()) {
-            main_toolbar.setBackgroundColor(collectionItem.color)
-        }
-    }
-
-    private fun applyZoom(zoom: Int) {
-        colCount += zoom
-        if (colCount < 1) colCount = 1
-        settings.columnsInPortrait = colCount
-        collection_rclPictureCollection.layoutManager = GridLayoutManager(this@CollectionActivity, colCount)
+        if (settings.colorizeTitlebar()) main_toolbar.setBackgroundColor(collectionItem.color)
     }
 
     // Lifecycle
@@ -328,7 +305,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                     doAsync {
                         service.emptyTrash()
                         uiThread {
-                            //fullRefresh()
                             setResult(DATA_CHANGED, Intent())
                             finish()
                         }
@@ -367,6 +343,13 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Functionality
 
+    private fun applyZoom(zoom: Int) {
+        colCount += zoom
+        if (colCount < 1) colCount = 1
+        settings.columnsInPortrait = colCount
+        collection_rclPictureCollection.layoutManager = GridLayoutManager(this@CollectionActivity, colCount)
+    }
+
     private fun share() {
         val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
         intent.type = "image/jpg"
@@ -397,7 +380,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             uiThread {
                 actionMode?.finish()
                 setResult(DATA_CHANGED, Intent())
-                fullRefresh()
+                refresh(true)
             }
         }
     }
@@ -415,16 +398,12 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private fun delete() {
         dataChanged = true
         val deletionItems = ArrayList<Item>()
-        for (i in adapter.getSelectedItems()) {
-            deletionItems.add(items[i])
-        }
+        adapter.getSelectedItems().forEach { deletionItems.add(items[it]) }
 
         // remove items from ui
         adapter.removeMultiple(adapter.getSelectedItems())
-        var id = 0
         doAsync {
-            id = service.trashItems(deletionItems)
-            print("foo")
+            val id = service.trashItems(deletionItems)
             uiThread {
                 val mySnackbar = Snackbar.make(collectionParentCoordinator, R.string.DeleteSnackbarSingleInfo, Snackbar.LENGTH_LONG)
                 mySnackbar.setAction(R.string.DeleteSnackbarUndo) {

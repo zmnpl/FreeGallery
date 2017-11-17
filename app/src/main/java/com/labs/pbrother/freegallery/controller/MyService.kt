@@ -104,6 +104,7 @@ class MyService : Service(), MetaUpdatorizer {
             return ArrayList(items.values)
         }
 
+    fun cachedItemsFor(collectionId: String): ArrayList<Item> = itemCache[collectionId] ?: ArrayList<Item>()
     fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
         val items = resolver.itemsForCollection(ci, sortOrder)
         val itemsList = ArrayList(items)
@@ -134,8 +135,6 @@ class MyService : Service(), MetaUpdatorizer {
         }
         return CollectionItem()
     }
-
-    fun cachedItemsFor(collectionId: String): ArrayList<Item> = itemCache[collectionId] ?: ArrayList<Item>()
 
     fun tags(): List<String> = tagCache.toList()
 

@@ -40,8 +40,20 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     private var permissionsGood = false
     private lateinit var settings: SettingsHelper
     private lateinit var service: MyService
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as MyService.LocalBinder
+            this@MainActivity.service = binder.service
+            serviceBound = true
+            refresh()
+        }
 
-    private lateinit var mConnection: ServiceConnection
+        override fun onServiceDisconnected(name: ComponentName) {
+            serviceBound = false
+        }
+    }
+
     private lateinit var overviewItems: ArrayList<CollectionItem>
     private lateinit var drawerItems: ArrayList<CollectionItem>
     private lateinit var timeline: CollectionItem
@@ -129,18 +141,9 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         swipeRefreshMain.isRefreshing = true
 
         if (permissionsGood) {
-            mConnection = object : ServiceConnection {
-                override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                    // We've bound to LocalService, cast the IBinder and get LocalService instance
-                    val binder = service as MyService.LocalBinder
-                    this@MainActivity.service = binder.service
-                    refresh()
-                    serviceBound = true
-                }
-
-                override fun onServiceDisconnected(name: ComponentName) {
-                    serviceBound = false
-                }
+            if(serviceBound) {
+                refresh()
+                return
             }
 
             val intent = Intent(this, MyService::class.java)
@@ -212,11 +215,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == COLLECTION_ACTIVITY) {
-            if (resultCode == CollectionActivity.DATA_CHANGED) {
-                buildUiSafe()
-            }
-        }
+        if (requestCode == COLLECTION_ACTIVITY && resultCode == CollectionActivity.DATA_CHANGED) buildUiSafe()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

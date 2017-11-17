@@ -1,18 +1,22 @@
 package com.labs.pbrother.freegallery.controller
 
 import android.provider.MediaStore
+import java.util.*
 
 /**
  * Created by simon on 17.08.17.
  */
-data class TrashItem(var path: String, var mediatype: Int)
+
 
 data class CollectionMeta(val id: String, val loved: Boolean, val color: Int)
+
 data class ItemTag(val path: String, val tag: String)
 data class TrashLog(val originalPath: String, val trashPath: String)
+data class TrashItem(var path: String, var mediatype: Int)
 
 val SORT_ITEMS_DESC = 0 // regular; newest to oldest
 val SORT_ITEMS_ASC = 1
+
 
 val TYPE_FOLDER = "FOLDER"
 val TYPE_TAG = "TAG"
