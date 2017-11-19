@@ -68,8 +68,7 @@ class ImagePropertyDialogFragment : DialogFragment() {
         dialog.imgproperty_txtSize.text = byteSizeToNiceString(item.size)
         dialog.imgproperty_txtLatitude.text = item.latitude.toString()
         dialog.imgproperty_txtLongitude.text = item.longitude.toString()
-        val dimens = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
-        dialog.imgproperty_txtDimensions.text = dimens
+        dialog.imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
 
         dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
     }

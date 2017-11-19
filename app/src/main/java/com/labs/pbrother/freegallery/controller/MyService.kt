@@ -104,12 +104,18 @@ class MyService : Service(), MetaUpdatorizer {
             return ArrayList(items.values)
         }
 
-    fun cachedItemsFor(collectionId: String): ArrayList<Item> = itemCache[collectionId] ?: ArrayList<Item>()
-    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
+    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id] ?: itemsForCollection(ci, sortOrder)
+    private fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
         val items = resolver.itemsForCollection(ci, sortOrder)
         val itemsList = ArrayList(items)
         itemCache.put(ci.id, itemsList)
         return itemsList
+    }
+
+    fun collectionItem(collectionId: String): CollectionItem {
+        if (overviewCache.size == 0) overviewItems
+        if (drawerCache.size == 0) drawerItems
+        return overviewCache[collectionId] ?: drawerCache[collectionId] ?: CollectionItem()
     }
 
     fun collectionItemForImageUri(imageUri: Uri): CollectionItem {
@@ -125,15 +131,6 @@ class MyService : Service(), MetaUpdatorizer {
             cursor?.close()
         }
         return CollectionItem(id = DUMMY_ID)
-    }
-
-    fun cachedCollectionItem(collectionId: String): CollectionItem {
-        if (overviewCache.containsKey(collectionId)) {
-            return overviewCache[collectionId] ?: CollectionItem()
-        } else if (drawerCache.containsKey(collectionId)) {
-            return drawerCache[collectionId] ?: CollectionItem()
-        }
-        return CollectionItem()
     }
 
     fun tags(): List<String> = tagCache.toList()

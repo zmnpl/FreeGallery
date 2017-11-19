@@ -6,7 +6,10 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Message
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
@@ -50,14 +53,16 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // init information
     private val CID: String = "collectionId"
-    private var collectionId: String = ""
     private val ITEM_INDEX: String = "itemIndex"
-    private var itemIndex: Int = 0
     private val DELETED_SMTTH: String = "deletedSmth"
+    private val SORT_ORDER: String = "sortOrder"
+
+    private var collectionId: String = ""
+    private var itemIndex: Int = 0
     private var deletedSmth = false
+    private var sortOrder = SORT_ITEMS_DESC
 
     // data holder
-    private lateinit var collectionItem: CollectionItem
     private lateinit var items: ArrayList<Item>
 
     // misc
@@ -78,8 +83,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             collectionId = getString(CID)
             itemIndex = getInt(ITEM_INDEX)
             deletedSmth = getBoolean(DELETED_SMTTH)
+            sortOrder = getInt(SORT_ORDER)
             finish()
         }
+        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
+        itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
 
         // helper for settings
         settings = SettingsHelper(applicationContext)
@@ -87,9 +95,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
         // layout
         setContentView(R.layout.activity_image_slide)
-
-        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
-        itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
 
         // transparent statusbar
         window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
@@ -117,49 +122,18 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         setToolbarPadding()
     }
 
-    // User Interface Building
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // checks service boundary and data status
-    // arrogantly not checking for permissions on sub screens ^^
-    // if all good -> populate ui
-    // if not, service probably needs to be connected
-
-    private fun buildUiSafe() {
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    private fun refresh() {
-        doAsync {
-            if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
-                collectionItem = service.cachedCollectionItem(collectionId)
-                items = service.cachedItemsFor(collectionId)
-            } else {
-                collectionItem = service.collectionItemForImageUri(intent.data)
-                // TODO - let service create item
-                // TODO - try to resolve image path and derive full folder collection item
-                items = ArrayList()
-                items.add(Item(type = TYPE_IMAGE, path = intent.data.toString()))
-            }
-
-            uiThread {
-                populateUi()
-            }
-        }
-    }
-
-    private fun populateUi() {
-        // ViewPager
-        pager.offscreenPageLimit = 2
-        val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
-        pager.adapter = pagerAdapter
-        pager.currentItem = itemIndex
-        pager.setPageTransformer(true, DepthPageTransformer())
-    }
-
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState?.apply {
+            putString(CID, collectionId)
+            putInt(ITEM_INDEX, itemIndex)
+            putBoolean(DELETED_SMTTH, deletedSmth)
+            putInt(SORT_ORDER, sortOrder)
+        }
+        super.onSaveInstanceState(outState)
+    }
 
     private fun setResult() {
         if (deletedSmth) {
@@ -168,17 +142,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             setResult(-1, resultIntent)
         }
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState?.apply {
-            putString(CID, collectionId)
-            putInt(ITEM_INDEX, itemIndex)
-            putBoolean(DELETED_SMTTH, deletedSmth)
-        }
-        super.onSaveInstanceState(outState)
-    }
-
-
 
     override fun finish() {
         setResult()
@@ -220,6 +183,45 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         }
     }
 
+    // User Interface Building
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // checks service boundary and data status
+    // arrogantly not checking for permissions on sub screens ^^
+    // if all good -> populate ui
+    // if not, service probably needs to be connected
+
+    private fun buildUiSafe() {
+        val intent = Intent(this, MyService::class.java)
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun refresh() {
+        doAsync {
+            if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
+                items = service.cachedItemsFor(service.collectionItem(collectionId), sortOrder)
+            } else {
+                // Branch for when Activity gets called by intent from other app
+                // TODO - let service create item
+                // TODO - try to resolve image path and derive full folder collection item
+                items = ArrayList()
+                items.add(Item(type = TYPE_IMAGE, path = intent.data.toString()))
+            }
+
+            uiThread {
+                populateUi()
+            }
+        }
+    }
+
+    private fun populateUi() {
+        // ViewPager
+        pager.offscreenPageLimit = 2
+        pager.adapter = ScreenSlidePagerAdapter(supportFragmentManager)
+        pager.currentItem = itemIndex
+        pager.setPageTransformer(true, DepthPageTransformer())
+    }
+
     // Actions, Dialogs and actions on those
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -250,17 +252,14 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // Shows dialog with image information
     private fun showImageProperties() {
-        val ipd = ImagePropertyDialogFragment()
-        ipd.setItem(items[pager.currentItem])
-        ipd.show(this.fragmentManager, "imagepropertydialog")
+        ImagePropertyDialogFragment().apply {
+            setItem(items[pager.currentItem])
+            show(this.fragmentManager, "imagepropertydialog")
+        }
     }
 
-    /**
-     * Callback when image property dialog gets closed via button
-     */
-    override fun imgPropertyOk() {
-        // nothing to do here
-    }
+    // Callback when image property dialog gets closed via button
+    override fun imgPropertyOk() {}
 
     // Starts dialog for snaketagging
     private fun tag() {
@@ -269,21 +268,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         std.show(this.fragmentManager, "snaketagdialog")
     }
 
-    /**
-     * Callback, receives result from tag dialog
-     *
-     * @param tag
-     */
-    override fun tagOk(tag: String) {
-        service.tagItem(items[pager.currentItem], tag)
-    }
+    // Callback, receives result from tag dialog
+    override fun tagOk(tag: String) = service.tagItem(items[pager.currentItem], tag)
 
-    /**
-     * Callback if tag dialog was canceled
-     */
-    override fun tagCancel() {
-        // nothing to do here
-    }
+    // Callback if tag dialog was canceled
+    override fun tagCancel() {}
 
     // Reaction to toolbar button click
     // Delete image ... (!)

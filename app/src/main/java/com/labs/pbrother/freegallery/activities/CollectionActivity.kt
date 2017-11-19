@@ -59,11 +59,19 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         }
     }
 
-    // data
+    // instance sates
+    private val CID: String = "cid"
+    private val SORT_ORDER: String = "sortOrder"
+
+
+    // init parameters
     private lateinit var collectionId: String
+
+    // data
     private lateinit var collectionItem: CollectionItem
     private lateinit var items: ArrayList<Item>
     private lateinit var drawerItems: ArrayList<CollectionItem>
+
     // ui
     private var colCount = 4
     private val actionModeCallback = ActionModeCallback()
@@ -79,6 +87,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.apply {
+            collectionId = savedInstanceState.getString(CID)
+            sortOrder = savedInstanceState.getInt(SORT_ORDER)
+        }
 
         // helper for settings
         settings = SettingsHelper(applicationContext)
@@ -183,6 +195,14 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // if all good -> populate ui
     // if not, service probably needs to be connected
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.apply {
+            putString(CID, collectionId)
+            putInt(SORT_ORDER, sortOrder)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
     private fun buildUiSafe() {
         if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
         if(serviceBound) {
@@ -195,7 +215,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun refresh(full: Boolean = false) {
         doAsync {
-            collectionItem = service.cachedCollectionItem(collectionId)
+            collectionItem = service.collectionItem(collectionId)
             items = service.itemsForCollection(collectionItem, sortOrder)
             drawerItems = this@CollectionActivity.service.drawerItems
 
@@ -266,7 +286,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
             inflater.inflate(R.menu.menu_collection, menu)
-            if (service.cachedCollectionItem(collectionId).type == TYPE_TAG) {
+            if (service.collectionItem(collectionId).type == TYPE_TAG) {
                 val deleteTagMenuItem = menu.findItem(R.id.menu_deleteTag)
                 deleteTagMenuItem?.isVisible = true
             }
@@ -435,7 +455,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             startActivityForResult(intentFor<ImageSlideActivity>(
                     EXTRA_COLLECTIONID to collectionId,
                     EXTRA_ITEM_INDEX to position,
-                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY)
+                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY,
+                    EXTRA_SORT_ORDER to sortOrder), IMAGE_SLIDE_ACTIVITY)
         }
     }
 
