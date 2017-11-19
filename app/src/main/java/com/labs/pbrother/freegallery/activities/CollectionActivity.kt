@@ -207,7 +207,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun buildUiSafe() {
         if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
-        if(serviceBound) {
+        if (serviceBound) {
             refresh()
             return
         }
@@ -250,7 +250,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
-                buildUiSafe()
+            buildUiSafe()
         }
     }
 
@@ -371,20 +371,35 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun share() {
-        val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
-        intent.type = "image/jpg"
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-
         val uris = ArrayList<Uri>()
-
         for (i in adapter.getSelectedItems()) {
             val (_, path) = items[i]
             uris.add(FileProvider.getUriForFile(this, packageName + ".provider", File(path)))
         }
 
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
-        startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
 
+        val intent = Intent()
+        intent.type = "image/jpg"
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+        // some apps cannot react to ACTION_SEND_MULTIPLE
+        // therefore, if only one is selected for sharing, use ACTION_SEND instead
+        when (uris.size) {
+            0 -> {
+                actionMode?.finish()
+                return
+            }
+            1 -> {
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_STREAM, uris[0])
+            }
+            else -> {
+                intent.action = Intent.ACTION_SEND_MULTIPLE
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            }
+        }
+
+        startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
         actionMode?.finish()
     }
 
