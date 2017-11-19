@@ -52,7 +52,7 @@ class MyService : Service(), MetaUpdatorizer {
     override fun onBind(intent: Intent): IBinder? {
         if (!initialized) {
             settings = SettingsHelper(applicationContext)
-            resolver = MediaResolver(this)
+            resolver = MediaResolver(applicationContext)
             initialized = true
         }
         return binder
@@ -105,7 +105,7 @@ class MyService : Service(), MetaUpdatorizer {
         }
 
     fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id] ?: itemsForCollection(ci, sortOrder)
-    private fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
+    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
         val items = resolver.itemsForCollection(ci, sortOrder)
         val itemsList = ArrayList(items)
         itemCache.put(ci.id, itemsList)

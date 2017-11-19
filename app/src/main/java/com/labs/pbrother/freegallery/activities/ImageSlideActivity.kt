@@ -1,5 +1,6 @@
 package com.labs.pbrother.freegallery.activities
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -54,6 +55,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // init information
     private val CID: String = "collectionId"
     private val ITEM_INDEX: String = "itemIndex"
+    private val ITEM_ID: String = "itemId"
     private val DELETED_SMTTH: String = "deletedSmth"
     private val SORT_ORDER: String = "sortOrder"
 
@@ -79,6 +81,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
+        itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
+
         savedInstanceState?.apply {
             collectionId = getString(CID)
             itemIndex = getInt(ITEM_INDEX)
@@ -86,8 +92,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             sortOrder = getInt(SORT_ORDER)
             finish()
         }
-        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
-        itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
 
         // helper for settings
         settings = SettingsHelper(applicationContext)
@@ -129,22 +133,15 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         outState?.apply {
             putString(CID, collectionId)
             putInt(ITEM_INDEX, itemIndex)
+            putString(ITEM_ID, items[pager.currentItem].id ?: "")
             putBoolean(DELETED_SMTTH, deletedSmth)
             putInt(SORT_ORDER, sortOrder)
         }
         super.onSaveInstanceState(outState)
     }
 
-    private fun setResult() {
-        if (deletedSmth) {
-            setResult(DELETED_SMTH, resultIntent)
-        } else {
-            setResult(-1, resultIntent)
-        }
-    }
-
     override fun finish() {
-        setResult()
+        setResult(Activity.RESULT_OK, resultIntent)
         super.finish()
     }
 
@@ -175,7 +172,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onDestroy() {
         super.onDestroy()
-        setResult()
+        setResult(Activity.RESULT_OK, resultIntent)
         // Unbind from the service
         if (serviceBound) {
             unbindService(mConnection)
@@ -284,7 +281,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         items.remove(items[index])
         pager.adapter.notifyDataSetChanged()
 
-        deletedSmth = true
+        resultIntent.putExtra(DELETION, true)
 
         doAsync {
             service.trashItems(deletionItems)

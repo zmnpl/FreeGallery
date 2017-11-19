@@ -44,7 +44,7 @@ class MyDb(val context: Context) {
 
     // initializing operations; operating on given data objects
 
-    // Loads snaketag for and into given image
+    // Loads tag for and into given image
     fun itemTags(): HashMap<String, ItemTag> {
         val itemTags = HashMap<String, ItemTag>()
 

@@ -1,5 +1,6 @@
 package com.labs.pbrother.freegallery.activities
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -87,6 +88,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val input = intent
+        collectionId = input.getStringExtra(EXTRA_COLLECTIONID)
+
         savedInstanceState?.apply {
             collectionId = savedInstanceState.getString(CID)
             sortOrder = savedInstanceState.getInt(SORT_ORDER)
@@ -125,9 +130,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         swipeRefreshCollection.setOnRefreshListener {
             buildUiSafe()
         }
-
-        val input = intent
-        collectionId = input.getStringExtra(EXTRA_COLLECTIONID)
     }
 
     private fun makeDrawer() {
@@ -247,10 +249,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == IMAGE_SLIDE_ACTIVITY) {
-            if (resultCode == DELETED_SMTH) {
+        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
                 buildUiSafe()
-            }
         }
     }
 
