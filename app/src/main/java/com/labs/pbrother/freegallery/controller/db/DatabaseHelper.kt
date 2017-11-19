@@ -19,7 +19,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
             if (instance == null) {
                 instance = MyDatabaseOpenHelper(ctx.applicationContext)
             }
-            return instance!!
+            return instance as MyDatabaseOpenHelper
         }
     }
 

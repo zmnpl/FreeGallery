@@ -13,7 +13,10 @@ import org.jetbrains.anko.db.*
  */
 class MyDb(val context: Context) {
     // Application data which can be queried
-    private val dbHelperNew = context.database
+    private val dbHelper: MyDatabaseOpenHelper
+        get() {
+            return context.database
+        }
 
     // collection meta
     private val collectionMetaProjection = arrayOf(
@@ -48,14 +51,11 @@ class MyDb(val context: Context) {
     fun itemTags(): HashMap<String, ItemTag> {
         val itemTags = HashMap<String, ItemTag>()
 
-        dbHelperNew.use {
-            select(Tag.TABLE_NAME,
-                    *itemTagProjection)
-                    .parseList(itemTagParser)
-                    .forEach {
-                        itemTags.put(it.path, it)
-                    }
-        }
+        dbHelper.readableDatabase
+                .select(Tag.TABLE_NAME,
+                        *itemTagProjection)
+                .parseList(itemTagParser)
+                .forEach { itemTags.put(it.path, it) }
 
         return itemTags
     }
@@ -63,20 +63,17 @@ class MyDb(val context: Context) {
     fun collectionMeta(): HashMap<String, CollectionMeta> {
         val meta = HashMap<String, CollectionMeta>()
 
-        dbHelperNew.use {
-            select(CollectionMetaEntry.TABLE_NAME,
-                    *collectionMetaProjection)
-                    .parseList(collectionMetaParser)
-                    .forEach {
-                        meta.put(it.id, it)
-                    }
-        }
+        dbHelper.readableDatabase
+                .select(CollectionMetaEntry.TABLE_NAME,
+                        *collectionMetaProjection)
+                .parseList(collectionMetaParser)
+                .forEach { meta.put(it.id, it) }
 
         return meta
     }
 
     fun collectionMetaFor(id: String): CollectionMeta? {
-        return dbHelperNew.readableDatabase.
+        return dbHelper.readableDatabase.
                 select(CollectionMetaEntry.TABLE_NAME,
                         *collectionMetaProjection)
                 .whereArgs("(${CollectionMetaEntry.COLUMN_NAME_COLLECTION_ID} = {id})",
@@ -90,7 +87,7 @@ class MyDb(val context: Context) {
      * get all tags from db
      */
     fun allTags(): List<String> {
-        return dbHelperNew.readableDatabase
+        return dbHelper.readableDatabase
                 .select(Tag.TABLE_NAME,
                         Tag.COLUMN_NAME_TAG)
                 .distinct()
@@ -107,13 +104,18 @@ class MyDb(val context: Context) {
      * @param tag
      */
     fun countItemsForTag(tag: String): Int {
-        return dbHelperNew.readableDatabase
-                .select(Tag.TABLE_NAME,
-                        Tag.COLUMN_NAME_TAG)
-                .whereArgs("(${Tag.COLUMN_NAME_TAG} = {tag})",
-                        "tag" to tag)
-                .parseList(StringParser)
-                .count()
+        try {
+            return dbHelper.readableDatabase
+                    .select(Tag.TABLE_NAME,
+                            Tag.COLUMN_NAME_TAG)
+                    .whereArgs("(${Tag.COLUMN_NAME_TAG} = {tag})",
+                            "tag" to tag)
+                    .parseList(StringParser)
+                    .count()
+        } catch (e: Exception) {
+            println("foo")
+        }
+        return 0
     }
 
     /**
@@ -121,7 +123,7 @@ class MyDb(val context: Context) {
      * @param tag
      */
     fun getPathsForTag(tag: String): List<String> {
-        return dbHelperNew.readableDatabase
+        return dbHelper.readableDatabase
                 .select(Tag.TABLE_NAME,
                         Tag.COLUMN_NAME_ITEM_ID)
                 .whereArgs("(${Tag.COLUMN_NAME_TAG} = {tag})",
@@ -135,14 +137,19 @@ class MyDb(val context: Context) {
      * @param tag
      */
     fun getThumbForTag(tag: String): String {
-        return dbHelperNew.readableDatabase
-                .select(Tag.TABLE_NAME,
-                        Tag.COLUMN_NAME_TAG)
-                .whereArgs("(${Tag.COLUMN_NAME_TAG} = {tag})",
-                        "tag" to tag)
-                .orderBy(Tag._ID, SqlOrderDirection.DESC)
-                .limit(1)
-                .parseOpt(StringParser) ?: ""
+        try {
+            return dbHelper.readableDatabase
+                    .select(Tag.TABLE_NAME,
+                            Tag.COLUMN_NAME_TAG)
+                    .whereArgs("(${Tag.COLUMN_NAME_TAG} = {tag})",
+                            "tag" to tag)
+                    .orderBy(Tag._ID, SqlOrderDirection.DESC)
+                    .limit(1)
+                    .parseOpt(StringParser) ?: ""
+        } catch (e: Exception) {
+            println("foo")
+        }
+        return ""
     }
 
     /**
@@ -151,7 +158,7 @@ class MyDb(val context: Context) {
      * @param tag
      */
     fun deleteTag(tag: String): Int {
-        return dbHelperNew.writableDatabase
+        return dbHelper.writableDatabase
                 .delete(Tag.TABLE_NAME,
                         "(${Tag.COLUMN_NAME_TAG} = {tag})",
                         "tag" to tag)
@@ -162,7 +169,7 @@ class MyDb(val context: Context) {
      * @param id
      */
     fun deleteAllTagsForItem(id: String): Int {
-        return dbHelperNew.writableDatabase
+        return dbHelper.writableDatabase
                 .delete(Tag.TABLE_NAME,
                         "(${Tag.COLUMN_NAME_ITEM_ID} = {itempath})",
                         "itempath" to id)
@@ -173,7 +180,7 @@ class MyDb(val context: Context) {
      * @param id
      */
     fun deleteTagForItem(id: String, tag: String): Int {
-        return dbHelperNew.writableDatabase
+        return dbHelper.writableDatabase
                 .delete(Tag.TABLE_NAME,
                         "(${Tag.COLUMN_NAME_ITEM_ID} = {itempath}) and ${Tag.COLUMN_NAME_TAG} = {tag}",
                         "itempath" to id,
@@ -187,7 +194,7 @@ class MyDb(val context: Context) {
      */
     fun insertTag(itemId: String, tag: String): Long {
         // TODO - only do, if not already existing...
-        return dbHelperNew.writableDatabase
+        return dbHelper.writableDatabase
                 .insert(
                         Tag.TABLE_NAME,
                         Tag.COLUMN_NAME_TAG to tag,
@@ -205,7 +212,7 @@ class MyDb(val context: Context) {
      */
     fun insertUpdateCollectionMeta(identifier: String, loved: Boolean, color: Int) {
         try {
-            dbHelperNew.writableDatabase.insertOrThrow(
+            dbHelper.writableDatabase.insertOrThrow(
                     CollectionMetaEntry.TABLE_NAME,
                     CollectionMetaEntry.COLUMN_NAME_COLLECTION_ID to identifier,
                     CollectionMetaEntry.COLUMN_NAME_LOVED to if (loved) 1 else 0,
@@ -213,7 +220,7 @@ class MyDb(val context: Context) {
             )
         } catch (e: Exception) {
             if (e is SQLiteConstraintException) {
-                dbHelperNew.writableDatabase
+                dbHelper.writableDatabase
                         .update(CollectionMetaEntry.TABLE_NAME,
                                 CollectionMetaEntry.COLUMN_NAME_LOVED to if (loved) 1 else 0,
                                 CollectionMetaEntry.COLUMN_NAME_COLOR to color)
@@ -229,7 +236,7 @@ class MyDb(val context: Context) {
      * @param id
      */
     fun deleteCollectionMeta(id: String): Int {
-        return dbHelperNew.writableDatabase.delete(
+        return dbHelper.writableDatabase.delete(
                 CollectionMetaEntry.TABLE_NAME,
                 "${CollectionMetaEntry.COLUMN_NAME_COLLECTION_ID} = {id}",
                 "id" to id
@@ -244,7 +251,7 @@ class MyDb(val context: Context) {
      */
     fun insertUpdateTrashedItem(path: String, mediatype: Int) {
         try {
-            dbHelperNew.writableDatabase.insertOrThrow(
+            dbHelper.writableDatabase.insertOrThrow(
                     Trash.TABLE_NAME,
                     Trash.COLUMN_NAME_ITEM_PATH to path,
                     Trash.COLUMN_NAME_MEDIATYPE to mediatype
@@ -261,7 +268,7 @@ class MyDb(val context: Context) {
      * @param path
      */
     fun deleteTrashEntry(path: String): Int {
-        return dbHelperNew.writableDatabase.delete(
+        return dbHelper.writableDatabase.delete(
                 Trash.TABLE_NAME,
                 "${Trash.COLUMN_NAME_ITEM_PATH} = {path}",
                 "path" to path
@@ -269,7 +276,7 @@ class MyDb(val context: Context) {
     }
 
     fun deleteTrashEntries(paths: List<String>) {
-        val db = dbHelperNew.writableDatabase
+        val db = dbHelper.writableDatabase
 
         paths.forEach {
             db.delete(
@@ -283,12 +290,12 @@ class MyDb(val context: Context) {
      * remove all items from trash
      */
     fun emtpyTrash(): Int {
-        return dbHelperNew.writableDatabase
+        return dbHelper.writableDatabase
                 .delete(Trash.TABLE_NAME, null, null)
     }
 
     fun allTrashItems(): List<TrashItem> {
-        return dbHelperNew.readableDatabase
+        return dbHelper.readableDatabase
                 .select(Trash.TABLE_NAME,
                         *trashProjection)
                 .orderBy(Trash._ID, SqlOrderDirection.DESC)
@@ -297,7 +304,7 @@ class MyDb(val context: Context) {
 
     val thumbForTrash: String
         get() {
-            return dbHelperNew.readableDatabase
+            return dbHelper.readableDatabase
                     .select(Trash.TABLE_NAME,
                             *trashProjection)
                     .orderBy(Trash._ID, SqlOrderDirection.DESC)
@@ -306,7 +313,7 @@ class MyDb(val context: Context) {
         }
 
     fun countTrashItems(): Int {
-        return dbHelperNew.readableDatabase
+        return dbHelper.readableDatabase
                 .select(Trash.TABLE_NAME,
                         Trash._ID)
                 .parseList(StringParser)
