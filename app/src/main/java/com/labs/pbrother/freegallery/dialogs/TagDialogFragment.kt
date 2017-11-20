@@ -3,15 +3,19 @@ package com.labs.pbrother.freegallery.dialogs
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
+import android.net.sip.SipSession
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.view.WindowManager
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import kotlinx.android.synthetic.main.dialog_tag.*
+import android.app.Activity
+
+
 
 /**
  * Created by simon on 07.11.16.
@@ -50,7 +54,10 @@ class TagDialogFragment : DialogFragment() {
                                     ?.joinToString("")
                                     ?.decapitalize())
                 }
-                .setNegativeButton(getString(R.string.SnaketagCancel)) { dialog, id -> listener.tagCancel() }
+                .setNegativeButton(getString(R.string.SnaketagCancel)) { dialog, id ->
+                    listener.tagCancel()
+                    hideKeyboardFrom(context, tagField)
+                }
 
         return builder.create()
     }
@@ -78,19 +85,17 @@ class TagDialogFragment : DialogFragment() {
         tagField.setAdapter(adapter)
         tagField.requestFocus()
 
-        dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-        // show keyboard ... TODO - right method?
+        // show keyboard ...
         val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
 
-        // hide keyboard
-        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    // hideous ...
+    // thanks to rmirabelle on https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+    fun hideKeyboardFrom(context: Context, view: View) {
+        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }
