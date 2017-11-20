@@ -249,10 +249,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // Shows dialog with image information
     private fun showImageProperties() {
-        ImagePropertyDialogFragment().apply {
-            setItem(items[pager.currentItem])
-            show(this.fragmentManager, "imagepropertydialog")
-        }
+        val diag = ImagePropertyDialogFragment()
+        diag.setItem(items[pager.currentItem])
+        diag.show(this.fragmentManager, "imagepropertydialog")
+
     }
 
     // Callback when image property dialog gets closed via button
