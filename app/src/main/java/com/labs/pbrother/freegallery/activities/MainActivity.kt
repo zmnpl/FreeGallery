@@ -2,14 +2,12 @@ package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
 import android.annotation.TargetApi
-import android.content.ComponentName
-import android.content.Context
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -24,7 +22,7 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.MyService
+import com.labs.pbrother.freegallery.controller.Foo
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
@@ -34,30 +32,14 @@ import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
 
+
 class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
-    private var serviceBound = false
     private var permissionsGood = false
     private lateinit var settings: SettingsHelper
-    private lateinit var service: MyService
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as MyService.LocalBinder
-            this@MainActivity.service = binder.service
-            serviceBound = true
-            refresh()
-        }
+    private lateinit var viewModel: MainActivityViewModel
+    private var selection: List<Int>? = null
 
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
-
-    private lateinit var overviewItems: ArrayList<CollectionItem>
-    private lateinit var drawerItems: ArrayList<CollectionItem>
-    private lateinit var timeline: CollectionItem
-    private lateinit var trash: CollectionItem
     private var actionModeCollectionItems = ArrayList<CollectionItem>()
 
     // ui stuff
@@ -92,10 +74,29 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         swipeRefreshMain.setOnRefreshListener {
             buildUiSafe()
         }
+
+        makeDrawer()
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+
+        viewModel.getLiveOverviewItems().observe(this, Observer { overviewItems ->
+            populateAdapter(overviewItems)
+        })
+
+        viewModel.getLiveDrawerItems().observe(this, Observer { drawerItems ->
+            makeDrawer()
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+    }
+
+    private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
+        if (null != overviewItems) {
+            adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, Foo(application))
+            adapter.setHasStableIds(true)
+            overviewRecycler.adapter = adapter
+        }
     }
 
     private fun makeDrawer() {
-
         drawerResult = drawer {
             if (onTablet) buildViewOnly = true
 
@@ -131,6 +132,22 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         }
     }
 
+    private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
+        drawerItems.forEach {
+            this@MainActivity
+                    .drawerResult
+                    .addItem(primaryDrawerItemFromItem(applicationContext, it, getString(R.string.tagLetter))
+                            .withOnDrawerItemClickListener { view, position, drawerItem ->
+                                startActivityForResult(
+                                        intentFor<CollectionActivity>(
+                                                EXTRA_COLLECTION_INDEX to position,
+                                                EXTRA_COLLECTIONID to it.id),
+                                        COLLECTION_ACTIVITY)
+                                false
+                            })
+        }
+    }
+
     // User Interface Building
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -141,51 +158,19 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         swipeRefreshMain.isRefreshing = true
 
         if (permissionsGood) {
-            if(serviceBound) {
-                refresh()
-                return
-            }
-
-            val intent = Intent(this, MyService::class.java)
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+            refresh()
+            return
         }
     }
 
     private fun refresh() {
         doAsync {
-            overviewItems = this@MainActivity.service.overviewItems
-            drawerItems = this@MainActivity.service.drawerItems
-            timeline = this@MainActivity.service.timeline
-            trash = this@MainActivity.service.trash
+            viewModel.refresh()
 
             uiThread {
-                populateUi()
+                swipeRefreshMain.isRefreshing = false
             }
         }
-    }
-
-    private fun populateUi() {
-        adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, service)
-        adapter.setHasStableIds(true)
-        overviewRecycler.adapter = adapter
-        val tagLetter = getString(R.string.tagLetter)
-
-        makeDrawer()
-        drawerItems.forEach {
-            this@MainActivity
-                    .drawerResult
-                    .addItem(primaryDrawerItemFromItem(applicationContext, it, tagLetter)
-                            .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                startActivityForResult(
-                                        intentFor<CollectionActivity>(
-                                                EXTRA_COLLECTION_INDEX to position,
-                                                EXTRA_COLLECTIONID to it.id),
-                                        COLLECTION_ACTIVITY)
-                                false
-                            })
-        }
-
-        swipeRefreshMain.isRefreshing = false
     }
 
     private fun applyZoom(zoom: Int) {
@@ -200,19 +185,9 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     override fun onResume() {
         super.onResume()
-        if (!serviceBound) {
-            requestPermissions()
-            buildUiSafe()
-        }
+        requestPermissions()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (serviceBound) {
-            unbindService(mConnection)
-            serviceBound = false
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == COLLECTION_ACTIVITY && resultCode == CollectionActivity.DATA_CHANGED) buildUiSafe()
@@ -324,14 +299,9 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         }
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            actionModeCollectionItems = ArrayList()
-            for (i in adapter.getSelectedItems()) {
-                actionModeCollectionItems.add(overviewItems[i])
-            }
-
+            selection = adapter.getSelectedItems()
             when (item.itemId) {
                 R.id.overviewselection_menu_hidegroup -> {
-                    hide()
                     mode.finish()
                     return true
                 }
@@ -342,6 +312,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                 }
                 else -> {
                     actionModeCollectionItems.clear()
+                    selection = null
                     return false
                 }
             }
@@ -366,10 +337,9 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     // Callbacks
 
     override fun colorOk(color: Int) {
-        for (item in actionModeCollectionItems) {
-            service.colorizeCollection(item, color)
-            adapter.notifyDataSetChanged()
-        }
+        viewModel.colorize(selection ?: ArrayList<Int>(), color)
+        adapter.notifyDataSetChanged()
+        selection = null
         actionModeCollectionItems.clear()
     }
 

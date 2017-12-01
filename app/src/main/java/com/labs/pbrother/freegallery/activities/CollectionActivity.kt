@@ -286,7 +286,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
             inflater.inflate(R.menu.menu_collection, menu)
-            if (service.collectionItem(collectionId).type == TYPE_TAG) {
+            if (service?.collectionItem(collectionId).type == TYPE_TAG) {
                 val deleteTagMenuItem = menu.findItem(R.id.menu_deleteTag)
                 deleteTagMenuItem?.isVisible = true
             }
