@@ -13,6 +13,9 @@ import com.labs.pbrother.freegallery.controller.Foo
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     var foo = Foo(getApplication())
 
+    var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
+    var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
+
     fun refresh() {
         overviewItems?.postValue(foo.overviewItems)
         drawerItems?.postValue(foo.drawerItems)
@@ -35,17 +38,5 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         for (item in selectedItems(itemIndexes)) {
             foo.colorizeCollection(item, color)
         }
-    }
-
-    private var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
-    fun getLiveOverviewItems(): MutableLiveData<ArrayList<CollectionItem>> {
-        overviewItems.value = foo.overviewItems
-        return overviewItems
-    }
-
-    private var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
-    fun getLiveDrawerItems(): MutableLiveData<ArrayList<CollectionItem>> {
-        drawerItems.value = foo.drawerItems
-        return drawerItems
     }
 }

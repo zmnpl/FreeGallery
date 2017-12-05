@@ -19,6 +19,10 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
                             private var tags: HashSet<String> = HashSet()
 ) : Comparable<Item> {
 
+    companion object {
+        var SORT_ORDER: Int = SORT_ITEMS_DESC
+    }
+
     val id: String
         get() = path
 

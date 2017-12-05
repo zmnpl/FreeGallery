@@ -78,11 +78,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         makeDrawer()
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
 
-        viewModel.getLiveOverviewItems().observe(this, Observer { overviewItems ->
+        viewModel.overviewItems.observe(this, Observer { overviewItems ->
             populateAdapter(overviewItems)
         })
 
-        viewModel.getLiveDrawerItems().observe(this, Observer { drawerItems ->
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
             makeDrawer()
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     override fun onResume() {
         super.onResume()
         requestPermissions()
+        buildUiSafe()
     }
 
 

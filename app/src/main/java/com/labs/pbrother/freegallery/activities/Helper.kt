@@ -45,3 +45,10 @@ fun adjustColorAlpha(color: Int, factor: Float): Int {
     val blue = Color.blue(color)
     return Color.argb(alpha, red, green, blue)
 }
+
+fun darkenColor(color: Int, factor: Float): Int {
+    val red = Color.red(color)
+    val green = Color.green(color)
+    val blue = Color.blue(color)
+    return Color.rgb((red * factor).toInt(), (green * factor).toInt(), (blue * factor).toInt())
+}
