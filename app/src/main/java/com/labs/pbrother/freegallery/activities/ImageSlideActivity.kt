@@ -37,20 +37,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // service boundary
     private var serviceBound = false
-    private lateinit var service: MyService
-    private var mConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as MyService.LocalBinder
-            this@ImageSlideActivity.service = binder.service
-            serviceBound = true
-
-            refresh()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
+    private lateinit var viewModel: ImageSlideActivityViewModel
 
     // init information
     private val CID: String = "collectionId"
@@ -63,9 +50,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private var itemIndex: Int = 0
     private var deletedSmth = false
     private var sortOrder = SORT_ITEMS_DESC
-
-    // data holder
-    private lateinit var items: ArrayList<Item>
 
     // misc
     private val INITIAL_HIDE_DELAY = 10000
@@ -148,7 +132,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onStart() {
         super.onStart()
-        buildUiSafe()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -174,11 +157,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onDestroy() {
         super.onDestroy()
         setResult(Activity.RESULT_OK, resultIntent)
-        // Unbind from the service
-        if (serviceBound) {
-            unbindService(mConnection)
-            serviceBound = false
-        }
     }
 
     // User Interface Building
@@ -188,11 +166,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // arrogantly not checking for permissions on sub screens ^^
     // if all good -> populate ui
     // if not, service probably needs to be connected
-
-    private fun buildUiSafe() {
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-    }
 
     private fun refresh() {
         doAsync {
@@ -262,7 +235,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Starts dialog for snaketagging
     private fun tag() {
         val std = TagDialogFragment()
-        std.setTags(service.tags())
+        std.setTags(viewModel.tags)
         std.show(this.fragmentManager, "snaketagdialog")
     }
 
