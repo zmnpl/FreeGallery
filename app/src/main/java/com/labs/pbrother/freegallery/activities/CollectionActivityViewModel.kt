@@ -27,16 +27,21 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     var items = MutableLiveData<ArrayList<Item>>()
     var liveColor = MutableLiveData<Int>()
 
-    fun refresh(collectionId: String) {
+    fun refresh(collectionId: String, full: Boolean = false) {
         val collection = foo.collectionItem(collectionId)
+
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
         drawerItems.postValue(foo.drawerItems)
-        items.postValue(foo.cachedItemsFor(collectionItem.value!!, Item.SORT_ORDER))
+        if (full) {
+            items.postValue(foo.itemsFor(collectionItem.value!!, Item.SORT_ORDER))
+        } else {
+            items.postValue(foo.cachedItemsFor(collectionItem.value!!, Item.SORT_ORDER))
+        }
     }
 
-    private fun selectedItems(selection: List<Int>) : List<Item> {
-        val result =  ArrayList<Item>()
+    fun selectedItems(selection: List<Int>): List<Item> {
+        val result = ArrayList<Item>()
         selection.forEach() {
             val ci = items.value?.get(it)
             if (null != ci) result.add(ci)
@@ -52,49 +57,29 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun emptyTrash() = foo.emptyTrash()
 
-    fun urisToShare(selectedItems: List<Int>) : ArrayList<Uri> {
+    fun restoreItems(items: List<Item>) = foo.restore(items)
+
+    fun trashItems(items: List<Item>): Int = foo.trashItems(items)
+
+    fun undoTrashing(id: Int) = foo.undoTrashing(id)
+
+    fun tagItems(items: List<Item>, tag: String) {
+        items.forEach { foo.tagItem(it, tag) }
+    }
+
+    fun urisToShare(items: List<Item>): ArrayList<Uri> {
         val uris = ArrayList<Uri>()
-        for (i in selectedItems) {
-            val bar = items.value
-            if (null != bar) {
-                val (_, path) = bar[i]
-                uris.add(FileProvider.getUriForFile(getApplication(), getApplication<Application>().packageName + ".provider", File(path)))
-            }
+        items.forEach {
+            uris.add(FileProvider.getUriForFile(getApplication(), getApplication<Application>().packageName + ".provider", File(it.path)))
         }
         return uris
     }
 
-    fun restoreItems(selectedItems: List<Int>) {
-        val restoreList = ArrayList<Item>()
-        val itms = items.value
-        if (null != itms) selectedItems.forEach { restoreList.add(itms[it]) }
-        foo.restore(restoreList)
-    }
-
-    fun trashItems(selectedItems: List<Int>) : Int {
-        val itms = items.value
-        if(null != itms) {
-            val deletionItems = ArrayList<Item>()
-            selectedItems.forEach { deletionItems.add(itms[it]) }
-            return foo.trashItems(itms)
-        }
-        return -1
-    }
-
-    fun tagItems(selectedItems: List<Int>, tag: String) {
-        val itms = items.value
-        if(null != itms) selectedItems.forEach {
-            foo.tagItem(itms[it], tag)
-        }
-    }
-
     fun colorizeCollection(color: Int) {
         val col = collectionItem.value
-        if(null != col) {
+        if (null != col) {
             foo.colorizeCollection(col, color)
             liveColor.value = color
         }
     }
-
-    fun undoTrashing(id: Int) = foo.undoTrashing(id)
 }

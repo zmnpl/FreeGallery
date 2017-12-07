@@ -90,7 +90,8 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             itemIndex = getInt(ITEM_INDEX)
             deletedSmth = getBoolean(DELETED_SMTTH)
             sortOrder = getInt(SORT_ORDER)
-            finish()
+            if(deletedSmth) resultIntent.putExtra(DELETION, true)
+            finish() // TODO temporary - should not finish
         }
 
         // helper for settings

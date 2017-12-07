@@ -20,6 +20,7 @@ val EXTRA_ITEM_INDEX = "pic"
 val EXTRA_STARTING_POINT = "startingPoint"
 val EXTRA_SORT_ORDER = "sortOrder"
 val DELETION = "deletion"
+val SHOULD_RELOAD = "reload"
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()

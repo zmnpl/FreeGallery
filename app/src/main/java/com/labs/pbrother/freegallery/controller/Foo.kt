@@ -12,7 +12,6 @@ import com.labs.pbrother.freegallery.controller.Cache.itemCache
 import com.labs.pbrother.freegallery.controller.Cache.overviewCache
 import com.labs.pbrother.freegallery.controller.Cache.tagCache
 import com.labs.pbrother.freegallery.controller.db.MyDb
-import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
 
@@ -71,8 +70,8 @@ class Foo(var applicationContext: Application) : MetaUpdatorizer {
             return ArrayList(items.values)
         }
 
-    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id] ?: itemsForCollection(ci, sortOrder)
-    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
+    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id] ?: itemsFor(ci, sortOrder)
+    fun itemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
         val items = resolver.itemsForCollection(ci, sortOrder)
         val itemsList = ArrayList(items)
         itemCache.put(ci.id, itemsList)
@@ -116,7 +115,7 @@ class Foo(var applicationContext: Application) : MetaUpdatorizer {
         return false
     }
 
-    fun trashItems(items: ArrayList<Item>): Int {
+    fun trashItems(items: List<Item>): Int {
         val id = Random().nextInt(999999)
         deletions.put(id, delete(items))
         return id
@@ -144,7 +143,7 @@ class Foo(var applicationContext: Application) : MetaUpdatorizer {
         return true
     }
 
-    fun delete(items: ArrayList<Item>): ArrayList<TrashLog> {
+    fun delete(items: List<Item>): ArrayList<TrashLog> {
         // log: original path , trash path
         val log = ArrayList<TrashLog>()
         val db = MyDb(applicationContext)

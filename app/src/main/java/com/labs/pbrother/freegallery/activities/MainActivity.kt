@@ -2,6 +2,7 @@ package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -49,9 +50,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     private var actionMode: ActionMode? = null
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
+    private var reloadPlz = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        reloadPlz = true
 
         settings = SettingsHelper(applicationContext)
         setTheme(settings.theme)
@@ -186,12 +189,13 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     override fun onResume() {
         super.onResume()
         requestPermissions()
-        buildUiSafe()
+        if (reloadPlz) buildUiSafe()
+        reloadPlz = false
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == COLLECTION_ACTIVITY && resultCode == CollectionActivity.DATA_CHANGED) buildUiSafe()
+        if (requestCode == COLLECTION_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
