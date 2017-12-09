@@ -5,9 +5,9 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import android.support.v4.content.FileProvider
-import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Foo
 import com.labs.pbrother.freegallery.controller.Item
+import org.jetbrains.anko.doAsync
 import java.io.File
 
 /**
@@ -33,8 +33,22 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun trashItems(items: List<Item>): Int = foo.trashItems(items)
 
-    fun tagItems(items: List<Item>, tag: String) {
-        items.forEach { foo.tagItem(it, tag) }
+    fun itemIdOf(index: Int): String = items.value?.get(index)?.id ?: ""
+
+    fun itemAt(index: Int): Item? = items.value?.get(index)
+
+    fun tagItems(items: List<Item>, tag: String) = items.forEach { tagItem(it, tag) }
+
+    fun tagItem(item: Item?, tag: String) = if(null!=item) {foo.tagItem(item, tag)} else {}
+
+    fun removeItem(item: Item) : Int {
+        val deletionItems = java.util.ArrayList<Item>()
+        deletionItems.add(item)
+
+        doAsync { foo.trashItems(deletionItems) }
+        items.value?.remove(item)
+
+        return items.value?.size ?: 0
     }
 
     fun urisToShare(items: List<Item>): ArrayList<Uri> {

@@ -59,7 +59,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private var onTablet = false
     // helper
     private var dataChanged = false
+    private var reloadPlz = true
     private var sortOrder = SORT_ITEMS_DESC
+
 
     private val resultIntent = Intent()
 
@@ -74,6 +76,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             collectionId = savedInstanceState.getString(CID)
             sortOrder = savedInstanceState.getInt(SORT_ORDER)
             dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
+            reloadPlz = true
         }
 
         // helper for settings
@@ -128,6 +131,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         viewModel.liveColor.observe(this, Observer { color ->
             if (null != color) colorizeTitlebar(color)
         })
+
+        refresh()
     }
 
 
@@ -187,7 +192,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         // Recycler
         adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, Foo(application))
         collection_rclPictureCollection.adapter = adapter
-        adapter.setHasStableIds(true)
+        //adapter.setHasStableIds(true)
     }
 
     private fun colorizeTitlebar(color: Int) {
@@ -240,11 +245,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    override fun onResume() {
-        super.onResume()
-        refresh()
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
