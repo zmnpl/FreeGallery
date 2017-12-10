@@ -14,10 +14,15 @@ import java.io.File
  * Created by simon on 21.11.17.
  */
 class CollectionActivityViewModel(application: Application) : AndroidViewModel(application) {
-    var foo = Foo(getApplication())
+    private var foo = Foo(getApplication())
+    private var collectionID = ""
+    private lateinit var collection: CollectionItem
 
     val collectionType
         get() = collectionItem.value?.type
+
+    val collectionId
+        get() = collectionItem.value?.id
 
     val tags
         get() = foo.tags()
@@ -27,18 +32,31 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     var items = MutableLiveData<ArrayList<Item>>()
     var liveColor = MutableLiveData<Int>()
 
-    fun refresh(collectionId: String, full: Boolean = false) {
-        val collection = foo.collectionItem(collectionId)
+    fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, collectionID: String, cached: Boolean = false) {
+        this.collectionID = collectionID
+        if (collection) refreshCollection(collectionID)
+        if (drawer) refreshDrawerItems()
+        if (items) refreshItems(cached)
+    }
 
+    fun refreshCollection(collectionId: String) {
+        collection = foo.collectionItem(collectionId)
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
+    }
+
+    fun refreshDrawerItems() {
         drawerItems.postValue(foo.drawerItems)
-        if (full) {
-            items.postValue(foo.itemsFor(collectionItem.value!!, Item.SORT_ORDER))
+    }
+
+    fun refreshItems(cached: Boolean = false) {
+        if (cached) {
+            items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
         } else {
-            items.postValue(foo.cachedItemsFor(collectionItem.value!!, Item.SORT_ORDER))
+            items.postValue(foo.itemsFor(collection, Item.SORT_ORDER))
         }
     }
+
 
     fun selectedItems(selection: List<Int>): List<Item> {
         val result = ArrayList<Item>()

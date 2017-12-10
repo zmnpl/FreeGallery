@@ -64,9 +64,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
 
-        if (tabletMain != null) {
-            onTablet = true
-        }
+        if (tabletMain != null) onTablet = true
 
         overviewRecycler.apply {
             setHasFixedSize(true)
@@ -74,11 +72,8 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, colCount))
         }
 
-        swipeRefreshMain.setOnRefreshListener {
-            buildUiSafe()
-        }
+        swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
 
-        makeDrawer()
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
 
         viewModel.overviewItems.observe(this, Observer { overviewItems ->
@@ -158,18 +153,13 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     // if all good -> populate ui
     // if not, service probably needs to be connected
     private fun buildUiSafe() {
-        swipeRefreshMain.isRefreshing = true
-
-        if (permissionsGood) {
-            refresh()
-            return
-        }
+        if (permissionsGood) refresh()
     }
 
     private fun refresh() {
+        swipeRefreshMain.isRefreshing = true
         doAsync {
             viewModel.refresh()
-
             uiThread {
                 swipeRefreshMain.isRefreshing = false
             }

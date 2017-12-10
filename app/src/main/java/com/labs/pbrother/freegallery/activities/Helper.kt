@@ -24,6 +24,7 @@ val SHOULD_RELOAD = "reload"
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()
+            .withTag(item.id)
             .withName(item.displayName.removePrefix(tagLetter))
             .withIcon(Ionicons.Icon.ion_pound)
             .withBadge(item.count.toString())
