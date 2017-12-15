@@ -20,19 +20,22 @@ class SettingsHelper(val context: Context) {
     private lateinit var colorPurple: String
     private lateinit var colorBlueGrey: String
 
+
     companion object {
         @JvmStatic
         val PERMISSION_READ_STORAGE = 1337
         @JvmStatic
-        val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
+        private val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
         @JvmStatic
-        val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
+        private val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
         @JvmStatic
-        val KEY_PREF_STYLE_COLUMNS = "pref_key_style_portrait_columns"
+        private val KEY_PREF_STYLE_COLUMNS = "pref_key_style_portrait_columns"
         @JvmStatic
-        val KEY_PREF_STYLE_COLORTITLE = "pref_key_style_colorize_title"
+        private val KEY_PREF_STYLE_COLORTITLE = "pref_key_style_colorize_title"
         @JvmStatic
-        val KEY_PREF_STYLE_HIDE_DRAWER_HEADER = "pref_key_style_hide_drawer_header"
+        private val KEY_PREF_STYLE_HIDE_DRAWER_HEADER = "pref_key_style_hide_drawer_header"
+        @JvmStatic
+        private val KEY_PREF_ORDER_BY = "pref_key_order_by"
     }
 
     init {
@@ -45,6 +48,10 @@ class SettingsHelper(val context: Context) {
         colorPurple = colorOptions[4]
     }
 
+    val orderBy: Int
+        get() {
+            return sharedPref.getInt(KEY_PREF_ORDER_BY, 0)
+        }
 
     val theme: Int
         get() {

@@ -41,7 +41,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // instance sates
     private val CID: String = "cid"
-    private val SORT_ORDER: String = "sortOrder"
     private val DATA_CHANGED: String = "changed"
 
     // init parameters
@@ -60,7 +59,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private var dataChanged = false
     private var reloadPlz = true
     private var onTablet = false
-    private var sortOrder = SORT_ITEMS_DESC
 
     private val resultIntent = Intent()
 
@@ -73,7 +71,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         savedInstanceState?.apply {
             collectionId = savedInstanceState.getString(CID)
-            sortOrder = savedInstanceState.getInt(SORT_ORDER)
             dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
             reloadPlz = true
         }
@@ -238,7 +235,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.apply {
             putString(CID, collectionId)
-            putInt(SORT_ORDER, sortOrder)
             putBoolean(DATA_CHANGED, dataChanged)
         }
         super.onSaveInstanceState(outState)
@@ -313,13 +309,11 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             R.id.menu_collectionSortAsc -> {
-                sortOrder = SORT_ITEMS_ASC
-                refresh(false, false, true, false)
+                viewModel.setSortAsc()
                 return true
             }
             R.id.menu_collectionSortDesc -> {
-                sortOrder = SORT_ITEMS_DESC
-                refresh(false, false, true, false)
+                viewModel.setSortDesc()
                 return true
             }
             R.id.menu_collectionZoomViewIn -> {
@@ -469,8 +463,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             startActivityForResult(intentFor<ImageSlideActivity>(
                     EXTRA_COLLECTIONID to collectionId,
                     EXTRA_ITEM_INDEX to position,
-                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY,
-                    EXTRA_SORT_ORDER to sortOrder), IMAGE_SLIDE_ACTIVITY)
+                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY)
         }
     }
 

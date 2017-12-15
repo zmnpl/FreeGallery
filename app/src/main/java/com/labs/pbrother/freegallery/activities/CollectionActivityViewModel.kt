@@ -5,9 +5,9 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import android.support.v4.content.FileProvider
-import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Foo
-import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.*
+import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_ASC
+import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_DESC
 import java.io.File
 
 /**
@@ -65,6 +65,18 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
             if (null != ci) result.add(ci)
         }
         return result
+    }
+
+    fun setSortAsc() {
+        if (Item.SORT_ORDER == Item.SORT_ASC) return
+        Item.SORT_ORDER = Item.SORT_ASC
+        refresh(false, false, true, collectionID)
+    }
+
+    fun setSortDesc() {
+        if (Item.SORT_ORDER == Item.SORT_DESC) return
+        Item.SORT_ORDER = SORT_DESC
+        refresh(false, false, true, collectionID)
     }
 
     fun colorize(collection: CollectionItem, color: Int) {

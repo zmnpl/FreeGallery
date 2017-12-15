@@ -18,7 +18,6 @@ import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
-import com.labs.pbrother.freegallery.controller.SORT_ITEMS_DESC
 import com.labs.pbrother.freegallery.controller.TPYE_VIDEO
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import com.labs.pbrother.freegallery.dialogs.ImagePropertyDialogFragment
@@ -33,7 +32,6 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.uiThread
 import java.io.File
-import java.util.*
 
 class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListener, ImagePropertyDialogFragment.ImagePropertyDialogListener {
 
@@ -46,12 +44,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private val ITEM_INDEX: String = "itemIndex"
     private val ITEM_ID: String = "itemId"
     private val DELETED_SMTTH: String = "deletedSmth"
-    private val SORT_ORDER: String = "sortOrder"
 
     private var collectionId: String = ""
     private var itemIndex: Int = 0
     private var deletedSmth = false
-    private var sortOrder = SORT_ITEMS_DESC
 
     // misc
     private var reloadPlz = true
@@ -77,7 +73,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             collectionId = getString(CID)
             itemIndex = getInt(ITEM_INDEX)
             deletedSmth = getBoolean(DELETED_SMTTH)
-            sortOrder = getInt(SORT_ORDER)
             if (deletedSmth) resultIntent.putExtra(DELETION, true)
             finish() // TODO temporary - should not finish
         }
@@ -132,7 +127,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             putInt(ITEM_INDEX, itemIndex)
             putString(ITEM_ID, viewModel.itemIdOf(pager.currentItem))
             putBoolean(DELETED_SMTTH, deletedSmth)
-            putInt(SORT_ORDER, sortOrder)
         }
         super.onSaveInstanceState(outState)
     }
@@ -184,11 +178,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
                 viewModel.refresh(collectionId)
             } else {
-                // Branch for when Activity gets called by intent from other app
-                // TODO - let service create item
-                // TODO - try to resolve image path and derive full folder collection item
-                //items = ArrayList()
-                //items.add(Item(type = TYPE_IMAGE, path = intent.data.toString()))
+                viewModel.namingMethodsIsHard(intent.data.toString())
             }
         }
     }

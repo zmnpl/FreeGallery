@@ -56,7 +56,7 @@
     <string name="ColorizeOk">Color!</string>
     <string name="ColorizeCancel">Cancel</string>
     <!-- Deletion Dialog -->
-    #
+
     <!-- Empty trash Dialog -->
     <string name="EmtyTrashQuestion">Permanently delete all items in trash?</string>
     <string name="EmtpyTrashOk">Sure thing</string>
@@ -94,5 +94,18 @@
         <item>prefValueColorTeal</item>
         <item>prefValueColorPurple</item>
     </string-array>
+
+    <!-- Order By -->
+    <string name="prefOrderBy">Order by</string>
+    <string name="prefOrderByDialogTitle">Order by</string>
+    <string-array name="prefOrderByEntries">
+        <item>Date taken</item>
+        <item>Date added</item>
+    </string-array>
+    <integer name="prefOrderByDefault">0</integer>
+    <integer-array name="prefOrderByValues">
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
 
 </resources>

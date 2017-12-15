@@ -303,7 +303,7 @@ internal class MediaResolver(private val context: Context) {
 
     private fun orderedItemsTreeSet(sortOrder: Int): TreeSet<Item> {
         return when (sortOrder) {
-            SORT_ITEMS_ASC -> TreeSet(Collections.reverseOrder())
+            Item.SORT_ASC -> TreeSet(Collections.reverseOrder())
             else -> TreeSet<Item>()
         }
     }

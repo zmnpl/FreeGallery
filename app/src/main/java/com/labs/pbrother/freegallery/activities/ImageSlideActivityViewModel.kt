@@ -7,6 +7,7 @@ import android.net.Uri
 import android.support.v4.content.FileProvider
 import com.labs.pbrother.freegallery.controller.Foo
 import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import org.jetbrains.anko.doAsync
 import java.io.File
 
@@ -58,4 +59,15 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
         }
         return uris
     }
+
+    fun namingMethodsIsHard(path: String) {
+        val itms = ArrayList<Item>()
+        itms.add(Item(type = TYPE_IMAGE, path = path))
+        items.postValue(itms)
+
+        // Branch for when Activity gets called by intent from other app
+        // TODO - let service create item
+        // TODO - try to resolve image path and derive full folder collection item
+    }
+
 }
