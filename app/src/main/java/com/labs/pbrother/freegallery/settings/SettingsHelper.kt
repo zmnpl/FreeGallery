@@ -25,6 +25,11 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         val PERMISSION_READ_STORAGE = 1337
         @JvmStatic
+        val ORDER_BY_DATE_TAKEN = 0
+        @JvmStatic
+        val ORDER_BY_DATE_ADDED = 1
+
+        @JvmStatic
         private val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
         @JvmStatic
         private val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
@@ -50,7 +55,18 @@ class SettingsHelper(val context: Context) {
 
     val orderBy: Int
         get() {
-            return sharedPref.getInt(KEY_PREF_ORDER_BY, 0)
+            val orderbyoptions = context.resources.getStringArray(R.array.prefOrderByEntries)
+            return when(sharedPref.getString(KEY_PREF_ORDER_BY, "")) {
+                orderbyoptions[0] -> {
+                    return ORDER_BY_DATE_ADDED
+                }
+                orderbyoptions[1] -> {
+                    return ORDER_BY_DATE_TAKEN
+                }
+                else -> {
+                    return ORDER_BY_DATE_ADDED
+                }
+            }
         }
 
     val theme: Int

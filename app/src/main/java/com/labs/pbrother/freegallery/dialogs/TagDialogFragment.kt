@@ -52,7 +52,8 @@ class TagDialogFragment : DialogFragment() {
                             tagField.text?.split(" ")
                                     ?.map { it.capitalize() }
                                     ?.joinToString("")
-                                    ?.decapitalize())
+                                    ?.decapitalize()
+                                    ?.trim())
                 }
                 .setNegativeButton(getString(R.string.SnaketagCancel)) { dialog, id ->
                     listener.tagCancel()

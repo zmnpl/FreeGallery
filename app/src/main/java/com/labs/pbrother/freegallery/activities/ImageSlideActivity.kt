@@ -178,7 +178,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
                 viewModel.refresh(collectionId)
             } else {
-                viewModel.namingMethodsIsHard(intent.data.toString())
+                doAsync {
+                    viewModel.namingMethodsIsHard(intent.data.toString())
+                }
             }
         }
     }

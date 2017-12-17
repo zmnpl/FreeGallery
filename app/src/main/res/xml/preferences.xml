@@ -30,13 +30,17 @@
             android:key="pref_key_style_hide_drawer_header"
             android:title="@string/prefStyleHideDrawerHeader" />
 
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_behaviour"
+        android:title="@string/prefCategoryBehave">
+
         <ListPreference
-            android:defaultValue="@integer/prefOrderByDefault"
+            android:defaultValue="@string/prefOrderByDefault"
             android:dialogTitle="@string/prefOrderByDialogTitle"
             android:entries="@array/prefOrderByEntries"
             android:entryValues="@array/prefOrderByEntries"
             android:key="pref_key_order_by"
             android:title="@string/prefOrderBy" />
-
     </PreferenceCategory>
 </PreferenceScreen>

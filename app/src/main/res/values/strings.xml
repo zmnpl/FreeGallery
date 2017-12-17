@@ -71,6 +71,7 @@
     <!-- Preferences -->
     <!-- Categories -->
     <string name="prefCategoryVisual">Visuals</string>
+    <string name="prefCategoryBehave">Behaviour</string>
     <string name="prefLicense">About</string>
     <string name="prefAccentColor">Accent Color</string>
     <string name="prefStyleTitlebarcolorTitle">Use collection color for title bar</string>
@@ -97,15 +98,12 @@
 
     <!-- Order By -->
     <string name="prefOrderBy">Order by</string>
-    <string name="prefOrderByDialogTitle">Order by</string>
+    <string name="prefOrderByDialogTitle">Default order by</string>
     <string-array name="prefOrderByEntries">
-        <item>Date taken</item>
         <item>Date added</item>
+        <item>Date taken</item>
     </string-array>
-    <integer name="prefOrderByDefault">0</integer>
-    <integer-array name="prefOrderByValues">
-        <item>0</item>
-        <item>1</item>
-    </integer-array>
+    <string name="prefOrderByDefault">Date added</string>
+
 
 </resources>
