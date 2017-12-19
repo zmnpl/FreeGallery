@@ -56,7 +56,7 @@
     <string name="ColorizeOk">Color!</string>
     <string name="ColorizeCancel">Cancel</string>
     <!-- Deletion Dialog -->
-    #
+
     <!-- Empty trash Dialog -->
     <string name="EmtyTrashQuestion">Permanently delete all items in trash?</string>
     <string name="EmtpyTrashOk">Sure thing</string>
@@ -71,6 +71,7 @@
     <!-- Preferences -->
     <!-- Categories -->
     <string name="prefCategoryVisual">Visuals</string>
+    <string name="prefCategoryBehave">Behaviour</string>
     <string name="prefLicense">About</string>
     <string name="prefAccentColor">Accent Color</string>
     <string name="prefStyleTitlebarcolorTitle">Use collection color for title bar</string>
@@ -94,5 +95,15 @@
         <item>prefValueColorTeal</item>
         <item>prefValueColorPurple</item>
     </string-array>
+
+    <!-- Order By -->
+    <string name="prefOrderBy">Order Items by</string>
+    <string name="prefOrderByDialogTitle">By</string>
+    <string-array name="prefOrderByEntries">
+        <item>Date added</item>
+        <item>Date taken</item>
+    </string-array>
+    <string name="prefOrderByDefault">Date added</string>
+
 
 </resources>

@@ -1,17 +1,13 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
-import android.os.IBinder
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
@@ -37,43 +33,21 @@ import kotlinx.android.synthetic.main.activity_collection.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
-import java.io.File
 
 class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, TagDialogFragment.TagDialogListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
     // wiring
-    private var serviceBound = false
     private lateinit var settings: SettingsHelper
-    private lateinit var service: MyService
-    // service connection
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as MyService.LocalBinder
-            this@CollectionActivity.service = binder.service
-            serviceBound = true
-
-            refresh(true) // refresh on connection
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
 
     // instance sates
     private val CID: String = "cid"
-    private val SORT_ORDER: String = "sortOrder"
-
+    private val DATA_CHANGED: String = "changed"
 
     // init parameters
     private lateinit var collectionId: String
 
-    // data
-    private lateinit var collectionItem: CollectionItem
-    private lateinit var items: ArrayList<Item>
-    private lateinit var drawerItems: ArrayList<CollectionItem>
-
     // ui
+    private lateinit var viewModel: CollectionActivityViewModel
     private var colCount = 4
     private val actionModeCallback = ActionModeCallback()
     private var actionMode: ActionMode? = null
@@ -81,20 +55,24 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private lateinit var drawerResult: Drawer
     //private var drawerToggle: ActionBarDrawerToggle? = null
     private lateinit var drawerAdapter: DrawerTagListAdapter
-    private var onTablet = false
     // helper
     private var dataChanged = false
-    private var sortOrder = SORT_ITEMS_DESC
+    private var reloadPlz = true
+    private var onTablet = false
+
+    private val resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setResult(Activity.RESULT_OK, resultIntent)
 
         val input = intent
         collectionId = input.getStringExtra(EXTRA_COLLECTIONID)
 
         savedInstanceState?.apply {
             collectionId = savedInstanceState.getString(CID)
-            sortOrder = savedInstanceState.getInt(SORT_ORDER)
+            dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
+            reloadPlz = true
         }
 
         // helper for settings
@@ -128,12 +106,36 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         // swipe fullRefresh
         swipeRefreshCollection.setOnRefreshListener {
-            buildUiSafe()
+            refresh(true, true, true, false)
         }
+
+        makeDrawer()
+
+        viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
+
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+
+        viewModel.items.observe(this, Observer { items ->
+            if (null != items) populateAdapter(items)
+        })
+
+        viewModel.collectionItem.observe(this, Observer { collectionItem ->
+            if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
+        })
+
+        viewModel.liveColor.observe(this, Observer { color ->
+            if (null != color) changeColor(color)
+        })
+
+        refresh(true, true, true, false)
     }
 
-    private fun makeDrawer() {
+    // User Interface Building
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private fun makeDrawer() {
         drawerResult = drawer {
             if (onTablet) buildViewOnly = true
 
@@ -164,21 +166,56 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             drawerResult.slider.elevation = (-16).toFloat()
             nav_tablet_collection?.addView(drawerResult.slider)
         }
+    }
 
-        // make items
-        val tagLetter = getString(R.string.tagLetter)
+    private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
+        drawerResult.removeAllItems()
+
         drawerItems.forEach {
-            this@CollectionActivity
-                    .drawerResult
-                    .addItem(primaryDrawerItemFromItem(applicationContext, it, tagLetter)
-                            .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                if (it.id != collectionId) {
-                                    if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
-                                    collectionId = it.id
-                                    refresh()
-                                }
-                                false
-                            })
+            val itm = primaryDrawerItemFromItem(applicationContext, it, getString(R.string.tagLetter))
+                    .withOnDrawerItemClickListener { view, position, drawerItem ->
+                        if (it.id != collectionId) {
+                            if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+                            collectionId = it.id
+                            refresh(true, false, true, false)
+                        }
+                        false
+                    }
+            this@CollectionActivity.drawerResult.addItem(itm)
+            // select if
+            if (it.id == collectionId) this@CollectionActivity.drawerResult.setSelection(itm)
+        }
+    }
+
+    private fun populateAdapter(items: ArrayList<Item>) {
+        adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, Foo(application))
+        collection_rclPictureCollection.adapter = adapter
+    }
+
+    private fun changeColor(color: Int) {
+        colorizeTitlebar(color)
+        // refresh items in drawer, to make color change for tag collection visible
+        if (viewModel.collectionType == TYPE_TAG) {
+            doAsync {
+                viewModel.refreshDrawerItems()
+            }
+        }
+    }
+
+    private fun colorizeTitlebar(color: Int) {
+        if (settings.colorizeTitlebar()) {
+            main_toolbar.setBackgroundColor(color)
+            when {
+                color != settings.higlightColor -> {
+                    window.statusBarColor = darkenColor(color, 0.5f)
+                }
+                else -> {
+                    window.statusBarColor = settings.higlightColor
+                }
+            }
+        } else {
+            main_toolbar.setBackgroundColor(settings.higlightColor)
+            window.statusBarColor = settings.higlightColor
         }
     }
 
@@ -189,8 +226,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             (settings.columnsInPortrait * 1.5).toInt()
         }
 
-    // User Interface Building
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // checks service boundary and data status
     // arrogantly not checking for permissions on sub screens ^^
@@ -200,67 +235,28 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.apply {
             putString(CID, collectionId)
-            putInt(SORT_ORDER, sortOrder)
+            putBoolean(DATA_CHANGED, dataChanged)
         }
         super.onSaveInstanceState(outState)
     }
 
-    private fun buildUiSafe() {
+    private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
         if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
-        if (serviceBound) {
-            refresh()
-            return
-        }
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-    }
-
-    private fun refresh(full: Boolean = false) {
         doAsync {
-            collectionItem = service.collectionItem(collectionId)
-            items = service.itemsForCollection(collectionItem, sortOrder)
-            drawerItems = this@CollectionActivity.service.drawerItems
-
+            viewModel.refresh(collection, drawer, items, collectionId, cached)
             uiThread {
-                populateUi()
-                if (full) makeDrawer()
                 swipeRefreshCollection.isRefreshing = false
             }
         }
     }
 
-    private fun populateUi() {
-        supportActionBar?.title = collectionItem.displayNameDetail
-        // Recycler
-        adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, service)
-        collection_rclPictureCollection.adapter = adapter
-        // Toolbar
-        if (settings.colorizeTitlebar()) main_toolbar.setBackgroundColor(collectionItem.color)
-    }
-
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onResume() {
-        super.onResume()
-        if (!serviceBound) {
-            buildUiSafe()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
-            buildUiSafe()
+            refresh(false, false, true, false)
         }
-    }
-
-    override fun onDestroy() {
-        if (serviceBound) {
-            unbindService(mConnection)
-            serviceBound = false
-        }
-
-        super.onDestroy()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -270,12 +266,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     override fun onBackPressed() {
-        val intent = Intent()
-        if (dataChanged) {
-            setResult(DATA_CHANGED, intent)
-        } else {
-            setResult(-1, intent)
-        }
+        setResult(Activity.RESULT_OK, resultIntent)
         super.onBackPressed()
     }
 
@@ -286,7 +277,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
             inflater.inflate(R.menu.menu_collection, menu)
-            if (service.collectionItem(collectionId).type == TYPE_TAG) {
+            if (viewModel.collectionType == TYPE_TAG) {
                 val deleteTagMenuItem = menu.findItem(R.id.menu_deleteTag)
                 deleteTagMenuItem?.isVisible = true
             }
@@ -302,15 +293,11 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             R.id.menu_deleteTag -> {
-                if (service.deleteTag(collectionItem.id)) {
-                    setResult(DATA_CHANGED, Intent())
-                    finish()
-                }
+                deleteTag()
                 return true
             }
             R.id.menu_refresh -> {
-                swipeRefreshCollection.isRefreshing = true
-                buildUiSafe()
+                refresh(true, true, true, true)
                 return true
             }
             R.id.menu_colorize -> {
@@ -318,35 +305,15 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             R.id.menu_trash_emptyTrash -> {
-                dataChanged = true
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage(R.string.EmtyTrashQuestion)
-                builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
-                    doAsync {
-                        service.emptyTrash()
-                        uiThread {
-                            setResult(DATA_CHANGED, Intent())
-                            finish()
-                        }
-                    }
-                }
-                builder.setNegativeButton(R.string.EmptyTrashCancel) { dialog, id ->
-                    // user cancel
-                }
-
-                val dialog = builder.create()
-                dialog.show()
-
+                emptyTrash()
                 return true
             }
             R.id.menu_collectionSortAsc -> {
-                sortOrder = SORT_ITEMS_ASC
-                buildUiSafe()
+                viewModel.setSortAsc()
                 return true
             }
             R.id.menu_collectionSortDesc -> {
-                sortOrder = SORT_ITEMS_DESC
-                buildUiSafe()
+                viewModel.setSortDesc()
                 return true
             }
             R.id.menu_collectionZoomViewIn -> {
@@ -363,6 +330,38 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Functionality
 
+    private fun deleteTag() {
+        if (viewModel.deleteTag()) {
+            dataChanged = true
+            resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+            finish()
+        }
+    }
+
+    private fun emptyTrash() {
+        dataChanged = true
+        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(R.string.EmtyTrashQuestion)
+        builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
+            doAsync {
+                viewModel.emptyTrash()
+                uiThread {
+                    dataChanged = true
+                    resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                    finish()
+                }
+            }
+        }
+        builder.setNegativeButton(R.string.EmptyTrashCancel) { dialog, id ->
+            // user cancel
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
+    }
+
     private fun applyZoom(zoom: Int) {
         colCount += zoom
         if (colCount < 1) colCount = 1
@@ -371,12 +370,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun share() {
-        val uris = ArrayList<Uri>()
-        for (i in adapter.getSelectedItems()) {
-            val (_, path) = items[i]
-            uris.add(FileProvider.getUriForFile(this, packageName + ".provider", File(path)))
-        }
-
+        val uris = viewModel.urisToShare(viewModel.selectedItems(adapter.getSelectedItems()))
 
         val intent = Intent()
         intent.type = "image/jpg"
@@ -405,17 +399,14 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun restore() {
         swipeRefreshCollection.isRefreshing = true
-        val restoreList = ArrayList<Item>()
         doAsync {
-            for (i in adapter.getSelectedItems()) {
-                restoreList.add(items[i])
-            }
-            service.restore(restoreList)
+            viewModel.restoreItems(viewModel.selectedItems(adapter.getSelectedItems()))
 
             uiThread {
                 actionMode?.finish()
-                setResult(DATA_CHANGED, Intent())
-                refresh(true)
+                dataChanged = true
+                resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                refresh(true, false, true, false)
             }
         }
     }
@@ -424,7 +415,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // Callback method colorOk does the actual work
     private fun tag() {
         val std = TagDialogFragment()
-        std.setTags(service.tags())
+        std.setTags(viewModel.tags)
         std.show(this.fragmentManager, "tagdialog")
     }
 
@@ -432,21 +423,23 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // Callback method deleteOk() does the actual deletion job
     private fun delete() {
         dataChanged = true
-        val deletionItems = ArrayList<Item>()
-        adapter.getSelectedItems().forEach { deletionItems.add(items[it]) }
+        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+
+        val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
 
         // remove items from ui
         adapter.removeMultiple(adapter.getSelectedItems())
+
         doAsync {
-            val id = service.trashItems(deletionItems)
+            val id = viewModel.trashItems(deletionItems)
             uiThread {
                 val mySnackbar = Snackbar.make(collectionParentCoordinator, R.string.DeleteSnackbarSingleInfo, Snackbar.LENGTH_LONG)
                 mySnackbar.setAction(R.string.DeleteSnackbarUndo) {
                     swipeRefreshCollection.isRefreshing = true
                     doAsync {
-                        service.undoTrashing(id)
+                        viewModel.undoTrashing(id)
                         uiThread {
-                            buildUiSafe()
+                            refresh(true, true, true, false)
                         }
                     }
                 }
@@ -470,8 +463,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             startActivityForResult(intentFor<ImageSlideActivity>(
                     EXTRA_COLLECTIONID to collectionId,
                     EXTRA_ITEM_INDEX to position,
-                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY,
-                    EXTRA_SORT_ORDER to sortOrder), IMAGE_SLIDE_ACTIVITY)
+                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY)
         }
     }
 
@@ -544,9 +536,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         if (actionMode != null) {
             toggleSelection(position)
         } else {
-            if (!onTablet) drawerCollection.closeDrawers()
+            if (!onTablet) drawerCollection?.closeDrawers()
             collectionId = drawerAdapter.getItemStringId(position)
-            buildUiSafe()
+            //refresh(true)
         }
     }
 
@@ -559,24 +551,18 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun tagOk(tag: String) {
         dataChanged = true
-        for (i in adapter.getSelectedItems()) {
-            service.tagItem(items[i], tag)
-        }
+        viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
         actionMode?.finish()
     }
 
     override fun colorCancel() {}
     override fun colorOk(color: Int) {
-        service.colorizeCollection(collectionItem, color)
-        if (settings.colorizeTitlebar()) {
-            main_toolbar.setBackgroundColor(collectionItem.color)
-        }
+        viewModel.colorizeCollection(color)
         val toast = Toast.makeText(this, "Set color to " + color.toString(), Toast.LENGTH_LONG)
         toast.show()
     }
 
     companion object {
         private val IMAGE_SLIDE_ACTIVITY = 1
-        val DATA_CHANGED = 1338
     }
 }

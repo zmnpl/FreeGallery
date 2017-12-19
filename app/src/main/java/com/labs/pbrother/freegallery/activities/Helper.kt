@@ -20,9 +20,11 @@ val EXTRA_ITEM_INDEX = "pic"
 val EXTRA_STARTING_POINT = "startingPoint"
 val EXTRA_SORT_ORDER = "sortOrder"
 val DELETION = "deletion"
+val SHOULD_RELOAD = "reload"
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()
+            .withTag(item.id)
             .withName(item.displayName.removePrefix(tagLetter))
             .withIcon(Ionicons.Icon.ion_pound)
             .withBadge(item.count.toString())
@@ -44,4 +46,11 @@ fun adjustColorAlpha(color: Int, factor: Float): Int {
     val green = Color.green(color)
     val blue = Color.blue(color)
     return Color.argb(alpha, red, green, blue)
+}
+
+fun darkenColor(color: Int, factor: Float): Int {
+    val red = Color.red(color)
+    val green = Color.green(color)
+    val blue = Color.blue(color)
+    return Color.rgb((red * factor).toInt(), (green * factor).toInt(), (blue * factor).toInt())
 }

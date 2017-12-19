@@ -195,7 +195,7 @@ class MyDb(val context: Context) {
     fun insertTag(itemId: String, tag: String): Long {
         // TODO - only do, if not already existing...
         return dbHelper.writableDatabase
-                .insert(
+                .insertOrThrow(
                         Tag.TABLE_NAME,
                         Tag.COLUMN_NAME_TAG to tag,
                         Tag.COLUMN_NAME_ITEM_ID to itemId)

@@ -1,15 +1,13 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.os.Message
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -19,7 +17,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.controller.*
+import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.TPYE_VIDEO
+import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import com.labs.pbrother.freegallery.dialogs.ImagePropertyDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
 import com.labs.pbrother.freegallery.fragments.ImagePageFragment
@@ -37,37 +37,20 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // service boundary
     private var serviceBound = false
-    private lateinit var service: MyService
-    private var mConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as MyService.LocalBinder
-            this@ImageSlideActivity.service = binder.service
-            serviceBound = true
-
-            refresh()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
+    private lateinit var viewModel: ImageSlideActivityViewModel
 
     // init information
     private val CID: String = "collectionId"
     private val ITEM_INDEX: String = "itemIndex"
     private val ITEM_ID: String = "itemId"
     private val DELETED_SMTTH: String = "deletedSmth"
-    private val SORT_ORDER: String = "sortOrder"
 
     private var collectionId: String = ""
     private var itemIndex: Int = 0
     private var deletedSmth = false
-    private var sortOrder = SORT_ITEMS_DESC
-
-    // data holder
-    private lateinit var items: ArrayList<Item>
 
     // misc
+    private var reloadPlz = true
     private val INITIAL_HIDE_DELAY = 10000
     private val resultIntent = Intent()
     private lateinit var settings: SettingsHelper
@@ -85,12 +68,13 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
         itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
 
+        reloadPlz = true
         savedInstanceState?.apply {
             collectionId = getString(CID)
             itemIndex = getInt(ITEM_INDEX)
             deletedSmth = getBoolean(DELETED_SMTTH)
-            sortOrder = getInt(SORT_ORDER)
-            finish()
+            if (deletedSmth) resultIntent.putExtra(DELETION, true)
+            finish() // TODO temporary - should not finish
         }
 
         // helper for settings
@@ -124,6 +108,14 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         hideSystemUI()
         showSystemUI()
         setToolbarPadding()
+
+        viewModel = ViewModelProviders.of(this).get(ImageSlideActivityViewModel::class.java!!)
+
+        viewModel.items.observe(this, Observer { items ->
+            if (null != items) makeViewPager(items)
+        })
+
+        refresh()
     }
 
     // Lifecycle
@@ -133,9 +125,8 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         outState?.apply {
             putString(CID, collectionId)
             putInt(ITEM_INDEX, itemIndex)
-            putString(ITEM_ID, items[pager.currentItem].id ?: "")
+            putString(ITEM_ID, viewModel.itemIdOf(pager.currentItem))
             putBoolean(DELETED_SMTTH, deletedSmth)
-            putInt(SORT_ORDER, sortOrder)
         }
         super.onSaveInstanceState(outState)
     }
@@ -147,7 +138,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onStart() {
         super.onStart()
-        buildUiSafe()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -173,11 +163,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onDestroy() {
         super.onDestroy()
         setResult(Activity.RESULT_OK, resultIntent)
-        // Unbind from the service
-        if (serviceBound) {
-            unbindService(mConnection)
-            serviceBound = false
-        }
     }
 
     // User Interface Building
@@ -188,33 +173,21 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // if all good -> populate ui
     // if not, service probably needs to be connected
 
-    private fun buildUiSafe() {
-        val intent = Intent(this, MyService::class.java)
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
-    }
-
     private fun refresh() {
         doAsync {
             if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
-                items = service.cachedItemsFor(service.collectionItem(collectionId), sortOrder)
+                viewModel.refresh(collectionId)
             } else {
-                // Branch for when Activity gets called by intent from other app
-                // TODO - let service create item
-                // TODO - try to resolve image path and derive full folder collection item
-                items = ArrayList()
-                items.add(Item(type = TYPE_IMAGE, path = intent.data.toString()))
-            }
-
-            uiThread {
-                populateUi()
+                doAsync {
+                    viewModel.namingMethodsIsHard(intent.data.toString())
+                }
             }
         }
     }
 
-    private fun populateUi() {
-        // ViewPager
+    private fun makeViewPager(items: List<Item>) {
         pager.offscreenPageLimit = 2
-        pager.adapter = ScreenSlidePagerAdapter(supportFragmentManager)
+        pager.adapter = ScreenSlidePagerAdapter(items, supportFragmentManager)
         pager.currentItem = itemIndex
         pager.setPageTransformer(true, DepthPageTransformer())
     }
@@ -250,9 +223,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Shows dialog with image information
     private fun showImageProperties() {
         val diag = ImagePropertyDialogFragment()
-        diag.setItem(items[pager.currentItem])
-        diag.show(this.fragmentManager, "imagepropertydialog")
-
+        val which = viewModel.itemAt(pager.currentItem)
+        if (null != which) {
+            diag.setItem(which)
+            diag.show(this.fragmentManager, "imagepropertydialog")
+        }
     }
 
     // Callback when image property dialog gets closed via button
@@ -261,12 +236,12 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Starts dialog for snaketagging
     private fun tag() {
         val std = TagDialogFragment()
-        std.setTags(service.tags())
+        std.setTags(viewModel.tags)
         std.show(this.fragmentManager, "snaketagdialog")
     }
 
     // Callback, receives result from tag dialog
-    override fun tagOk(tag: String) = service.tagItem(items[pager.currentItem], tag)
+    override fun tagOk(tag: String) = viewModel.tagItem(viewModel.itemAt(pager.currentItem), tag)
 
     // Callback if tag dialog was canceled
     override fun tagCancel() {}
@@ -274,28 +249,26 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Reaction to toolbar button click
     // Delete image ... (!)
     private fun delete() {
-        val deletionItems = ArrayList<Item>()
-        var index = pager!!.currentItem
+        val index = pager.currentItem
+        val itemToDelete = viewModel.itemAt(index)
 
-        deletionItems.add(items[index])
-        items.remove(items[index])
-        pager.adapter.notifyDataSetChanged()
+        if (null != itemToDelete) {
+            resultIntent.putExtra(DELETION, true)
 
-        resultIntent.putExtra(DELETION, true)
-
-        doAsync {
-            service.trashItems(deletionItems)
-            uiThread {
-                longToast(R.string.DeleteSnackbarSingleInfo)
-            }
-        }
-
-        if (0 == items.size) {
-            finish()
-        } else {
-            when {
-                index < items.size -> pager.currentItem = index
-                index == items.size -> pager.currentItem = index - 1
+            doAsync {
+                val remaining = viewModel.removeItem(itemToDelete)
+                uiThread {
+                    pager.adapter.notifyDataSetChanged()
+                    longToast(R.string.DeleteSnackbarSingleInfo)
+                    if (0 == remaining) {
+                        finish()
+                    } else {
+                        when {
+                            index < remaining -> pager.currentItem = index
+                            index == remaining -> pager.currentItem = index - 1
+                        }
+                    }
+                }
             }
         }
     }
@@ -303,9 +276,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Reaction to toolbar button click
     // Shares currently displayed picture via intent so user can share with other apps
     private fun share() {
-        val item = items[pager.currentItem]
+        val item = viewModel.itemAt(pager.currentItem)
         val intent = Intent(Intent.ACTION_SEND)
-        if (item.type == TPYE_VIDEO) {
+        if (item?.type == TPYE_VIDEO) {
             intent.type = "video/*"
         } else {
             intent.type = "image/jpg"
@@ -315,7 +288,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
                 FileProvider.getUriForFile(
                         this,
                         packageName + ".provider",
-                        File(items[pager.currentItem].path)))
+                        File(item?.path)))
         startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
     }
 
@@ -323,14 +296,14 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Sends intent to set the image as ... something
     private fun setAs() {
         // Do nothing for videos
-        val item = items[pager.currentItem]
-        if (item.type != TYPE_IMAGE) {
+        val item = viewModel.itemAt(pager.currentItem)
+        if (item?.type != TYPE_IMAGE) {
             Toast.makeText(this, getString(R.string.SetVideoAsMakesNoSense), Toast.LENGTH_SHORT).show()
             return
         }
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
-        val uri = Uri.parse(items[pager.currentItem].fileUrl)
+        val uri = Uri.parse(item.fileUrl)
         intent.setDataAndType(uri, "image/*")
         intent.putExtra("mimeType", "image/*")
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
@@ -341,7 +314,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // A simple pager adapter
-    private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private inner class ScreenSlidePagerAdapter(val items: List<Item>, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             val f = ImagePageFragment()
