@@ -97,8 +97,8 @@
     </string-array>
 
     <!-- Order By -->
-    <string name="prefOrderBy">Order by</string>
-    <string name="prefOrderByDialogTitle">Default order by</string>
+    <string name="prefOrderBy">Order Items by</string>
+    <string name="prefOrderByDialogTitle">By</string>
     <string-array name="prefOrderByEntries">
         <item>Date added</item>
         <item>Date taken</item>

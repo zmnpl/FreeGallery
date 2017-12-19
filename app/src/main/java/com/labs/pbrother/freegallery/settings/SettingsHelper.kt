@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.controller.Item
 
 /**
  * Created by simon on 07.12.16.
@@ -13,24 +14,17 @@ import com.labs.pbrother.freegallery.R
 // TODO - how to implement as singleton?
 class SettingsHelper(val context: Context) {
 
-    private lateinit var sharedPref: SharedPreferences
-    private lateinit var colorDefault: String
-    private lateinit var colorIndigo: String
-    private lateinit var colorTeal: String
-    private lateinit var colorPurple: String
-    private lateinit var colorBlueGrey: String
-
-
     companion object {
+
         @JvmStatic
         val PERMISSION_READ_STORAGE = 1337
         @JvmStatic
         val ORDER_BY_DATE_TAKEN = 0
         @JvmStatic
         val ORDER_BY_DATE_ADDED = 1
-
         @JvmStatic
         private val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
+
         @JvmStatic
         private val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
         @JvmStatic
@@ -40,8 +34,18 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         private val KEY_PREF_STYLE_HIDE_DRAWER_HEADER = "pref_key_style_hide_drawer_header"
         @JvmStatic
-        private val KEY_PREF_ORDER_BY = "pref_key_order_by"
+        val KEY_PREF_ORDER_BY = "pref_key_order_by"
     }
+
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var colorDefault: String
+    private lateinit var colorIndigo: String
+    private lateinit var colorTeal: String
+    private lateinit var colorPurple: String
+    private lateinit var colorBlueGrey: String
+
+    private lateinit var orderByDateTaken: String
+    private lateinit var orderByDateAdded: String
 
     init {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
@@ -51,6 +55,31 @@ class SettingsHelper(val context: Context) {
         colorIndigo = colorOptions[2]
         colorTeal = colorOptions[3]
         colorPurple = colorOptions[4]
+
+        val orderByOptions = context.resources.getStringArray(R.array.prefOrderByEntries)
+        orderByDateAdded = orderByOptions[0]
+        orderByDateTaken = orderByOptions[1]
+        setItemSort()
+    }
+
+    fun reactToSettingChange(key: String) {
+        when(key) {
+            KEY_PREF_ORDER_BY -> {
+                setItemSort()
+            }
+        }
+    }
+
+    fun setItemSort() {
+        val setting = sharedPref.getString(KEY_PREF_ORDER_BY, "")
+        when (setting) {
+            orderByDateAdded -> {
+                Item.ORDER_BY = Item.ORDER_BY_DATE_ADDED
+            }
+            orderByDateTaken -> {
+                Item.ORDER_BY = Item.ORDER_BY_DATE_TAKEN
+            }
+        }
     }
 
     val orderBy: Int

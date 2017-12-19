@@ -23,6 +23,10 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
         val SORT_DESC = 1 // regular; newest to oldest
         val SORT_ASC = -1
         var SORT_ORDER: Int = SORT_DESC
+
+        val ORDER_BY_DATE_ADDED = 0
+        val ORDER_BY_DATE_TAKEN = 1
+        var ORDER_BY = ORDER_BY_DATE_ADDED
     }
 
     val id: String
@@ -46,7 +50,12 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
         tags.remove(tag)
     }
 
-    override operator fun compareTo(other: Item): Int = if (dateTaken < other.dateTaken) 1 else -1
+    override operator fun compareTo(other: Item): Int = when (ORDER_BY) {
+        ORDER_BY_DATE_TAKEN -> compareByDateTaken(other)
+        else -> compareByDateAdded(other)
+    }
 
+    private fun compareByDateAdded(other: Item): Int = if (dateAdded < other.dateAdded) 1 else -1
+    private fun compareByDateTaken(other: Item): Int = if (dateTaken < other.dateTaken) 1 else -1
 }
 
