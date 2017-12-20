@@ -22,7 +22,10 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
-import com.labs.pbrother.freegallery.controller.*
+import com.labs.pbrother.freegallery.controller.CollectionItem
+import com.labs.pbrother.freegallery.controller.Foo
+import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
@@ -48,16 +51,13 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // ui
     private lateinit var viewModel: CollectionActivityViewModel
-    private var colCount = 4
     private val actionModeCallback = ActionModeCallback()
     private var actionMode: ActionMode? = null
     private lateinit var adapter: CollectionRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
-    //private var drawerToggle: ActionBarDrawerToggle? = null
     private lateinit var drawerAdapter: DrawerTagListAdapter
     // helper
     private var dataChanged = false
-    private var reloadPlz = true
     private var onTablet = false
 
     private val resultIntent = Intent()
@@ -66,13 +66,11 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         super.onCreate(savedInstanceState)
         setResult(Activity.RESULT_OK, resultIntent)
 
-        val input = intent
-        collectionId = input.getStringExtra(EXTRA_COLLECTIONID)
+        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID)
 
         savedInstanceState?.apply {
             collectionId = savedInstanceState.getString(CID)
             dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
-            reloadPlz = true
         }
 
         // helper for settings
@@ -81,12 +79,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         setContentView(R.layout.activity_collection)
 
-        if (tabletCollection != null) {
-            onTablet = true
-        }
+        if (tabletCollection != null) onTablet = true
 
         // recycler list
-        colCount = columns
+        val colCount = columns
         collection_rclPictureCollection.apply {
             addItemDecoration(ItemOffsetDecoration(this@CollectionActivity, R.dimen.collection_picture_padding, colCount))
             setHasFixedSize(true)
@@ -363,6 +359,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun applyZoom(zoom: Int) {
+        var colCount = columns
         colCount += zoom
         if (colCount < 1) colCount = 1
         settings.columnsInPortrait = colCount
