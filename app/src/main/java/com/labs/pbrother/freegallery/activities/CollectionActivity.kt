@@ -300,6 +300,14 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 colorize()
                 return true
             }
+            R.id.menu_resetColor -> {
+                doAsync {
+                    dataChanged = true
+                    resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                    viewModel.removeColor()
+                }
+                return true
+            }
             R.id.menu_trash_emptyTrash -> {
                 emptyTrash()
                 return true
@@ -448,8 +456,14 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun colorize() {
-        ColorizeDialogFragment().show(this.fragmentManager, "colorizedialog")
+        val foo = ColorizeDialogFragment()
+        foo.show(this.fragmentManager, "colorizedialog")
     }
+
+    val collectionColor: Int?
+        get() {
+            return viewModel.liveColor.value
+        }
 
     // Handling user actions
 

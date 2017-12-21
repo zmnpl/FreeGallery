@@ -49,6 +49,11 @@
         android:title="@string/actionColorizeGroup"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_resetColor"
+        android:orderInCategory="100"
+        android:title="@string/actionRemoveColor"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_refresh"
         android:orderInCategory="100"
         android:title="@string/menu_refresh"

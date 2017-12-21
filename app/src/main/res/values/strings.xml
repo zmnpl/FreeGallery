@@ -30,6 +30,7 @@
     <string name="sortByDateAsc">Oldest first</string>
     <string name="sortByDateDesc">Newest first</string>
     <string name="actionColorizeGroup">Colorize</string>
+    <string name="actionRemoveColor">Uncolor</string>
     <string name="actionHideGroup">Hide</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_settings">Settings</string>

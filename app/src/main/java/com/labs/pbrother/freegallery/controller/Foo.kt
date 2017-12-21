@@ -12,6 +12,7 @@ import com.labs.pbrother.freegallery.controller.Cache.itemCache
 import com.labs.pbrother.freegallery.controller.Cache.overviewCache
 import com.labs.pbrother.freegallery.controller.Cache.tagCache
 import com.labs.pbrother.freegallery.controller.db.MyDb
+import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
 
@@ -216,10 +217,12 @@ class Foo(var applicationContext: Application) : MetaUpdatorizer {
         db.insertUpdateCollectionMeta(collection.id, loved, collection.color)
     }
 
-    override fun colorizeCollection(collection: CollectionItem, colorid: Int?) {
+    override fun colorizeCollection(collection: CollectionItem, c: Int?) {
+        var color = c
+        if (null == color) color = SettingsHelper(applicationContext).higlightColor
         val db = MyDb(applicationContext)
-        collection.colorize(colorid!!)
-        db.insertUpdateCollectionMeta(collection.id, collection.isLoved, colorid)
+        collection.colorize(color)
+        db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
     }
 
     override fun tagItem(item: Item, tag: String) {

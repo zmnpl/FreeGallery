@@ -83,6 +83,11 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         foo.colorizeCollection(collection, color)
     }
 
+    fun removeColor() {
+        foo.colorizeCollection(collection, null)
+        liveColor.postValue(collection.color)
+    }
+
     fun deleteTag() = foo.deleteTag(collectionItem.value?.id ?: "")
 
     fun emptyTrash() = foo.emptyTrash()
