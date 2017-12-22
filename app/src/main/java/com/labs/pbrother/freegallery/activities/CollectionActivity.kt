@@ -338,7 +338,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // Functionality
 
     private fun informCallerOfChange() {
-        informCallerOfChange()
+        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
     }
 
     private fun deleteTag() {
