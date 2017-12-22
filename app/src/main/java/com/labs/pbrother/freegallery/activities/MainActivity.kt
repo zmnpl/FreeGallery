@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                     icon = R.drawable.ic_settings_white_24dp
                 }.withOnDrawerItemClickListener { view, position, drawerItem ->
                     this@MainActivity.startActivity<SettingsActivity>()
+                    drawerResult.setSelectionAtPosition(-1)
                     false
                 }
             }

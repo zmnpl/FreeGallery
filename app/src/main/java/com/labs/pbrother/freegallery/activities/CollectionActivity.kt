@@ -134,6 +134,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 primaryItem(getString(R.string.menu_settings)) {
                     icon = R.drawable.ic_settings_white_24dp
                 }.withOnDrawerItemClickListener { view, position, drawerItem ->
+                    val bar = drawerResult.getDrawerItem(viewModel.collectionId)
+                    val foo = drawerResult.setSelection(bar)
                     this@CollectionActivity.startActivity<SettingsActivity>()
                     false
                 }

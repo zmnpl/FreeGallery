@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_settings)
         setSupportActionBar(main_toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar!!.setDisplayHomeAsUpEnabled(true) // TODO - lead home dynamically to caller activity?
     }
 
     public override fun onStart() {
