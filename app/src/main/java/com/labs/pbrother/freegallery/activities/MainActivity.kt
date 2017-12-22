@@ -36,35 +36,32 @@ import org.jetbrains.anko.*
 
 class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
-    private var permissionsGood = false
     private lateinit var settings: SettingsHelper
     private lateinit var viewModel: MainActivityViewModel
-    private var selection: List<Int>? = null
 
-    private var actionModeCollectionItems = ArrayList<CollectionItem>()
-
-    // ui stuff
     private var colCount = 2
     private var onTablet = false
+    private var reloadPlz = false
+    private var permissionsGood = false
+
     private val actionModeCallback = ActionModeCallback()
     private var actionMode: ActionMode? = null
+    private var selection: List<Int>? = null
+    private var actionModeCollectionItems = ArrayList<CollectionItem>()
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
-    private var reloadPlz = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reloadPlz = true
+        if (tabletMain != null) onTablet = true
 
         settings = SettingsHelper(applicationContext)
         setTheme(settings.theme)
 
         setContentView(R.layout.activity_main)
-
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
-
-        if (tabletMain != null) onTablet = true
 
         overviewRecycler.apply {
             setHasFixedSize(true)
@@ -72,18 +69,8 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, colCount))
         }
 
+        bindViewModel()
         swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
-
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
-
-        viewModel.overviewItems.observe(this, Observer { overviewItems ->
-            populateAdapter(overviewItems)
-        })
-
-        viewModel.drawerItems.observe(this, Observer { drawerItems ->
-            makeDrawer()
-            if (null != drawerItems) addDrawerItems(drawerItems)
-        })
     }
 
     private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
@@ -146,6 +133,19 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         }
     }
 
+    private fun bindViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+
+        viewModel.overviewItems.observe(this, Observer { overviewItems ->
+            populateAdapter(overviewItems)
+        })
+
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
+            makeDrawer()
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+    }
+
     // User Interface Building
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,7 +153,10 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     // if all good -> populate ui
     // if not, service probably needs to be connected
     private fun buildUiSafe() {
-        if (permissionsGood) refresh()
+        if (permissionsGood) {
+            refresh()
+            reloadPlz = false
+        }
     }
 
     private fun refresh() {
@@ -180,7 +183,6 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         super.onResume()
         requestPermissions()
         if (reloadPlz) buildUiSafe()
-        reloadPlz = false
     }
 
 
@@ -370,6 +372,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay!
                 permissionsGood = true
+                buildUiSafe()
             } else {
                 // permission denied, boo!
             }

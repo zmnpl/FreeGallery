@@ -41,6 +41,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // wiring
     private lateinit var settings: SettingsHelper
+    private lateinit var viewModel: CollectionActivityViewModel
 
     // instance sates
     private val CID: String = "cid"
@@ -49,17 +50,18 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // init parameters
     private lateinit var collectionId: String
 
-    // ui
-    private lateinit var viewModel: CollectionActivityViewModel
+    // helper
+    private var dataChanged = false
+    private var onTablet = false
+
+    // ~ ui
     private val actionModeCallback = ActionModeCallback()
     private var actionMode: ActionMode? = null
     private lateinit var adapter: CollectionRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
     private lateinit var drawerAdapter: DrawerTagListAdapter
-    // helper
-    private var dataChanged = false
-    private var onTablet = false
 
+    // result for caller
     private val resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,25 +108,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         }
 
         makeDrawer()
-
-        viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
-
-        viewModel.drawerItems.observe(this, Observer { drawerItems ->
-            if (null != drawerItems) addDrawerItems(drawerItems)
-        })
-
-        viewModel.items.observe(this, Observer { items ->
-            if (null != items) populateAdapter(items)
-        })
-
-        viewModel.collectionItem.observe(this, Observer { collectionItem ->
-            if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
-        })
-
-        viewModel.liveColor.observe(this, Observer { color ->
-            if (null != color) changeColor(color)
-        })
-
+        bindViewModel()
         refresh(true, true, true, false)
     }
 
@@ -181,6 +165,26 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             // select if
             if (it.id == collectionId) this@CollectionActivity.drawerResult.setSelection(itm)
         }
+    }
+
+    private fun bindViewModel() {
+        viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
+
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+
+        viewModel.items.observe(this, Observer { items ->
+            if (null != items) populateAdapter(items)
+        })
+
+        viewModel.collectionItem.observe(this, Observer { collectionItem ->
+            if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
+        })
+
+        viewModel.liveColor.observe(this, Observer { color ->
+            if (null != color) changeColor(color)
+        })
     }
 
     private fun populateAdapter(items: ArrayList<Item>) {
@@ -333,6 +337,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     // Functionality
+
+    private fun informCallerOfChange() {
+        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+    }
 
     private fun deleteTag() {
         if (viewModel.deleteTag()) {
@@ -562,6 +570,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun tagOk(tag: String) {
         dataChanged = true
+        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
         viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
         actionMode?.finish()
     }
