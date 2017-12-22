@@ -35,16 +35,17 @@ import java.io.File
 
 class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListener, ImagePropertyDialogFragment.ImagePropertyDialogListener {
 
-    // service boundary
+    // providers
     private var serviceBound = false
     private lateinit var viewModel: ImageSlideActivityViewModel
 
-    // init information
+    // instance stated
     private val CID: String = "collectionId"
     private val ITEM_INDEX: String = "itemIndex"
     private val ITEM_ID: String = "itemId"
     private val DELETED_SMTTH: String = "deletedSmth"
 
+    // init
     private var collectionId: String = ""
     private var itemIndex: Int = 0
     private var deletedSmth = false
@@ -65,10 +66,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        reloadPlz = true
         collectionId = intent.getStringExtra(EXTRA_COLLECTIONID) ?: ""
         itemIndex = intent.getIntExtra(EXTRA_ITEM_INDEX, 0)
-
-        reloadPlz = true
         savedInstanceState?.apply {
             collectionId = getString(CID)
             itemIndex = getInt(ITEM_INDEX)
@@ -109,20 +109,23 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         showSystemUI()
         setToolbarPadding()
 
+        bindViewModel()
+        refresh()
+    }
+
+    private fun bindViewModel() {
         viewModel = ViewModelProviders.of(this).get(ImageSlideActivityViewModel::class.java!!)
 
         viewModel.items.observe(this, Observer { items ->
             if (null != items) makeViewPager(items)
         })
-
-        refresh()
     }
 
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState?.apply {
+        outState.apply {
             putString(CID, collectionId)
             putInt(ITEM_INDEX, itemIndex)
             putString(ITEM_ID, viewModel.itemIdOf(pager.currentItem))
@@ -134,10 +137,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun finish() {
         setResult(Activity.RESULT_OK, resultIntent)
         super.finish()
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -202,23 +201,23 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.singlepicture_setas -> {
-                setAs()
-                true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.singlepicture_setas -> {
+                    setAs()
+                    true
+                }
+                R.id.singlepicture_delete -> {
+                    delete()
+                    true
+                }
+                R.id.singlepicture_rot90 -> {
+                    // TODO - rotation
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.singlepicture_delete -> {
-                delete()
-                true
-            }
-            R.id.singlepicture_rot90 -> {
-                // TODO - rotation
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+
 
     // Shows dialog with image information
     private fun showImageProperties() {
@@ -326,10 +325,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         override fun getCount() = items.size
 
         // This is called when notifyDataSetChanged() is called
-        override fun getItemPosition(`object`: Any?): Int {
-            // refresh all fragments when data set changed
-            return FragmentStatePagerAdapter.POSITION_NONE
-        }
+        override fun getItemPosition(`object`: Any?): Int = FragmentStatePagerAdapter.POSITION_NONE // refresh all fragments when data set changed
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

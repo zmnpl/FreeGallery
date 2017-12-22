@@ -68,8 +68,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         super.onCreate(savedInstanceState)
         setResult(Activity.RESULT_OK, resultIntent)
 
-        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID)
+        if (tabletCollection != null) onTablet = true
 
+        collectionId = intent.getStringExtra(EXTRA_COLLECTIONID)
         savedInstanceState?.apply {
             collectionId = savedInstanceState.getString(CID)
             dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
@@ -80,8 +81,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         setTheme(settings.theme)
 
         setContentView(R.layout.activity_collection)
-
-        if (tabletCollection != null) onTablet = true
 
         // recycler list
         val colCount = columns
@@ -162,7 +161,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                         false
                     }
             this@CollectionActivity.drawerResult.addItem(itm)
-            // select if
+
             if (it.id == collectionId) this@CollectionActivity.drawerResult.setSelection(itm)
         }
     }
@@ -307,7 +306,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             R.id.menu_resetColor -> {
                 doAsync {
                     dataChanged = true
-                    resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                    informCallerOfChange()
                     viewModel.removeColor()
                 }
                 return true
@@ -339,20 +338,20 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // Functionality
 
     private fun informCallerOfChange() {
-        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+        informCallerOfChange()
     }
 
     private fun deleteTag() {
         if (viewModel.deleteTag()) {
             dataChanged = true
-            resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+            informCallerOfChange()
             finish()
         }
     }
 
     private fun emptyTrash() {
         dataChanged = true
-        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+        informCallerOfChange()
         val builder = AlertDialog.Builder(this)
         builder.setMessage(R.string.EmtyTrashQuestion)
         builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
@@ -360,7 +359,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 viewModel.emptyTrash()
                 uiThread {
                     dataChanged = true
-                    resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                    informCallerOfChange()
                     finish()
                 }
             }
@@ -418,7 +417,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             uiThread {
                 actionMode?.finish()
                 dataChanged = true
-                resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+                informCallerOfChange()
                 refresh(true, false, true, false)
             }
         }
@@ -436,7 +435,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // Callback method deleteOk() does the actual deletion job
     private fun delete() {
         dataChanged = true
-        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+        informCallerOfChange()
 
         val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
 
@@ -570,7 +569,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun tagOk(tag: String) {
         dataChanged = true
-        resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
+        informCallerOfChange()
         viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
         actionMode?.finish()
     }
