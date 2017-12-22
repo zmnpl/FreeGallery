@@ -30,15 +30,16 @@ data class CollectionItem constructor(val id: String = "",
     private fun nicePathNotation(): String {
         val t = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         var nicepath = "/"
-        for (i in t.indices) {
-            if (t[i].isNotEmpty()) {
-                if (i == t.size - 1) {
-                    nicepath += t[i]
-                } else {
-                    nicepath = nicepath + t[i].substring(0, 1) + "/"
+        t.indices
+                .asSequence()
+                .filter { t[it].isNotEmpty() }
+                .forEach {
+                    if (it == t.size - 1) {
+                        nicepath += t[it]
+                    } else {
+                        nicepath = nicepath + t[it].substring(0, 1) + "/"
+                    }
                 }
-            }
-        }
         return nicepath
     }
 

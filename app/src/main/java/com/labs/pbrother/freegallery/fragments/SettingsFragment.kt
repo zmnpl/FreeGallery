@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.preference.PreferenceFragment
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.settings.SettingsHelper
-import com.labs.pbrother.freegallery.settings.SettingsHelper.Companion.KEY_PREF_ORDER_BY
 
 
 /**

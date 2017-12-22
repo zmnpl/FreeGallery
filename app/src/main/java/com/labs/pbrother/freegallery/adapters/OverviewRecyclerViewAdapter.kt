@@ -59,7 +59,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
         var thumb = v.OverviewItem_imgThumb
         var favToggle = v.OverviewItem_FavouriteToggle
         var selectedOverlay = v.OverviewItem_selectedOverlay
-        protected var itemFrame = v.OverviewItem_ItemFrame
+        private var itemFrame = v.OverviewItem_ItemFrame
 
         init {
             itemFrame.setOnClickListener(this)

@@ -37,6 +37,7 @@
     <string name="menu_zoom">Zoom</string>
     <string name="menu_zoom_in">Zoom +</string>
     <string name="menu_zoom_out">Zoom -</string>
+    <string name="rot90">Rotate 90</string>
 
     <!-- Dialogs -->
     <!-- Image Property Dialog -->

@@ -23,8 +23,8 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Foo
 import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
@@ -187,7 +187,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun populateAdapter(items: ArrayList<Item>) {
-        adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, Foo(application))
+        adapter = CollectionRecyclerViewAdapter(this@CollectionActivity, this@CollectionActivity, items, Provider(application))
         collection_rclPictureCollection.adapter = adapter
     }
 
@@ -468,9 +468,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     val collectionColor: Int?
-        get() {
-            return viewModel.liveColor.value
-        }
+        get() = viewModel.liveColor.value
 
     // Handling user actions
 

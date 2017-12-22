@@ -1,9 +1,9 @@
 package com.labs.pbrother.freegallery.dialogs
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
-import android.net.sip.SipSession
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
@@ -13,8 +13,6 @@ import android.widget.AutoCompleteTextView
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import kotlinx.android.synthetic.main.dialog_tag.*
-import android.app.Activity
-
 
 
 /**
@@ -94,7 +92,7 @@ class TagDialogFragment : DialogFragment() {
 
     // hideous ...
     // thanks to rmirabelle on https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-    fun hideKeyboardFrom(context: Context, view: View) {
+    private fun hideKeyboardFrom(context: Context, view: View) {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }

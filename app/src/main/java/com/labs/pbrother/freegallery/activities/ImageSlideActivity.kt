@@ -384,6 +384,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
         singlepicture_main.setOnTouchListener { view, motionEvent -> clickDetector.onTouchEvent(motionEvent) }
     }
+    override fun onStart() {
+        super.onStart()
+    }
+
 
     // Sends message to handler for hiding system bars with specified delay
     // delay in milli seconds

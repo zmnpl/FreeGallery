@@ -23,7 +23,7 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Foo
+import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
         if (null != overviewItems) {
-            adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, Foo(application))
+            adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, Provider(application))
             adapter.setHasStableIds(true)
             overviewRecycler.adapter = adapter
         }

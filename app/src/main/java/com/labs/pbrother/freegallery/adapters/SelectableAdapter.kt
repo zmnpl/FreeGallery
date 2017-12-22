@@ -17,11 +17,7 @@ import java.util.*
 
 abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 
-    private val selectedItems: SparseBooleanArray
-
-    init {
-        selectedItems = SparseBooleanArray()
-    }
+    private val selectedItems: SparseBooleanArray = SparseBooleanArray()
 
     /**
      * Indicates if the item at position position is selected
@@ -71,9 +67,7 @@ abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
      */
     fun getSelectedItems(): List<Int> {
         val items = ArrayList<Int>(selectedItems.size())
-        for (i in 0 until selectedItems.size()) {
-            items.add(selectedItems.keyAt(i))
-        }
+        (0 until selectedItems.size()).mapTo(items) { selectedItems.keyAt(it) }
         return items
     }
 

@@ -4,14 +4,14 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Foo
+import com.labs.pbrother.freegallery.controller.Provider
 
 
 /**
  * Created by simon on 30.11.17.
  */
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-    var foo = Foo(getApplication())
+    private var foo = Provider(getApplication())
 
     var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()

@@ -18,13 +18,9 @@ class RecyclerItemClickListener(context: Context, private val listener: OnItemCl
         fun onItemClick(view: View, position: Int)
     }
 
-    internal var mGestureDetector: GestureDetector
-
-    init {
-        mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent): Boolean = true
-        })
-    }
+    private var mGestureDetector: GestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent): Boolean = true
+    })
 
     override fun onInterceptTouchEvent(view: RecyclerView, e: MotionEvent): Boolean {
         val childView = view.findChildViewUnder(e.x, e.y)

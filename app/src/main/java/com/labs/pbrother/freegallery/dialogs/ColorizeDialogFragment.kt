@@ -6,12 +6,10 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.WindowManager
-
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.CollectionActivity
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import kotlinx.android.synthetic.main.dialog_colorize.view.*
-import org.jetbrains.anko.act
 
 /**
  * Created by simon on 07.11.16.

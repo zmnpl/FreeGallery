@@ -21,15 +21,10 @@ import java.util.*
  * Created by simon on 22.02.17.
  */
 
-class Foo(var applicationContext: Application) : MetaUpdatorizer {
+class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
-    private var resolver: MediaResolver
+    private var resolver: MediaResolver = MediaResolver(applicationContext)
     private val deletions = SparseArray<ArrayList<TrashLog>>()
-
-    init {
-        resolver = MediaResolver(applicationContext)
-    }
-
 
     // Data Access for bound Activities
     val timeline: CollectionItem

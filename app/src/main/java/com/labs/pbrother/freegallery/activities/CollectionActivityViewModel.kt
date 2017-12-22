@@ -5,16 +5,17 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import android.support.v4.content.FileProvider
-import com.labs.pbrother.freegallery.controller.*
-import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_ASC
+import com.labs.pbrother.freegallery.controller.CollectionItem
+import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_DESC
+import com.labs.pbrother.freegallery.controller.Provider
 import java.io.File
 
 /**
  * Created by simon on 21.11.17.
  */
 class CollectionActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private var foo = Foo(getApplication())
+    private var foo = Provider(getApplication())
     private var collectionID = ""
     private lateinit var collection: CollectionItem
 
@@ -39,7 +40,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         if (items) refreshItems(cached)
     }
 
-    fun refreshCollection(collectionId: String) {
+    private fun refreshCollection(collectionId: String) {
         collection = foo.collectionItem(collectionId)
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
@@ -49,7 +50,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         drawerItems.postValue(foo.drawerItems)
     }
 
-    fun refreshItems(cached: Boolean = false) {
+    private fun refreshItems(cached: Boolean = false) {
         if (cached) {
             items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
         } else {

@@ -32,14 +32,12 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar!!.setTitle(R.string.title_activity_settings)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                NavUtils.navigateUpFromSameTask(this)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        android.R.id.home -> {
+            NavUtils.navigateUpFromSameTask(this)
+            true
         }
+        else -> super.onOptionsItemSelected(item)
     }
 
 }

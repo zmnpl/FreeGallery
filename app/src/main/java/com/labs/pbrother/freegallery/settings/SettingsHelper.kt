@@ -11,11 +11,9 @@ import com.labs.pbrother.freegallery.controller.Item
 /**
  * Created by simon on 07.12.16.
  */
-// TODO - how to implement as singleton?
 class SettingsHelper(val context: Context) {
 
     companion object {
-
         @JvmStatic
         val PERMISSION_READ_STORAGE = 1337
         @JvmStatic
@@ -37,7 +35,7 @@ class SettingsHelper(val context: Context) {
         val KEY_PREF_ORDER_BY = "pref_key_order_by"
     }
 
-    private lateinit var sharedPref: SharedPreferences
+    private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private lateinit var colorDefault: String
     private lateinit var colorIndigo: String
     private lateinit var colorTeal: String
@@ -48,7 +46,6 @@ class SettingsHelper(val context: Context) {
     private lateinit var orderByDateAdded: String
 
     init {
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
         val colorOptions = context.resources.getStringArray(R.array.prefStyleColorValues)
         colorDefault = colorOptions[0]
         colorBlueGrey = colorOptions[1]
@@ -70,7 +67,7 @@ class SettingsHelper(val context: Context) {
         }
     }
 
-    fun setItemSort() {
+    private fun setItemSort() {
         val setting = sharedPref.getString(KEY_PREF_ORDER_BY, "")
         when (setting) {
             orderByDateAdded -> {
@@ -87,13 +84,13 @@ class SettingsHelper(val context: Context) {
             val orderbyoptions = context.resources.getStringArray(R.array.prefOrderByEntries)
             return when(sharedPref.getString(KEY_PREF_ORDER_BY, "")) {
                 orderbyoptions[0] -> {
-                    return ORDER_BY_DATE_ADDED
+                    ORDER_BY_DATE_ADDED
                 }
                 orderbyoptions[1] -> {
-                    return ORDER_BY_DATE_TAKEN
+                    ORDER_BY_DATE_TAKEN
                 }
                 else -> {
-                    return ORDER_BY_DATE_ADDED
+                    ORDER_BY_DATE_ADDED
                 }
             }
         }

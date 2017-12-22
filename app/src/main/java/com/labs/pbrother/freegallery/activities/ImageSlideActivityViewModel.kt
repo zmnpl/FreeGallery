@@ -5,8 +5,8 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import android.support.v4.content.FileProvider
-import com.labs.pbrother.freegallery.controller.Foo
 import com.labs.pbrother.freegallery.controller.Item
+import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import org.jetbrains.anko.doAsync
 import java.io.File
@@ -15,7 +15,7 @@ import java.io.File
  * Created by simon on 21.11.17.
  */
 class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(application) {
-    var foo = Foo(getApplication())
+    private var foo = Provider(getApplication())
 
     val tags
         get() = foo.tags()

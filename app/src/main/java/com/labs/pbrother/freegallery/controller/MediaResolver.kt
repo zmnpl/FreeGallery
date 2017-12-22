@@ -21,10 +21,9 @@ import java.util.*
 internal class MediaResolver(private val context: Context) {
 
     private val db: MyDb
-    private var settings: SettingsHelper
+    private var settings: SettingsHelper = SettingsHelper(context)
 
     init {
-        settings = SettingsHelper(context)
         db = MyDb(context)
     }
 
@@ -135,14 +134,12 @@ internal class MediaResolver(private val context: Context) {
     // media items
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): TreeSet<Item> {
-        return when {
-            ci.id == context.getString(R.string.trashName) -> trashItems(sortOrder)
-            ci.id == context.getString(R.string.timelineName) -> allItems(sortOrder)
-            ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, sortOrder)
-            ci.type == TYPE_TAG -> tagItems(ci.id, sortOrder)
-            else -> TreeSet<Item>()
-        }
+    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): TreeSet<Item> = when {
+        ci.id == context.getString(R.string.trashName) -> trashItems(sortOrder)
+        ci.id == context.getString(R.string.timelineName) -> allItems(sortOrder)
+        ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, sortOrder)
+        ci.type == TYPE_TAG -> tagItems(ci.id, sortOrder)
+        else -> TreeSet<Item>()
     }
 
     private fun getItemsForBucketPath(path: String, sortOrder: Int): TreeSet<Item> {
@@ -212,10 +209,7 @@ internal class MediaResolver(private val context: Context) {
 
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
-        for (path in db.getPathsForTag(tag)) {
-            val itm = makeSingleItemFromPath(path)
-            items.add(itm)
-        }
+        db.getPathsForTag(tag).mapTo(items) { makeSingleItemFromPath(it) }
         return items
     }
 
@@ -301,11 +295,9 @@ internal class MediaResolver(private val context: Context) {
     // "helpers"
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private fun orderedItemsTreeSet(sortOrder: Int): TreeSet<Item> {
-        return when (sortOrder) {
-            Item.SORT_ASC -> TreeSet(Collections.reverseOrder())
-            else -> TreeSet<Item>()
-        }
+    private fun orderedItemsTreeSet(sortOrder: Int): TreeSet<Item> = when (sortOrder) {
+        Item.SORT_ASC -> TreeSet(Collections.reverseOrder())
+        else -> TreeSet<Item>()
     }
 
     private fun thumbForBucketId(bucketid: String): String {

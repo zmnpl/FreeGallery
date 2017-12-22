@@ -14,9 +14,7 @@ import org.jetbrains.anko.db.*
 class MyDb(val context: Context) {
     // Application data which can be queried
     private val dbHelper: MyDatabaseOpenHelper
-        get() {
-            return context.database
-        }
+        get() = context.database
 
     // collection meta
     private val collectionMetaProjection = arrayOf(
