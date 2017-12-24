@@ -204,19 +204,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun colorizeTitlebar(color: Int) {
+        setTheme(settings.theme)
         if (settings.colorizeTitlebar()) {
             main_toolbar.setBackgroundColor(color)
-            when {
-                color != settings.higlightColor -> {
-                    window.statusBarColor = darkenColor(color, 0.5f)
-                }
-                else -> {
-                    window.statusBarColor = settings.higlightColor
-                }
-            }
-        } else {
-            main_toolbar.setBackgroundColor(settings.higlightColor)
-            window.statusBarColor = settings.higlightColor
+            if (color != settings.higlightColor) window.statusBarColor = darkenColor(color, 0.5f)
         }
     }
 
