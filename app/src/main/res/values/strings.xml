@@ -13,6 +13,8 @@
 
     <!-- About -->
     <string name="aboutLibs">Libraries</string>
+    <string name="apk_link">https://smnpl.de/apk/app-FreeGallery.apk</string>
+    <string name="apk_link_hint">Get latest version:</string>
 
     <!-- Temp -->
     <string name="tempDisplayName">Libraries</string>
