@@ -28,9 +28,9 @@ class MyDb(val context: Context) {
 
     // tags
     private val itemTagProjection = arrayOf(
-            TagUnique._ID,
-            TagUnique.COLUMN_ITEM_ID,
-            TagUnique.COLUMN_TAG
+            Tag._ID,
+            Tag.COLUMN_ITEM_ID,
+            Tag.COLUMN_TAG
     )
 
     private val itemTagParser = rowParser { path: String, tag: String -> ItemTag(path, tag) }
@@ -51,7 +51,7 @@ class MyDb(val context: Context) {
         val itemTags = HashMap<String, ItemTag>()
 
         dbHelper.readableDatabase
-                .select(TagUnique.TABLE_NAME,
+                .select(Tag.TABLE_NAME,
                         *itemTagProjection)
                 .parseList(itemTagParser)
                 .forEach {
@@ -89,10 +89,10 @@ class MyDb(val context: Context) {
      */
     fun allTags(): List<String> {
         return dbHelper.readableDatabase
-                .select(TagUnique.TABLE_NAME,
-                        TagUnique.COLUMN_TAG)
+                .select(Tag.TABLE_NAME,
+                        Tag.COLUMN_TAG)
                 .distinct()
-                .orderBy(TagUnique.COLUMN_TAG, SqlOrderDirection.ASC)
+                .orderBy(Tag.COLUMN_TAG, SqlOrderDirection.ASC)
                 .parseList(StringParser).filter {
             true
         }
@@ -107,9 +107,9 @@ class MyDb(val context: Context) {
     fun countItemsForTag(tag: String): Int {
         try {
             return dbHelper.readableDatabase
-                    .select(TagUnique.TABLE_NAME,
-                            TagUnique.COLUMN_TAG)
-                    .whereArgs("(${TagUnique.COLUMN_TAG} = {tag})",
+                    .select(Tag.TABLE_NAME,
+                            Tag.COLUMN_TAG)
+                    .whereArgs("(${Tag.COLUMN_TAG} = {tag})",
                             "tag" to tag)
                     .parseList(StringParser)
                     .count()
@@ -125,9 +125,9 @@ class MyDb(val context: Context) {
      */
     fun getPathsForTag(tag: String): List<String> {
         return dbHelper.readableDatabase
-                .select(TagUnique.TABLE_NAME,
-                        TagUnique.COLUMN_ITEM_ID)
-                .whereArgs("(${TagUnique.COLUMN_TAG} = {tag})",
+                .select(Tag.TABLE_NAME,
+                        Tag.COLUMN_ITEM_ID)
+                .whereArgs("(${Tag.COLUMN_TAG} = {tag})",
                         "tag" to tag)
                 .parseList(StringParser)
     }
@@ -140,11 +140,11 @@ class MyDb(val context: Context) {
     fun getThumbForTag(tag: String): String {
         try {
             return dbHelper.readableDatabase
-                    .select(TagUnique.TABLE_NAME,
-                            TagUnique.COLUMN_TAG)
-                    .whereArgs("(${TagUnique.COLUMN_TAG} = {tag})",
+                    .select(Tag.TABLE_NAME,
+                            Tag.COLUMN_TAG)
+                    .whereArgs("(${Tag.COLUMN_TAG} = {tag})",
                             "tag" to tag)
-                    .orderBy(TagUnique._ID, SqlOrderDirection.DESC)
+                    .orderBy(Tag._ID, SqlOrderDirection.DESC)
                     .limit(1)
                     .parseOpt(StringParser) ?: ""
         } catch (e: Exception) {
@@ -159,8 +159,8 @@ class MyDb(val context: Context) {
      */
     fun deleteTag(tag: String): Int {
         return dbHelper.writableDatabase
-                .delete(TagUnique.TABLE_NAME,
-                        "(${TagUnique.COLUMN_TAG} = {tag})",
+                .delete(Tag.TABLE_NAME,
+                        "(${Tag.COLUMN_TAG} = {tag})",
                         "tag" to tag)
     }
 
@@ -170,8 +170,8 @@ class MyDb(val context: Context) {
      */
     fun deleteAllTagsForItem(id: String): Int {
         return dbHelper.writableDatabase
-                .delete(TagUnique.TABLE_NAME,
-                        "(${TagUnique.COLUMN_ITEM_ID} = {itempath})",
+                .delete(Tag.TABLE_NAME,
+                        "(${Tag.COLUMN_ITEM_ID} = {itempath})",
                         "itempath" to id)
     }
 
@@ -181,8 +181,8 @@ class MyDb(val context: Context) {
      */
     fun deleteTagForItem(id: String, tag: String): Int {
         return dbHelper.writableDatabase
-                .delete(TagUnique.TABLE_NAME,
-                        "(${TagUnique.COLUMN_ITEM_ID} = {itempath}) and ${TagUnique.COLUMN_TAG} = {tag}",
+                .delete(Tag.TABLE_NAME,
+                        "(${Tag.COLUMN_ITEM_ID} = {itempath}) and ${Tag.COLUMN_TAG} = {tag}",
                         "itempath" to id,
                         "tag" to tag)
     }
@@ -196,10 +196,10 @@ class MyDb(val context: Context) {
         try {
             return dbHelper.writableDatabase
                     .insertOrThrow(
-                            TagUnique.TABLE_NAME,
-                            TagUnique.COLUMN_ITEM_TAG to itemId + "@" +tag,
-                            TagUnique.COLUMN_TAG to tag,
-                            TagUnique.COLUMN_ITEM_ID to itemId)
+                            Tag.TABLE_NAME,
+                            Tag.COLUMN_ITEM_TAG to itemId + "@" +tag,
+                            Tag.COLUMN_TAG to tag,
+                            Tag.COLUMN_ITEM_ID to itemId)
         } catch (e: Exception) {
             // item was already tagged with this one
             if (e is SQLiteConstraintException) {

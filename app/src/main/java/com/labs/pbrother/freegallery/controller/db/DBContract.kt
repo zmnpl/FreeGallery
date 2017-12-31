@@ -17,19 +17,9 @@ class DBContract {
         }
     }
 
-    // deprecated
     abstract class Tag {
         companion object {
             val TABLE_NAME = "tags"
-            val _ID = BaseColumns._ID
-            val COLUMN_ITEM_ID = "itemid"
-            val COLUMN_TAG = "tag"
-        }
-    }
-
-    abstract class TagUnique {
-        companion object {
-            val TABLE_NAME = "tagsUnique"
             val _ID = BaseColumns._ID
             val COLUMN_ITEM_TAG = "itemTag"
             val COLUMN_ITEM_ID = "itemid"
