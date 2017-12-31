@@ -12,7 +12,7 @@ import org.jetbrains.anko.db.*
 class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDatabaseOpenHelper.DB_NAME, null, MyDatabaseOpenHelper.DB_VERSION) {
     companion object {
         val DB_NAME = "FG.db"
-        val DB_VERSION = 29
+        val DB_VERSION = 30
 
         private var instance: MyDatabaseOpenHelper? = null
 
@@ -59,7 +59,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onCreate(db)
-        if (oldVersion < 29) update29(db, oldVersion, newVersion)
+        if (oldVersion < 30) update29(db, oldVersion, newVersion)
         onCreate(db)
     }
 
@@ -85,6 +85,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
                                 DBContract.TagUnique.COLUMN_ITEM_TAG to it.path  + "@" + it.tag
                         )
                     } catch (e: Exception) {
+                        print("bar")
                         if (e is SQLiteConstraintException) {
                             print("foo")
                         }

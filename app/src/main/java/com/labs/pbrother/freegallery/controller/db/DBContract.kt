@@ -29,7 +29,7 @@ class DBContract {
 
     abstract class TagUnique {
         companion object {
-            val TABLE_NAME = "tags"
+            val TABLE_NAME = "tagsUnique"
             val _ID = BaseColumns._ID
             val COLUMN_ITEM_TAG = "itemTag"
             val COLUMN_ITEM_ID = "itemid"
