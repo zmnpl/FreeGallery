@@ -9,29 +9,40 @@ class DBContract {
 
     abstract class CollectionMetaEntry {
         companion object {
-            val _ID = BaseColumns._ID
             val TABLE_NAME = "collectionmeta"
-            val COLUMN_NAME_COLLECTION_ID = "collectionid"
-            val COLUMN_NAME_LOVED = "lovestatus"
-            val COLUMN_NAME_COLOR = "colorid"
+            val _ID = BaseColumns._ID
+            val COLUMN_COLLECTION_ID = "collectionid"
+            val COLUMN_LOVED = "lovestatus"
+            val COLUMN_COLOR = "colorid"
         }
     }
 
+    // deprecated
     abstract class Tag {
         companion object {
-            val _ID = BaseColumns._ID
             val TABLE_NAME = "tags"
-            val COLUMN_NAME_ITEM_ID = "itemid"
-            val COLUMN_NAME_TAG = "tag"
+            val _ID = BaseColumns._ID
+            val COLUMN_ITEM_ID = "itemid"
+            val COLUMN_TAG = "tag"
+        }
+    }
+
+    abstract class TagUnique {
+        companion object {
+            val TABLE_NAME = "tags"
+            val _ID = BaseColumns._ID
+            val COLUMN_ITEM_TAG = "itemTag"
+            val COLUMN_ITEM_ID = "itemid"
+            val COLUMN_TAG = "tag"
         }
     }
 
     abstract class Trash {
         companion object {
-            val _ID = BaseColumns._ID
             val TABLE_NAME = "trash"
-            val COLUMN_NAME_ITEM_PATH = "itemid"
-            val COLUMN_NAME_MEDIATYPE = "mediatype"
+            val _ID = BaseColumns._ID
+            val COLUMN_ITEM_PATH = "itemid"
+            val COLUMN_MEDIATYPE = "mediatype"
         }
     }
 
