@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version">Version 0.1</string>
+    <string name="version">Version 1.1</string>
     <string name="author">Created by Simon Paul</string>
     <string name="license">Licensed under the MIT license</string>
 
