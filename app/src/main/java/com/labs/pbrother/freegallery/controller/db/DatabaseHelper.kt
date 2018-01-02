@@ -47,6 +47,29 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
             DBContract.Trash.COLUMN_MEDIATYPE to INTEGER
     )
 
+    private fun createNotTrashedTaggedItemsView(db: SQLiteDatabase) = db.execSQL(
+            "CREATE VIEW [IF NOT EXISTS] "
+                    + DBContract.UntrashedTagged.VIEW_NAME
+                    +"("
+                    + DBContract.Tag.TABLE_NAME
+                    + "."
+                    + DBContract.Tag.COLUMN_ITEM_ID
+                    + " AS " + DBContract.UntrashedTagged.COLUMN_ITEM_ID
+
+                    + DBContract.Tag.TABLE_NAME
+                    + "."
+                    + DBContract.Tag.COLUMN_ITEM_TAG
+                    + " AS " + DBContract.UntrashedTagged.COLUMN_TAG
+
+                    + DBContract.Trash.TABLE_NAME
+                    + "."
+                    + DBContract.Trash.COLUMN_ITEM_PATH
+                    + " AS " + DBContract.UntrashedTagged.COLUMN_TRASH_ITEM_ID
+
+                    + ") AS "
+                    +" select-statement" // TODO
+    )
+
     override fun onCreate(db: SQLiteDatabase) {
         // Here you create tables
         createCollectionMetaTable(db)

@@ -36,4 +36,13 @@ class DBContract {
         }
     }
 
+    abstract class UntrashedTagged {
+        companion object {
+            val VIEW_NAME = "untrashedTagged"
+            val COLUMN_ITEM_ID = "itemid"
+            val COLUMN_TAG = "tag"
+            val COLUMN_TRASH_ITEM_ID= "trashid"
+        }
+    }
+
 }
