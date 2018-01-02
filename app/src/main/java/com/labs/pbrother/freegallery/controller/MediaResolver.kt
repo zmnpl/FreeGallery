@@ -2,11 +2,9 @@ package com.labs.pbrother.freegallery.controller
 
 import android.content.Context
 import android.provider.MediaStore
-
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.settings.SettingsHelper
-
 import java.io.File
 import java.util.*
 
@@ -144,12 +142,13 @@ internal class MediaResolver(private val context: Context) {
 
     private fun getItemsForBucketPath(path: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
-        items.addAll(imagesForBucket(path, sortOrder))
-        items.addAll(vidsForBucket(path, sortOrder))
+        val tags = db.itemTags()
+        items.addAll(imagesForBucket(path, sortOrder, tags))
+        items.addAll(vidsForBucket(path, sortOrder, tags))
         return items
     }
 
-    private fun imagesForBucket(path: String, sortOrder: Int): TreeSet<Item> {
+    private fun imagesForBucket(path: String, sortOrder: Int, tags: HashMap<String, HashSet<String>>): TreeSet<Item> {
         val images = orderedItemsTreeSet(sortOrder)
         val SELECTION = MediaStore.Images.Media.DATA + " LIKE (?)"
         val SELECTION_ARGS = arrayOf(path + "%")
@@ -163,7 +162,7 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c.moveToFirst()) {
             do {
-                images.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                         c.getString(PATH),
                         c.getLong(DATEADDED),
                         c.getLong(DATETAKEN),
@@ -171,14 +170,17 @@ internal class MediaResolver(private val context: Context) {
                         c.getInt(WIDTH),
                         c.getInt(HEIGHT),
                         c.getLong(LAT).toDouble(),
-                        c.getLong(LONG).toDouble())) // TODO - seems to be wrong; always 56 and 6 ... wtf?
+                        c.getLong(LONG).toDouble())
+                if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+
+                images.add(itm) // TODO - seems to be wrong; always 56 and 6 ... wtf?
             } while (c.moveToNext())
         }
         c.close()
         return images
     }
 
-    private fun vidsForBucket(path: String, sortOrder: Int): TreeSet<Item> {
+    private fun vidsForBucket(path: String, sortOrder: Int, tags: HashMap<String, HashSet<String>>): TreeSet<Item> {
         val vids = orderedItemsTreeSet(sortOrder)
         val SELECTION = MediaStore.Video.Media.DATA + " LIKE (?)"
         val SELECTION_ARGS = arrayOf(path + "%")
@@ -192,7 +194,7 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c.moveToFirst()) {
             do {
-                vids.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
+                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
                         c.getString(PATH),
                         c.getLong(DATEADDED),
                         c.getLong(DATETAKEN),
@@ -200,7 +202,10 @@ internal class MediaResolver(private val context: Context) {
                         c.getInt(WIDTH),
                         c.getInt(HEIGHT),
                         c.getLong(LAT).toDouble(),
-                        c.getLong(LONG).toDouble())) // TODO - seems to be wrong; always 56 and 6 ... wtf?
+                        c.getLong(LONG).toDouble())
+                if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+
+                vids.add(itm) // TODO - seems to be wrong; always 56 and 6 ... wtf?
             } while (c.moveToNext())
         }
         c.close()
@@ -209,7 +214,10 @@ internal class MediaResolver(private val context: Context) {
 
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
-        db.getPathsForTag(tag).mapTo(items) { makeSingleItemFromPath(it) }
+        val tags = db.itemTags()
+        db.getPathsForTag(tag).mapTo(items) {
+            makeSingleItemFromPath(it, tags)
+        }
         return items
     }
 
@@ -233,20 +241,20 @@ internal class MediaResolver(private val context: Context) {
 
     private fun allItems(sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
-        items.addAll(imagesForBucket("%", sortOrder))
-        items.addAll(vidsForBucket("%", sortOrder))
+        val tags = db.itemTags()
+        items.addAll(imagesForBucket("%", sortOrder, tags))
+        items.addAll(vidsForBucket("%", sortOrder, tags))
         return items
     }
 
-    private fun makeSingleItemFromPath(path: String): Item {
-        var item: Item
-
+    private fun makeSingleItemFromPath(path: String, tags: HashMap<String, HashSet<String>>): Item {
         val IMAGE_SELECTION = MediaStore.Images.Media.DATA + " = (?) "
         val VID_SELECTION = MediaStore.Video.Media.DATA + " = (?) "
 
         val SELECTION_ARGS = arrayOf(path)
 
         val r = context.contentResolver
+
         // Try Image
         var c = r.query(
                 MediaStore.Files.getContentUri("external"),
@@ -256,7 +264,7 @@ internal class MediaResolver(private val context: Context) {
                 null
         )
         if (c != null && c.moveToFirst()) {
-            return Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                     c.getString(PATH),
                     c.getLong(DATEADDED),
                     c.getLong(DATETAKEN),
@@ -265,6 +273,8 @@ internal class MediaResolver(private val context: Context) {
                     c.getInt(HEIGHT),
                     c.getLong(LAT).toDouble(),
                     c.getLong(LONG).toDouble())
+            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+            return itm
         }
 
         // Try Vid
@@ -276,7 +286,7 @@ internal class MediaResolver(private val context: Context) {
                 null
         )
         if (c != null && c.moveToFirst()) {
-            return Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+            val itm =Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                     c.getString(PATH),
                     c.getLong(DATEADDED),
                     c.getLong(DATETAKEN),
@@ -285,6 +295,8 @@ internal class MediaResolver(private val context: Context) {
                     c.getInt(HEIGHT),
                     c.getLong(LAT).toDouble(),
                     c.getLong(LONG).toDouble())
+            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+            return itm
         }
         c.close()
         // Return empty item

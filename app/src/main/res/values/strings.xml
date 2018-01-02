@@ -46,6 +46,7 @@
     <string name="ImgPropertyHeadline">Properties</string>
     <string name="ImgPropertyFileName">Name</string>
     <string name="ImgPropertyPath">Path</string>
+    <string name="ImgPropertyTags">Tags</string>
     <string name="ImgPropertySize">Size</string>
     <string name="ImgPropertyDateAdded">Date Added</string>
     <string name="ImgPropertyLatitude">Latitude</string>

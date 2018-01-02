@@ -28,7 +28,7 @@ class MyDb(val context: Context) {
 
     // tags
     private val itemTagProjection = arrayOf(
-            Tag._ID,
+            //Tag._ID,
             Tag.COLUMN_ITEM_ID,
             Tag.COLUMN_TAG
     )
@@ -46,16 +46,22 @@ class MyDb(val context: Context) {
 
     // initializing operations; operating on given data objects
 
-    // Loads tag for and into given image
-    fun itemTags(): HashMap<String, ItemTag> {
-        val itemTags = HashMap<String, ItemTag>()
+    // all tags together with path as key
+    fun itemTags(): HashMap<String, HashSet<String>> {
+        val itemTags = HashMap<String, HashSet<String>>()
 
         dbHelper.readableDatabase
                 .select(Tag.TABLE_NAME,
                         *itemTagProjection)
                 .parseList(itemTagParser)
                 .forEach {
-                    itemTags.put(it.path, it)
+                    if (itemTags.containsKey(it.path)) {
+                        itemTags.getValue(it.path).add(it.tag)
+                    } else {
+                        val foo = HashSet<String>()
+                        foo.add(it.tag)
+                        itemTags.put(it.path, foo)
+                    }
                 }
 
         return itemTags

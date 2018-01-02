@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.activities.tagSymbol
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.MetaUpdatorizer
 import kotlinx.android.synthetic.main.collection_item.view.*
@@ -50,13 +51,14 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val (type, path) = items[position]
-
-        val img = File(path) // TODO - loading via file faster?
+        val itm = items.get(position)
+        val img = File(itm.path) // TODO - loading via file faster?
         //Glide.with(context).load(itm.fileUrl()).into(holder.pic);
         Glide.with(context).load(img).into(holder.pic)
         holder.selectedOverlay.visibility = if (isSelected(position)) View.VISIBLE else View.INVISIBLE
-        holder.videoIconOverlay.visibility = if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO) View.VISIBLE else View.INVISIBLE
+        holder.videoIconOverlay.visibility = if (itm.type == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO) View.VISIBLE else View.INVISIBLE
+        holder.tagIndicator.background = tagSymbol(context)
+        holder.tagIndicator.visibility = if (itm.isTagged) View.VISIBLE else View.INVISIBLE
     }
 
     // Provide a reference to the views for each data item
@@ -64,8 +66,9 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
     // you provide access to all the views for a data item in a view holder
     class ViewHolder(v: View, private val listener: ClickListener?) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
         var pic: ImageView = v.CollectionItem_imgPicture
-        var videoIconOverlay = v.CollectionItem_videoItemOverly
+        var videoIconOverlay = v.CollectionItem_videoItemOverlay
         var selectedOverlay = v.CollectionItem_selectedOverlay
+        var tagIndicator = v.CollectionItem_tagIndicator
 
         init {
             v.setOnClickListener(this)

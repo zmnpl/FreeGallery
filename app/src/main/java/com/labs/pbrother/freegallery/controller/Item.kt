@@ -42,6 +42,16 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     val tagsList: ArrayList<String>
         get() = ArrayList(tags.toList())
 
+    fun addAllTags(tags: HashSet<String>) {
+        this.tags = tags;
+    }
+
+    val tagString: String
+        get() = tags.joinToString(", ")
+
+    val isTagged: Boolean
+        get() = tags.size > 0
+
     fun addTag(tag: String) {
         tags.add(tag)
     }
