@@ -29,8 +29,8 @@ class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPrefere
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences,
-                                  key: String) {
-         val settings = SettingsHelper(activity)
-         settings.reactToSettingChange(key)
+                                           key: String) {
+        val settings = SettingsHelper(activity)
+        settings.reactToSettingChange(key)
     }
 }

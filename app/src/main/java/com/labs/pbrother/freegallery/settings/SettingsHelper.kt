@@ -60,7 +60,7 @@ class SettingsHelper(val context: Context) {
     }
 
     fun reactToSettingChange(key: String) {
-        when(key) {
+        when (key) {
             KEY_PREF_ORDER_BY -> {
                 setItemSort()
             }
@@ -82,7 +82,7 @@ class SettingsHelper(val context: Context) {
     val orderBy: Int
         get() {
             val orderbyoptions = context.resources.getStringArray(R.array.prefOrderByEntries)
-            return when(sharedPref.getString(KEY_PREF_ORDER_BY, "")) {
+            return when (sharedPref.getString(KEY_PREF_ORDER_BY, "")) {
                 orderbyoptions[0] -> {
                     ORDER_BY_DATE_ADDED
                 }

@@ -42,7 +42,7 @@ class DBContract {
             val VIEW_NAME = "untrashedTagged"
             val COLUMN_ITEM_ID = "itemid"
             val COLUMN_TAG = "tag"
-            val COLUMN_TRASH_ITEM_ID= "trashid"
+            val COLUMN_TRASH_ITEM_ID = "trashid"
         }
     }
 

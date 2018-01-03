@@ -38,7 +38,7 @@ class ColorizeDialogFragment() : DialogFragment() {
         //val opacitySlider = mainView.colorDialogOpacityslider
 
         lobsterPicker.color = activity.getColor(R.color.accent)
-        if(activity is CollectionActivity) {
+        if (activity is CollectionActivity) {
             val actualColor = (activity as CollectionActivity).collectionColor
             if (null != actualColor) {
                 lobsterPicker.color = actualColor

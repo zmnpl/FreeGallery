@@ -51,9 +51,9 @@ class ImagePageFragment() : Fragment() {
         return display(rootView)
     }
 
-    private fun display(rootView: ViewGroup) : ViewGroup {
+    private fun display(rootView: ViewGroup): ViewGroup {
         // videos will be displayes differently from images ...
-        when(item.type) {
+        when (item.type) {
             TYPE_IMAGE -> {
                 if ("gif" == File(item.path).extension.toLowerCase()) {
                     imageView.visibility = View.INVISIBLE

@@ -26,8 +26,8 @@
         android:id="@+id/CollectionItem_tagIndicator"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_margin="4dp"
         android:layout_gravity="bottom|end"
+        android:layout_margin="4dp"
         android:visibility="invisible">
 
 

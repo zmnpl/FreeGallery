@@ -520,7 +520,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             mode.menuInflater.inflate(R.menu.menu_multiimageselected, menu) // TODO create menu for selction mode
-            if(viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
+            if (viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
                 menu.findItem(R.id.multiimageselection_menu_untag)?.isVisible = true
             }
             collection_shareFloatingActionButton.visibility = View.VISIBLE // TODO - better way to make it visible? A little animated?

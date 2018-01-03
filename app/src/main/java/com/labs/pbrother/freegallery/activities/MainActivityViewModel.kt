@@ -21,8 +21,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         drawerItems?.postValue(foo.drawerItems)
     }
 
-    private fun selectedItems(selection: List<Int>) : List<CollectionItem> {
-        val result =  ArrayList<CollectionItem>()
+    private fun selectedItems(selection: List<Int>): List<CollectionItem> {
+        val result = ArrayList<CollectionItem>()
         selection.forEach() {
             val ci = overviewItems.value?.get(it)
             if (null != ci) result.add(ci)

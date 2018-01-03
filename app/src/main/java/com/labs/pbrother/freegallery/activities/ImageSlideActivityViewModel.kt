@@ -40,9 +40,12 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun tagItems(items: List<Item>, tag: String) = items.forEach { tagItem(it, tag) }
 
-    fun tagItem(item: Item?, tag: String) = if(null!=item) {foo.tagItem(item, tag)} else {}
+    fun tagItem(item: Item?, tag: String) = if (null != item) {
+        foo.tagItem(item, tag)
+    } else {
+    }
 
-    fun removeItem(item: Item) : Int {
+    fun removeItem(item: Item): Int {
         val deletionItems = java.util.ArrayList<Item>()
         deletionItems.add(item)
 

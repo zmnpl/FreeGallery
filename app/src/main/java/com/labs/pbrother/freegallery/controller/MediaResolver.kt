@@ -286,7 +286,7 @@ internal class MediaResolver(private val context: Context) {
                 null
         )
         if (c != null && c.moveToFirst()) {
-            val itm =Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
                     c.getString(PATH),
                     c.getLong(DATEADDED),
                     c.getLong(DATETAKEN),

@@ -10,322 +10,322 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:showDividers="end">
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:showDividers="end"
-                android:padding="16dp">
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="4dp">
 
-                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
-                    card_view:cardCornerRadius="4dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@mipmap/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/about_versionInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/version"
+                        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                    <TextView
+                        android:id="@+id/about_authorInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/author" />
+
+                    <TextView
+                        android:id="@+id/about_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/license" />
+
+                    <TextView
+                        android:id="@+id/apk_link_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/apk_link_hint" />
+
+                    <TextView
+                        android:id="@+id/apk_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:autoLink="web"
+                        android:text="@string/apk_link" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:background="@mipmap/ic_launcher" />
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/about_versionInfo"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:text="@string/version"
+                            android:layout_height="wrap_content"
+                            android:text="@string/aboutLibs"
+                            android:textAppearance="@android:style/TextAppearance.Large" />
+
+                        <TextView
+                            android:id="@+id/about_thanks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/thanks"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <Button
+                            android:id="@+id/btnOpenLicenseTexts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="showLicensesClick"
+                            android:text="@string/buttonOpenLicenseTexts" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_glide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/glideName"
                             android:textAppearance="@android:style/TextAppearance.Medium" />
 
                         <TextView
-                            android:id="@+id/about_authorInfo"
+                            android:id="@+id/about_glideLicensingInfo"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:text="@string/author" />
+                            android:layout_height="wrap_content"
+                            android:text="@string/glideInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
 
                         <TextView
-                            android:id="@+id/about_license"
+                            android:id="@+id/about_glideLink"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:text="@string/license" />
-
-                        <TextView
-                            android:id="@+id/apk_link_hint"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
-                            android:text="@string/apk_link_hint" />
-
-                        <TextView
-                            android:id="@+id/apk_link"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_horizontal"
+                            android:layout_height="wrap_content"
                             android:autoLink="web"
-                            android:text="@string/apk_link" />
+                            android:text="@string/glideLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
                     </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
-                    card_view:cardCornerRadius="4dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/about_subsamplingImageView"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
+                            android:text="@string/SSIVName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/aboutLibs"
-                                android:textAppearance="@android:style/TextAppearance.Large" />
-
-                            <TextView
-                                android:id="@+id/about_thanks"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/thanks"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <Button
-                                android:id="@+id/btnOpenLicenseTexts"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:onClick="showLicensesClick"
-                                android:text="@string/buttonOpenLicenseTexts" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/about_subsamplingImageViewLicensingInfo"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
+                            android:text="@string/SSIVInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
 
-                            <TextView
-                                android:id="@+id/about_glide"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/glideName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_glideLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/glideInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_glideLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/glideLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/about_subsamplingImageViewLink"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_subsamplingImageView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/SSIVName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_subsamplingImageViewLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/SSIVInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_subsamplingImageViewLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/SSIVLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_lobsterPicker"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lobsterPickerName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_lobsterPickerLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/lobsterPickerInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_lobsterPickerViewLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/lobsterPickerLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_licenseView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/licenseViewName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_licenseViewLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/licenseViewInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_licenseViewViewLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/licenseViewLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_materialDrawer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/materialDrawerName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_materialDrawerLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/materialDrawerInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_materialDrawerLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/materialDrawerLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_androidIconics"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/iconicsName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_androidIconicsLicensingInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/iconicsInfo"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_androidIconicsLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/iconicsLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/about_ionicons"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/ionicsIconsName"
-                                android:textAppearance="@android:style/TextAppearance.Medium" />
-
-                            <TextView
-                                android:id="@+id/about_ioniconsInfo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/ionicsIconsName"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-
-                            <TextView
-                                android:id="@+id/about_ioniconsLink"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoLink="web"
-                                android:text="@string/ionicsIconsLink"
-                                android:textAppearance="@android:style/TextAppearance.Small" />
-                        </LinearLayout>
-
+                            android:autoLink="web"
+                            android:text="@string/SSIVLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/about_lobsterPicker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lobsterPickerName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_lobsterPickerLicensingInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/lobsterPickerInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_lobsterPickerViewLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/lobsterPickerLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_licenseView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/licenseViewName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_licenseViewLicensingInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/licenseViewInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_licenseViewViewLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/licenseViewLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_materialDrawer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/materialDrawerName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_materialDrawerLicensingInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/materialDrawerInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_materialDrawerLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/materialDrawerLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_androidIconics"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/iconicsName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_androidIconicsLicensingInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/iconicsInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_androidIconicsLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/iconicsLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_ionicons"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ionicsIconsName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_ioniconsInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ionicsIconsName"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_ioniconsLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/ionicsIconsLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
 
 
     </ScrollView>

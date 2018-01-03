@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 import com.labs.pbrother.freegallery.controller.CollectionMeta
 import com.labs.pbrother.freegallery.controller.ItemTag
 import com.labs.pbrother.freegallery.controller.TrashItem
-import org.jetbrains.anko.db.*
 import com.labs.pbrother.freegallery.controller.db.DBContract.*
+import org.jetbrains.anko.db.*
 
 /**
  * Created by simon on 23.08.17.

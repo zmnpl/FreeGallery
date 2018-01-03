@@ -99,7 +99,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun undoTrashing(id: Int) = foo.undoTrashing(id)
 
-    fun untag(items: List<Item>) = items.forEach{ foo.untagItem(it, collectionID) }
+    fun untag(items: List<Item>) = items.forEach { foo.untagItem(it, collectionID) }
 
     fun tagItems(items: List<Item>, tag: String) {
         items.forEach { foo.tagItem(it, tag) }
