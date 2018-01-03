@@ -203,7 +203,7 @@ class MyDb(val context: Context) {
             return dbHelper.writableDatabase
                     .insertOrThrow(
                             Tag.TABLE_NAME,
-                            Tag.COLUMN_ITEM_TAG to itemId + "@" +tag,
+                            Tag.COLUMN_ITEM_TAG to itemId + "@" + tag,
                             Tag.COLUMN_TAG to tag,
                             Tag.COLUMN_ITEM_ID to itemId)
         } catch (e: Exception) {

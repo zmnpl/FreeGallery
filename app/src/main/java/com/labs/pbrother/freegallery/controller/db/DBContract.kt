@@ -32,6 +32,7 @@ class DBContract {
             val TABLE_NAME = "trash"
             val _ID = BaseColumns._ID
             val COLUMN_ITEM_PATH = "itemid"
+            //val COLUMN_ORIGINAL_ITEM_PATH = "originalPath"
             val COLUMN_MEDIATYPE = "mediatype"
         }
     }

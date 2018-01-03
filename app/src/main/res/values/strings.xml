@@ -24,6 +24,7 @@
     <string name="share">Share</string>
     <string name="shareinsult">Share…</string>
     <string name="delete">Delete</string>
+    <string name="untag">Untag</string>
     <string name="emptyTrash">Empty Trash</string>
     <string name="restoreFromTrash">Restore</string>
     <string name="setas">Set as …</string>

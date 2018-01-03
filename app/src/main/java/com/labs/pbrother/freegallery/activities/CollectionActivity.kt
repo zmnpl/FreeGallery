@@ -269,7 +269,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
             inflater.inflate(R.menu.menu_collection, menu)
-            if (viewModel.collectionType == TYPE_TAG) {
+            if (viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
                 val deleteTagMenuItem = menu.findItem(R.id.menu_deleteTag)
                 deleteTagMenuItem?.isVisible = true
             }
@@ -402,6 +402,18 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         actionMode?.finish()
     }
 
+    private fun untag() {
+        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+        doAsync {
+            viewModel.untag(viewModel.selectedItems(adapter.getSelectedItems()))
+            uiThread {
+                adapter.removeMultiple(adapter.getSelectedItems())
+                actionMode?.finish()
+                swipeRefreshCollection.isRefreshing = false
+            }
+        }
+    }
+
     private fun restore() {
         swipeRefreshCollection.isRefreshing = true
         doAsync {
@@ -508,6 +520,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 return true
             }
             mode.menuInflater.inflate(R.menu.menu_multiimageselected, menu) // TODO create menu for selction mode
+            if(viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
+                menu.findItem(R.id.multiimageselection_menu_untag)?.isVisible = true
+            }
             collection_shareFloatingActionButton.visibility = View.VISIBLE // TODO - better way to make it visible? A little animated?
             return true
         }
@@ -518,6 +533,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             when (item.itemId) {
                 R.id.multiimageselection_menu_share -> {
                     share()
+                    return true
+                }
+                R.id.multiimageselection_menu_untag -> {
+                    untag()
                     return true
                 }
                 R.id.multiimageselection_menu_delete -> {
@@ -567,9 +586,13 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     override fun colorCancel() {}
     override fun colorOk(color: Int) {
-        viewModel.colorizeCollection(color)
-        val toast = Toast.makeText(this, "Set color to " + color.toString(), Toast.LENGTH_LONG)
-        toast.show()
+        doAsync {
+            viewModel.colorizeCollection(color)
+            uiThread {
+                val toast = Toast.makeText(this@CollectionActivity, "Set color to " + color.toString(), Toast.LENGTH_LONG)
+                toast.show()
+            }
+        }
     }
 
     companion object {

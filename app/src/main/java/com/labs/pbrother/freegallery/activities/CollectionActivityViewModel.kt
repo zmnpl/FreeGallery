@@ -99,6 +99,8 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun undoTrashing(id: Int) = foo.undoTrashing(id)
 
+    fun untag(items: List<Item>) = items.forEach{ foo.untagItem(it, collectionID) }
+
     fun tagItems(items: List<Item>, tag: String) {
         items.forEach { foo.tagItem(it, tag) }
     }
@@ -115,7 +117,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         val col = collectionItem.value
         if (null != col) {
             foo.colorizeCollection(col, color)
-            liveColor.value = color
+            liveColor.postValue(color)
         }
     }
 }
