@@ -26,6 +26,7 @@ import com.labs.pbrother.freegallery.fragments.ImagePageFragment
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.DepthPageTransformer
+import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_image_slide.*
 import kotlinx.android.synthetic.main.singlepicture_toolbar.*
 import org.jetbrains.anko.doAsync
@@ -124,6 +125,17 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == Activity.RESULT_OK) {
+                val resultUri = result.uri
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                val error = result.error
+            }
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
             putString(CID, collectionId)
@@ -207,6 +219,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
                     setAs()
                     true
                 }
+                R.id.singlepicture_edit -> {
+                    edit()
+                    true
+                }
                 R.id.singlepicture_delete -> {
                     delete()
                     true
@@ -257,7 +273,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             doAsync {
                 val remaining = viewModel.removeItem(itemToDelete)
                 uiThread {
-                    pager.adapter.notifyDataSetChanged()
+                    pager.adapter?.notifyDataSetChanged()
                     longToast(R.string.DeleteSnackbarSingleInfo)
                     if (0 == remaining) {
                         finish()
@@ -308,6 +324,15 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
     }
 
+    private fun edit() {
+        // start cropping activity for pre-acquired image saved on the device
+        val uri = Uri.parse(viewModel.itemAt(pager.currentItem)?.fileUrl)
+        if (null != uri) {
+            CropImage.activity(uri)
+                    .start(this)
+        }
+    }
+
 
     // UI Behaviour
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +350,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         override fun getCount() = items.size
 
         // This is called when notifyDataSetChanged() is called
-        override fun getItemPosition(`object`: Any?): Int = FragmentStatePagerAdapter.POSITION_NONE // refresh all fragments when data set changed
+        override fun getItemPosition(`object`: Any): Int = FragmentStatePagerAdapter.POSITION_NONE // refresh all fragments when data set changed
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

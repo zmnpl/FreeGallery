@@ -38,8 +38,7 @@ class ImagePageFragment() : Fragment() {
         retainInstance = false
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val rootView = inflater!!.inflate(
                 R.layout.fragment_singlepicture_slide_page, container, false) as ViewGroup
@@ -79,7 +78,7 @@ class ImagePageFragment() : Fragment() {
                     intent.type = "video/*"
                     val vid = File(item.path)
                     val foo = Environment.getExternalStorageDirectory().absolutePath
-                    val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", vid)
+                    val uri = FileProvider.getUriForFile(context!!, BuildConfig.APPLICATION_ID + ".provider", vid)
 
                     intent.data = uri
                     startActivity(intent)

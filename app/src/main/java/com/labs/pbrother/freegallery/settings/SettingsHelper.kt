@@ -139,6 +139,11 @@ class SettingsHelper(val context: Context) {
             }
         }
 
+    val colorPrimaryDark: Int
+        get() {
+            return ContextCompat.getColor(context, R.color.primary_dark)
+        }
+
     val secondaryColor: Int
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")

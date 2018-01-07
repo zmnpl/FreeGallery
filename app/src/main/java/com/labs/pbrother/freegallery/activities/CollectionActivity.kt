@@ -64,6 +64,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     // result for caller
     private val resultIntent = Intent()
 
+    // region oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setResult(Activity.RESULT_OK, resultIntent)
@@ -110,10 +111,36 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         bindViewModel()
         refresh(true, true, true, false)
     }
+    // endregion
 
-    // User Interface Building
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // region lyfecycle rest
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.apply {
+            putString(CID, collectionId)
+            putBoolean(DATA_CHANGED, dataChanged)
+        }
+        super.onSaveInstanceState(outState)
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
+            refresh(false, false, true, false)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // change columns on orientation change...
+        (collection_rclPictureCollection.layoutManager as GridLayoutManager).spanCount = columns
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, resultIntent)
+        super.onBackPressed()
+    }
+    // endregion
+
+    //region build drawer
     private fun makeDrawer() {
         drawerResult = drawer {
             if (onTablet) buildViewOnly = true
@@ -121,7 +148,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             toolbar = main_toolbar
 
             displayBelowStatusBar = true
-            translucentStatusBar = false
+            translucentStatusBar = true
 
             actionBarDrawerToggleEnabled = true
             actionBarDrawerToggleAnimated = true
@@ -140,7 +167,12 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                     false
                 }
             }
+
+            onSlide { drawerView, slideOffset ->
+                //translucentStatusBar = true
+            }
         }
+
         if (!settings.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = settings.primaryColor
 
         if (onTablet) {
@@ -167,7 +199,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             if (it.id == collectionId) this@CollectionActivity.drawerResult.setSelection(itm)
         }
     }
+    // endregion
 
+    // region ui behaviour
     private fun bindViewModel() {
         viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
 
@@ -194,7 +228,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun changeColor(color: Int) {
-        colorizeTitlebar(color)
+        setTheme(settings.theme)
+        if (settings.colorizeTitlebar()) colorizeTitlebar(color)
         // refresh items in drawer, to make color change for tag collection visible
         if (viewModel.collectionType == TYPE_TAG) {
             doAsync {
@@ -204,10 +239,13 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun colorizeTitlebar(color: Int) {
-        setTheme(settings.theme)
-        if (settings.colorizeTitlebar()) {
-            main_toolbar.setBackgroundColor(color)
-            if (color != settings.higlightColor) window.statusBarColor = darkenColor(color, 0.5f)
+        main_toolbar.setBackgroundColor(color)
+
+        if (color != settings.higlightColor) {
+            //window.statusBarColor = darkenColor(color, 0.5f)
+            window.statusBarColor = adjustColorAlpha(color, 0.75f)
+        } else {
+            //window.statusBarColor = settings.colorPrimaryDark
         }
     }
 
@@ -218,20 +256,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             (settings.columnsInPortrait * 1.5).toInt()
         }
 
-
-    // checks service boundary and data status
-    // arrogantly not checking for permissions on sub screens ^^
-    // if all good -> populate ui
-    // if not, service probably needs to be connected
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.apply {
-            putString(CID, collectionId)
-            putBoolean(DATA_CHANGED, dataChanged)
-        }
-        super.onSaveInstanceState(outState)
-    }
-
     private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
         if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
         doAsync {
@@ -241,27 +265,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             }
         }
     }
+    // endregion
 
-    // Lifecycle
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
-            refresh(false, false, true, false)
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        // change columns on orientation change...
-        (collection_rclPictureCollection.layoutManager as GridLayoutManager).spanCount = columns
-    }
-
-    override fun onBackPressed() {
-        setResult(Activity.RESULT_OK, resultIntent)
-        super.onBackPressed()
-    }
-
+    //region menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
 
@@ -327,6 +333,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             else -> return super.onOptionsItemSelected(item)
         }
     }
+    // endregion
 
     // Functionality
 

@@ -28,6 +28,7 @@
     <string name="emptyTrash">Empty Trash</string>
     <string name="restoreFromTrash">Restore</string>
     <string name="setas">Set as …</string>
+    <string name="edit">Edit</string>
     <string name="deleteSnaketag">Delete tag</string>
     <string name="sort">Sort</string>
     <string name="sortByDateAsc">Oldest first</string>
