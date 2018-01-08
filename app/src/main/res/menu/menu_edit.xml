@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/menu_rotLeft"
+        android:orderInCategory="100"
+        android:title="@string/rotateLeft"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_rotRight"
+        android:orderInCategory="110"
+        android:title="@string/rotateRight"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_save"
+        android:orderInCategory="120"
+        android:title="@string/save"
+        app:showAsAction="never" />
+
+</menu>

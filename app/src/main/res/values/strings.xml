@@ -16,6 +16,11 @@
     <string name="apk_link">https://smnpl.de/apk/app-FreeGallery.apk</string>
     <string name="apk_link_hint">Get latest version:</string>
 
+    <!-- Edit -->
+    <string name="rotateLeft">Rotate Left</string>
+    <string name="rotateRight">Rotate Right</string>
+    <string name="save">Save</string>
+
     <!-- Temp -->
     <string name="tempDisplayName">Libraries</string>
 
