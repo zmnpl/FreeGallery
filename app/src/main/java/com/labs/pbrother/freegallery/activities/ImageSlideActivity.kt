@@ -30,17 +30,20 @@ import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_image_slide.*
 import kotlinx.android.synthetic.main.singlepicture_toolbar.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.uiThread
 import java.io.File
 
 class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListener, ImagePropertyDialogFragment.ImagePropertyDialogListener {
 
+    private val EDIT_ACTIVITY = 0
+
     // providers
     private var serviceBound = false
     private lateinit var viewModel: ImageSlideActivityViewModel
 
-    // instance stated
+    // instance states
     private val CID: String = "collectionId"
     private val ITEM_INDEX: String = "itemIndex"
     private val ITEM_ID: String = "itemId"
@@ -126,6 +129,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == EDIT_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) {
+
+        }
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
@@ -331,6 +338,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             CropImage.activity(uri)
                     .start(this)
         }
+return;
+        var uristring = viewModel.itemAt(pager.currentItem)?.fileUrl
+        startActivityForResult(
+                intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring),
+                EDIT_ACTIVITY)
     }
 
 
