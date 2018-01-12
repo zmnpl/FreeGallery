@@ -2,23 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
-        android:id="@+id/menu_rotLeft"
+        android:id="@+id/menu_save"
         android:orderInCategory="100"
-        android:title="@string/rotateLeft"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_save_white_24dp"
+        android:title="@string/save"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_rotRight"
-        android:orderInCategory="110"
+        android:orderInCategory="120"
+        android:icon="@drawable/ic_rotate_right_white_24dp"
         android:title="@string/rotateRight"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_save"
-        android:orderInCategory="120"
-        android:title="@string/save"
-        app:showAsAction="never" />
+        android:id="@+id/menu_flipHorizontal"
+        android:orderInCategory="130"
+        android:icon="@drawable/ic_flip_white_24dp"
+        android:title="@string/flipHorizontal"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_flipVertical"
+        android:orderInCategory="140"
+        android:icon="@drawable/ic_flip_white_24dp"
+        android:title="@string/flipVertical"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
 
 </menu>

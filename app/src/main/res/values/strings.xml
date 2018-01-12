@@ -17,9 +17,12 @@
     <string name="apk_link_hint">Get latest version:</string>
 
     <!-- Edit -->
-    <string name="rotateLeft">Rotate Left</string>
+    <string name="editToolbarText">Edit</string>
     <string name="rotateRight">Rotate Right</string>
     <string name="save">Save</string>
+    <string name="flipHorizontal">Flip Horizontal</string>
+    <string name="flipVertical">Flip Vertical</string>
+    <string name="saveCompleteToast">Saved. Good edit, you are great!</string>
 
     <!-- Temp -->
     <string name="tempDisplayName">Libraries</string>

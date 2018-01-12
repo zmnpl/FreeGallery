@@ -333,12 +333,12 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     private fun edit() {
         // start cropping activity for pre-acquired image saved on the device
-        val uri = Uri.parse(viewModel.itemAt(pager.currentItem)?.fileUrl)
+        /*val uri = Uri.parse(viewModel.itemAt(pager.currentItem)?.fileUrl)
         if (null != uri) {
             CropImage.activity(uri)
                     .start(this)
         }
-return;
+        return*/
         var uristring = viewModel.itemAt(pager.currentItem)?.fileUrl
         startActivityForResult(
                 intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring),

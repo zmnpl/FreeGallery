@@ -191,6 +191,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                             if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
                             collectionId = it.id
                             refresh(true, false, true, false)
+                            invalidateOptionsMenu()
                         }
                         false
                     }
