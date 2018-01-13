@@ -6,19 +6,18 @@ import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 
 class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListener {
 

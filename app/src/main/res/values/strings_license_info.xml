@@ -22,6 +22,10 @@
     <string name="licenseViewLink">https://github.com/LarsWerkman/LicenseView</string>
     <string name="licenseViewInfo">LicenseView by Lars Werkmann is licensed under Apache 2.0</string>
 
+    <string name="cropperName">Android Image Cropper</string>
+    <string name="cropperLink">https://github.com/ArthurHub/Android-Image-Cropper</string>
+    <string name="cropperInfo">Android Image Cropper by Arthur Hub is licensed under Apache 2.0</string>
+
     <string name="materialDrawerName">Material Drawer</string>
     <string name="materialDrawerLink">https://github.com/mikepenz/MaterialDrawer</string>
     <string name="materialDrawerInfo">Material Drawer by Mike Penz is licensed under Apache 2.0</string>
