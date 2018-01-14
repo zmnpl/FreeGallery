@@ -215,7 +215,7 @@ internal class MediaResolver(private val context: Context) {
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
         val tags = db.itemTags()
-        db.getPathsForTag(tag).mapTo(items) {
+        val x = db.getPathsForTag(tag).mapTo(items) {
             makeSingleItemFromPath(it, tags)
         }
         return items

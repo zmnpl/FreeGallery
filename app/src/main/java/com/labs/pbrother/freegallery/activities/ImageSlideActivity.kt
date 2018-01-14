@@ -132,6 +132,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == EDIT_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(CROP_SAVED, false)) {
             doAsync {
+                resultIntent.putExtra(CROP_SAVED, true)
                 val from = data.getStringExtra(ORIGINAL_PATH)
                 val to = data.getStringExtra(NEW_VERSION_PATH)
                 viewModel.copyTags(from, to)

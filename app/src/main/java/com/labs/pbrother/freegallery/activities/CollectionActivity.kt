@@ -123,7 +123,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(DELETION, false)) {
+        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK &&
+                (data.getBooleanExtra(DELETION, false) || data.getBooleanExtra(CROP_SAVED, false))) {
             refresh(false, false, true, false)
         }
     }
@@ -330,6 +331,10 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
                 applyZoom(+1)
                 return true
             }
+            R.id.menu_selectAll -> {
+                selectAll()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -422,6 +427,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun restore() {
+        informCallerOfChange()
         swipeRefreshCollection.isRefreshing = true
         doAsync {
             viewModel.restoreItems(viewModel.selectedItems(adapter.getSelectedItems()))
@@ -502,6 +508,18 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         toggleSelection(position)
 
         return true
+    }
+
+    private fun selectAll() {
+        if(null == actionMode) {
+            actionMode = startSupportActionMode(actionModeCallback)
+        }
+        adapter.clearSelection()
+        var i = 0;
+        while(i < adapter.itemCount) {
+            adapter.toggleSelection(i)
+            i++
+        }
     }
 
     // Toggle the selection state of an item.
