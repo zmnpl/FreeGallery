@@ -215,6 +215,20 @@ class MyDb(val context: Context) {
         return 0
     }
 
+    fun copyTags(fromID: String, toID: String) {
+        val tags = itemTags().get(fromID)?.toList() ?: ArrayList<String>()
+        val db = dbHelper.writableDatabase
+
+        for (tag in tags) {
+            try {
+                db.insertOrThrow(Tag.TABLE_NAME, Tag.COLUMN_ITEM_TAG to toID + "@" + tag, Tag.COLUMN_TAG to tag, Tag.COLUMN_ITEM_ID to toID)
+            } catch (e: Exception) {
+                // item was already tagged with this one
+                if (e is SQLiteConstraintException) { }
+            }
+        }
+    }
+
     // Collection Meta operations
 
     /**

@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.activities.EditActivity.Companion.NEW_VERSION_PATH
+import com.labs.pbrother.freegallery.activities.EditActivity.Companion.ORIGINAL_PATH
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TPYE_VIDEO
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
@@ -26,7 +28,6 @@ import com.labs.pbrother.freegallery.fragments.ImagePageFragment
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.DepthPageTransformer
-import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_image_slide.*
 import kotlinx.android.synthetic.main.singlepicture_toolbar.*
 import org.jetbrains.anko.doAsync
@@ -129,16 +130,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == EDIT_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) {
-
-        }
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            val result = CropImage.getActivityResult(data)
-            if (resultCode == Activity.RESULT_OK) {
-                val resultUri = result.uri
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
+        if (requestCode == EDIT_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(CROP_SAVED, false)) {
+            doAsync {
+                val from = data.getStringExtra(ORIGINAL_PATH)
+                val to = data.getStringExtra(NEW_VERSION_PATH)
+                viewModel.copyTags(from, to)
             }
         }
     }
@@ -332,17 +328,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun edit() {
-        // start cropping activity for pre-acquired image saved on the device
-        /*val uri = Uri.parse(viewModel.itemAt(pager.currentItem)?.fileUrl)
-        if (null != uri) {
-            CropImage.activity(uri)
-                    .start(this)
-        }
-        return*/
         var uristring = viewModel.itemAt(pager.currentItem)?.fileUrl
         startActivityForResult(
-                intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring),
-                EDIT_ACTIVITY)
+                intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY)
     }
 
 

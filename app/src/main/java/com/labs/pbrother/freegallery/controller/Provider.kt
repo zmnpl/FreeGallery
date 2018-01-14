@@ -227,6 +227,10 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         tagCache.add(tag)
     }
 
+    fun copyTags(fromID: String, toID: String) {
+        MyDb(applicationContext).copyTags(fromID, toID)
+    }
+
     override fun untagItem(item: Item, tag: String) {
         val db = MyDb(applicationContext)
         item.untag(tag)

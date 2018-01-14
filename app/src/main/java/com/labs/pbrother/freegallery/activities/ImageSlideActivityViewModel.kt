@@ -40,6 +40,10 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun tagItems(items: List<Item>, tag: String) = items.forEach { tagItem(it, tag) }
 
+    fun copyTags(oldPath: String, newPath: String) {
+        foo.copyTags(oldPath, newPath)
+    }
+
     fun tagItem(item: Item?, tag: String) = if (null != item) {
         foo.tagItem(item, tag)
     } else {

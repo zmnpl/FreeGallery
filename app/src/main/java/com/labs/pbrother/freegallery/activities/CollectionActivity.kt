@@ -276,9 +276,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
             inflater.inflate(R.menu.menu_collection, menu)
-            if (viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
-                val deleteTagMenuItem = menu.findItem(R.id.menu_deleteTag)
-                deleteTagMenuItem?.isVisible = true
+            if (viewModel.collectionType == TYPE_TAG && collectionId != getString(R.string.timelineName)) {
+                menu.findItem(R.id.menu_deleteTag)?.isVisible = true
             }
         }
 

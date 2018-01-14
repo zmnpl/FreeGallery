@@ -27,20 +27,27 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     companion object {
         val EXTRA_URI_STRING = "itemuri"
+
+        val ORIGINAL_PATH = "originalPath"
+        val NEW_VERSION_PATH = "newVersionPath"
     }
 
     private lateinit var itemUri: Uri
     private lateinit var cropper: CropImageView
 
+    private val resultIntent = Intent()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setResult(Activity.RESULT_OK, Intent())
+        setResult(Activity.RESULT_OK, resultIntent)
         setContentView(R.layout.activity_edit)
 
         setSupportActionBar(main_toolbar)
         supportActionBar?.title = getString(R.string.editToolbarText)
 
         itemUri = Uri.parse(intent.getStringExtra(EXTRA_URI_STRING) ?: "")
+        resultIntent.putExtra(ORIGINAL_PATH, itemUri.path)
+
         savedInstanceState?.apply {
 
         }
@@ -85,8 +92,8 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     private fun save() {
         val croppedBmp = cropper.croppedImage
+        var newFileName = versionedOutputFileName(itemUri.path)
         doAsync {
-            val newFileName = versionedOutputFileName(itemUri.path)
             val outStream = FileOutputStream(newFileName)
             croppedBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
             outStream?.close()
@@ -96,6 +103,8 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
                 toast(getString(R.string.saveCompleteToast))
             }
         }
+        resultIntent.putExtra(CROP_SAVED, true)
+        resultIntent.putExtra(NEW_VERSION_PATH, newFileName)
         finish()
     }
 

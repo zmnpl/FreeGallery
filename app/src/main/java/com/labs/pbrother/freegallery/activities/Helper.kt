@@ -21,16 +21,19 @@ val EXTRA_STARTING_POINT = "startingPoint"
 val EXTRA_SORT_ORDER = "sortOrder"
 val DELETION = "deletion"
 val SHOULD_RELOAD = "reload"
+val CROP_SAVED = "savedCroppedImage"
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()
             .withTag(item.id)
             .withName(item.displayName.removePrefix(tagLetter))
             .withIcon(Ionicons.Icon.ion_pound)
+            .withSelectedIconColor(item.color)
             .withBadge(item.count.toString())
             .withBadgeStyle(BadgeStyle(item.color, context.getColor(R.color.material_drawer_dark_background)))
             .withSelectedColor(adjustColorAlpha(item.color, 0.9F)) // Set some transparancy for selection to make badge and tag shine through
             .withSelectedIconColor(item.color)
+            .withSelectedTextColor(Color.WHITE)
 }
 
 fun tagSymbol(context: Context): IconicsDrawable {
