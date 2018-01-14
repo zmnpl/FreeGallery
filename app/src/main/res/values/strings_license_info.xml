@@ -37,4 +37,13 @@
     <string name="ionicsIconsName">ionicons</string>
     <string name="ionicsIconsLink">http://ionicons.com/</string>
     <string name="ionicsIconsInfo">ionicons is licensed unter MIT license</string>
+
+    <string name="kotlinName">Kotlin</string>
+    <string name="kotlinLink">https://kotlinlang.org/</string>
+    <string name="kotlinInfo">Kotlin by Jetbrains is licensed under Apache 2.0</string>
+
+    <string name="ankoName">Anko</string>
+    <string name="ankoLink">https://github.com/Kotlin/anko</string>
+    <string name="ankoInfo">Ank by Jetbrains is licensed under Apache 2.0</string>
+
 </resources>

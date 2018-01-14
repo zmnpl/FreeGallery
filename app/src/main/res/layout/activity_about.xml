@@ -338,7 +338,7 @@
                             android:id="@+id/about_ioniconsInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/ionicsIconsName"
+                            android:text="@string/ionicsIconsInfo"
                             android:textAppearance="@android:style/TextAppearance.Small" />
 
                         <TextView
@@ -350,8 +350,65 @@
                             android:textAppearance="@android:style/TextAppearance.Small" />
                     </LinearLayout>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/about_kotlin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/kotlinName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_kotlinInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/kotlinInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_kotlinLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/kotlinLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/about_anko"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ankoName"
+                            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                        <TextView
+                            android:id="@+id/about_ankoInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ankoInfo"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+
+                        <TextView
+                            android:id="@+id/about_ankoLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:text="@string/ankoLink"
+                            android:textAppearance="@android:style/TextAppearance.Small" />
+                    </LinearLayout>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
