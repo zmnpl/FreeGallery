@@ -36,8 +36,6 @@
                 android:value=".activities.MainActivity" />
         </activity>
 
-        <service android:name=".controller.MyService" />
-
         <activity
             android:name=".activities.ImageSlideActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
