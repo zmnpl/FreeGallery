@@ -16,6 +16,7 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
@@ -347,11 +348,12 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     @TargetApi(Build.VERSION_CODES.M)
     private fun requestPermissions() {
-        val check = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        if (PackageManager.PERMISSION_GRANTED != check) {
+        val checkRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val checkWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (PackageManager.PERMISSION_GRANTED != checkRead || PackageManager.PERMISSION_GRANTED != checkWrite) {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_CONTACTS)) {
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 // TODO
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -359,8 +361,10 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
             } else {
                 // No explanation needed, we can request the permission.
-                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        SettingsHelper.PERMISSION_READ_STORAGE)
+                requestPermissions(
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        PERMISSION_READ_WRITE_STORAGE
+                )
             }
         } else {
             permissionsGood = true
@@ -368,16 +372,16 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == SettingsHelper.PERMISSION_READ_STORAGE) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted, yay!
-                permissionsGood = true
-                buildUiSafe()
-            } else {
-                // permission denied, boo!
+        when (requestCode) {
+            PERMISSION_READ_WRITE_STORAGE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionsGood = true
+                    buildUiSafe()
+                } else {
+                    Toast.makeText(application, getString(R.string.noReadPermissionToast), Toast.LENGTH_LONG)
+                    finish()
+                }
             }
-            return
         }
     }
 

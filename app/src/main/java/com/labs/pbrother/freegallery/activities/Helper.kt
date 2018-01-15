@@ -13,6 +13,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
  * Created by simon on 10.09.17.
  */
 val STARTED_FROM_ACTIVITY = 1
+val PERMISSION_READ_WRITE_STORAGE = 1337
+val PERMISSION_WRITE_STORAGE = 1338
 
 val EXTRA_COLLECTIONID = "collectionId"
 val EXTRA_COLLECTION_INDEX = "collectionIndex"
@@ -22,6 +24,7 @@ val EXTRA_SORT_ORDER = "sortOrder"
 val DELETION = "deletion"
 val SHOULD_RELOAD = "reload"
 val CROP_SAVED = "savedCroppedImage"
+
 
 fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
     return PrimaryDrawerItem()

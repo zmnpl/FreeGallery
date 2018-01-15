@@ -15,8 +15,6 @@ class SettingsHelper(val context: Context) {
 
     companion object {
         @JvmStatic
-        val PERMISSION_READ_STORAGE = 1337
-        @JvmStatic
         val ORDER_BY_DATE_TAKEN = 0
         @JvmStatic
         val ORDER_BY_DATE_ADDED = 1

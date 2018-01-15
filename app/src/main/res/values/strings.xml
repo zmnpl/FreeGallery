@@ -10,6 +10,8 @@
     <string name="tagLetterMenu">   #   </string>
     <string name="openDrawer" tools:keep="@string/openDrawer">open</string>
     <string name="buttonOpenLicenseTexts">Show full licenses for all libraries</string>
+    <string name="noWritePermissionToast">No write permission, no edit.</string>
+    <string name="noReadPermissionToast">No read permission, no gallery :(</string>
 
     <!-- About -->
     <string name="aboutLibs">Libraries</string>
