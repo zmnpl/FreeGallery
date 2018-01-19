@@ -1,10 +1,12 @@
 package com.labs.pbrother.freegallery.fragments
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
+import android.support.v7.graphics.Palette
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,8 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import kotlinx.android.synthetic.main.fragment_singlepicture_slide_page.view.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.io.File
 
 
@@ -64,6 +68,17 @@ class ImagePageFragment() : Fragment() {
                         setMinimumTileDpi(196) // 196 -> recommendation from franciscofranco on github
                         setImage(ImageSource.uri(item.path))
                         setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+
+                        doAsync {
+                            val foo = Palette.from(BitmapFactory.decodeFile(item.path)).generate()
+                            var color = foo.getMutedColor(0)
+                            if (0 == color) foo.getDarkMutedColor(0)
+                            if (0 == color) color = foo.getDarkVibrantColor(0)
+                            if (0 == color) color = foo.getVibrantColor(0)
+                            uiThread {
+                                imageView.setBackgroundColor(color)
+                            }
+                        }
                     }
                 }
             }

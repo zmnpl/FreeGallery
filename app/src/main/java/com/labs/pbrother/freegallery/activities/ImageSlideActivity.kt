@@ -144,7 +144,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         outState.apply {
             putString(CID, collectionId)
             putInt(ITEM_INDEX, itemIndex)
-            putString(ITEM_ID, viewModel.itemIdOf(pager.currentItem))
+            putString(ITEM_ID, viewModel.itemIdOf(image_pager.currentItem))
             putBoolean(DELETED_SMTTH, deletedSmth)
         }
         super.onSaveInstanceState(outState)
@@ -172,7 +172,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onStop() {
         super.onStop()
         // catch index of item, where we jumped away
-        itemIndex = pager.currentItem
+        itemIndex = image_pager.currentItem
     }
 
     override fun onDestroy() {
@@ -201,10 +201,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun makeViewPager(items: List<Item>) {
-        pager.offscreenPageLimit = 2
-        pager.adapter = ScreenSlidePagerAdapter(items, supportFragmentManager)
-        pager.currentItem = itemIndex
-        pager.setPageTransformer(true, DepthPageTransformer())
+        image_pager.offscreenPageLimit = 2
+        image_pager.adapter = ScreenSlidePagerAdapter(items, supportFragmentManager)
+        image_pager.currentItem = itemIndex
+        image_pager.setPageTransformer(true, DepthPageTransformer())
     }
 
     // Actions, Dialogs and actions on those
@@ -242,7 +242,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Shows dialog with image information
     private fun showImageProperties() {
         val diag = ImagePropertyDialogFragment()
-        val which = viewModel.itemAt(pager.currentItem)
+        val which = viewModel.itemAt(image_pager.currentItem)
         if (null != which) {
             diag.setItem(which)
             diag.show(this.fragmentManager, "imagepropertydialog")
@@ -260,7 +260,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     // Callback, receives result from tag dialog
-    override fun tagOk(tag: String) = viewModel.tagItem(viewModel.itemAt(pager.currentItem), tag)
+    override fun tagOk(tag: String) = viewModel.tagItem(viewModel.itemAt(image_pager.currentItem), tag)
 
     // Callback if tag dialog was canceled
     override fun tagCancel() {}
@@ -268,7 +268,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Reaction to toolbar button click
     // Delete image ... (!)
     private fun delete() {
-        val index = pager.currentItem
+        val index = image_pager.currentItem
         val itemToDelete = viewModel.itemAt(index)
 
         if (null != itemToDelete) {
@@ -277,14 +277,14 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             doAsync {
                 val remaining = viewModel.removeItem(itemToDelete)
                 uiThread {
-                    pager.adapter?.notifyDataSetChanged()
+                    image_pager.adapter?.notifyDataSetChanged()
                     longToast(R.string.DeleteSnackbarSingleInfo)
                     if (0 == remaining) {
                         finish()
                     } else {
                         when {
-                            index < remaining -> pager.currentItem = index
-                            index == remaining -> pager.currentItem = index - 1
+                            index < remaining -> image_pager.currentItem = index
+                            index == remaining -> image_pager.currentItem = index - 1
                         }
                     }
                 }
@@ -295,7 +295,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Reaction to toolbar button click
     // Shares currently displayed picture via intent so user can share with other apps
     private fun share() {
-        val item = viewModel.itemAt(pager.currentItem)
+        val item = viewModel.itemAt(image_pager.currentItem)
         val intent = Intent(Intent.ACTION_SEND)
         if (item?.type == TPYE_VIDEO) {
             intent.type = "video/*"
@@ -315,7 +315,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // Sends intent to set the image as ... something
     private fun setAs() {
         // Do nothing for videos
-        val item = viewModel.itemAt(pager.currentItem)
+        val item = viewModel.itemAt(image_pager.currentItem)
         if (item?.type != TYPE_IMAGE) {
             Toast.makeText(this, getString(R.string.SetVideoAsMakesNoSense), Toast.LENGTH_SHORT).show()
             return
@@ -329,7 +329,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun edit() {
-        var uristring = viewModel.itemAt(pager.currentItem)?.fileUrl
+        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUrl
         startActivityForResult(
                 intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY)
     }
