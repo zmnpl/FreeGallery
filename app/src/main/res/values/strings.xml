@@ -94,6 +94,7 @@
     <string name="prefAccentColor">Accent Color</string>
     <string name="prefStyleTitlebarcolorTitle">Use collection color for title bar</string>
     <string name="prefStyleHideDrawerHeader">Hide drawer header</string>
+    <string name="prefStyleImageBackgroundColor">Use part of image color as background</string>
 
     <!-- Color -->
     <string name="prefStyleColorTitle">Base Color</string>

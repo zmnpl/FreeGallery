@@ -28,6 +28,8 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         private val KEY_PREF_STYLE_COLORTITLE = "pref_key_style_colorize_title"
         @JvmStatic
+        private val KEY_PREF_STYLE_COLOR_IMAGE_BACKGROUND = "pref_key_style_colorize_imagebackground"
+        @JvmStatic
         private val KEY_PREF_STYLE_HIDE_DRAWER_HEADER = "pref_key_style_hide_drawer_header"
         @JvmStatic
         val KEY_PREF_ORDER_BY = "pref_key_order_by"
@@ -91,6 +93,11 @@ class SettingsHelper(val context: Context) {
                     ORDER_BY_DATE_ADDED
                 }
             }
+        }
+
+    val useImageColorAsBackground: Boolean
+        get() {
+            return sharedPref.getBoolean(KEY_PREF_STYLE_COLOR_IMAGE_BACKGROUND, true)
         }
 
     val theme: Int

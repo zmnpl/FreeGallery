@@ -26,6 +26,11 @@
             android:title="@string/prefStyleTitlebarcolorTitle" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_key_style_colorize_imagebackground"
+            android:title="@string/prefStyleImageBackgroundColor" />
+
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_key_style_hide_drawer_header"
             android:title="@string/prefStyleHideDrawerHeader" />

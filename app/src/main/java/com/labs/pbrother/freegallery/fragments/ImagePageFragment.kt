@@ -20,6 +20,7 @@ import com.labs.pbrother.freegallery.BuildConfig
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
+import com.labs.pbrother.freegallery.settings.SettingsHelper
 import kotlinx.android.synthetic.main.fragment_singlepicture_slide_page.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -36,15 +37,19 @@ class ImagePageFragment() : Fragment() {
     private lateinit var vidIcon: ImageView
     private lateinit var gestureDetector: GestureDetector
     private lateinit var item: Item
+    private lateinit var settings: SettingsHelper
+    private var useImageColorAsBackground = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = false
+        settings = SettingsHelper(activity!!.applicationContext)
+        useImageColorAsBackground = settings.useImageColorAsBackground
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val rootView = inflater!!.inflate(
+        val rootView = inflater.inflate(
                 R.layout.fragment_singlepicture_slide_page, container, false) as ViewGroup
 
         imageView = rootView.singlepicture_scrollview_Pic
@@ -69,16 +74,7 @@ class ImagePageFragment() : Fragment() {
                         setImage(ImageSource.uri(item.path))
                         setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
 
-                        doAsync {
-                            val foo = Palette.from(BitmapFactory.decodeFile(item.path)).generate()
-                            var color = foo.getMutedColor(0)
-                            if (0 == color) foo.getDarkMutedColor(0)
-                            if (0 == color) color = foo.getDarkVibrantColor(0)
-                            if (0 == color) color = foo.getVibrantColor(0)
-                            uiThread {
-                                imageView.setBackgroundColor(color)
-                            }
-                        }
+                        setBackgroundColorBasedOnImage()
                     }
                 }
             }
@@ -104,6 +100,21 @@ class ImagePageFragment() : Fragment() {
         }
 
         return rootView
+    }
+
+    fun setBackgroundColorBasedOnImage() {
+        if (useImageColorAsBackground) {
+            doAsync {
+                val foo = Palette.from(BitmapFactory.decodeFile(item.path)).generate()
+                var color = foo.getDarkVibrantColor(0)
+                if (0 == color) foo.getDarkMutedColor(0)
+                if (0 == color) color = foo.getVibrantColor(0)
+                if (0 == color) color = foo.getMutedColor(0)
+                uiThread {
+                    imageView.setBackgroundColor(color)
+                }
+            }
+        }
     }
 
     fun setmGestureDetector(gestureDetector: GestureDetector) {
