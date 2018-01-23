@@ -511,12 +511,12 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun selectAll() {
-        if(null == actionMode) {
+        if (null == actionMode) {
             actionMode = startSupportActionMode(actionModeCallback)
         }
         adapter.clearSelection()
         var i = 0;
-        while(i < adapter.itemCount) {
+        while (i < adapter.itemCount) {
             adapter.toggleSelection(i)
             i++
         }

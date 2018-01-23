@@ -80,9 +80,8 @@ class MyDb(val context: Context) {
     }
 
     fun collectionMetaFor(id: String): CollectionMeta? {
-        return dbHelper.readableDatabase.
-                select(CollectionMetaEntry.TABLE_NAME,
-                        *collectionMetaProjection)
+        return dbHelper.readableDatabase.select(CollectionMetaEntry.TABLE_NAME,
+                *collectionMetaProjection)
                 .whereArgs("(${CollectionMetaEntry.COLUMN_COLLECTION_ID} = {id})",
                         "id" to id)
                 .parseOpt(collectionMetaParser)
@@ -224,7 +223,8 @@ class MyDb(val context: Context) {
                 db.insertOrThrow(Tag.TABLE_NAME, Tag.COLUMN_ITEM_TAG to toID + "@" + tag, Tag.COLUMN_TAG to tag, Tag.COLUMN_ITEM_ID to toID)
             } catch (e: Exception) {
                 // item was already tagged with this one
-                if (e is SQLiteConstraintException) { }
+                if (e is SQLiteConstraintException) {
+                }
             }
         }
     }

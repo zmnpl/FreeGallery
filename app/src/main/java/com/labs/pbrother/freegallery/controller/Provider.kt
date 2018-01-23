@@ -4,7 +4,6 @@ import android.app.Application
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.SparseArray
 import com.labs.pbrother.freegallery.R
@@ -67,7 +66,9 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
             return ArrayList(items.values)
         }
 
-    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id] ?: itemsFor(ci, sortOrder)
+    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id]
+            ?: itemsFor(ci, sortOrder)
+
     fun itemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> {
         val items = resolver.itemsForCollection(ci, sortOrder)
         val itemsList = ArrayList(items)

@@ -98,7 +98,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         singlepicture_Toolbar.popupTheme = settings.theme
         singlepicture_tag.background = tagSymbol(this)
 
-        if(collectionId == getString(R.string.trashName)) {
+        if (collectionId == getString(R.string.trashName)) {
             singlepicture_tag.visibility = View.INVISIBLE
             singlepicture_share.visibility = View.INVISIBLE
         }
