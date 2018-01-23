@@ -11,6 +11,7 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import kotlinx.android.synthetic.main.dialog_itemroperties.*
+import java.io.File
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,8 +62,8 @@ class ImagePropertyDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-
-        dialog.imgproperty_txtPath.text = item.path
+        val f = File(item.path)
+        dialog.imgproperty_txtPath.text = f?.parent ?: ""
         dialog.imgproperty_txtTags.text = item.tagString
         dialog.imgproperty_txtName.text = item.fileName
         dialog.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)

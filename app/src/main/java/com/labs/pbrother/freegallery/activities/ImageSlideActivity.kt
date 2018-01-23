@@ -96,7 +96,12 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         // toolbar
         setSupportActionBar(singlepicture_Toolbar)
         singlepicture_Toolbar.popupTheme = settings.theme
-        singlepicture_snakeTag.background = tagSymbol(this)
+        singlepicture_tag.background = tagSymbol(this)
+
+        if(collectionId == getString(R.string.trashName)) {
+            singlepicture_tag.visibility = View.INVISIBLE
+            singlepicture_share.visibility = View.INVISIBLE
+        }
 
         // toolbar button clicks
         singlepicture_infoButton.setOnClickListener { showImageProperties() }
@@ -212,8 +217,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Create toolbar menu
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_singlepicture, menu)
+        if (collectionId != getString(R.string.trashName)) {
+            val inflater = menuInflater
+            inflater.inflate(R.menu.menu_singlepicture, menu)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.SparseArray
 import com.labs.pbrother.freegallery.R
@@ -113,7 +114,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     fun trashItems(items: List<Item>): Int {
         val id = Random().nextInt(999999)
-        deletions.put(id, delete(items))
+        deletions.put(id, sendToTrash(items))
         return id
     }
 
@@ -139,14 +140,21 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         return true
     }
 
-    fun delete(items: List<Item>): ArrayList<TrashLog> {
+    fun sendToTrash(items: List<Item>): ArrayList<TrashLog> {
         // log: original path , trash path
         val log = ArrayList<TrashLog>()
         val db = MyDb(applicationContext)
 
         items.forEach {
             val currentFile = File(it.path)
-            val trashFile = File(currentFile.parent + "/." + currentFile.name)
+
+            val parent = currentFile.parent
+            //val trashFile = File(parent + "/." + currentFile.name)
+            val trashFile = File(parent + "/trash/" + currentFile.name)
+
+
+            File(parent + "/" + "trash").mkdirs()
+            File(parent + "/" + "trash/.nomedia").createNewFile()
 
             if (currentFile.exists()) {
                 currentFile.renameTo(trashFile)
@@ -190,7 +198,8 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
         items.forEach {
             val trashFile = File(it.path)
-            val restoredFile = File(trashFile.parent + "/" + trashFile.name.removePrefix("."))
+            //val restoredFile = File(trashFile.parent + "/" + trashFile.name.removePrefix("."))
+            val restoredFile = File(trashFile.parent.removeSuffix("trash/") + trashFile.name)
 
             if (trashFile.exists() && !restoredFile.exists()) {
                 untrash.add(trashFile.path)
