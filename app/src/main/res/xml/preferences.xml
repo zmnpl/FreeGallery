@@ -42,7 +42,7 @@
 
         <ListPreference
             android:defaultValue="@string/prefOrderByDefault"
-            android:dialogTitle="@string/prefOrderByDialogTitle"
+            android:dialogTitle="..."
             android:entries="@array/prefOrderByEntries"
             android:entryValues="@array/prefOrderByEntries"
             android:key="pref_key_order_by"

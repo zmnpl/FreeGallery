@@ -41,7 +41,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private val EDIT_ACTIVITY = 0
 
     // providers
-    private var serviceBound = false
     private lateinit var viewModel: ImageSlideActivityViewModel
 
     // instance states
@@ -101,12 +100,13 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         if (collectionId == getString(R.string.trashName)) {
             singlepicture_tag.visibility = View.INVISIBLE
             singlepicture_share.visibility = View.INVISIBLE
+        } else {
+            singlepicture_snakeTagButton.setOnClickListener { tag() }
+            singlepicture_shareButton.setOnClickListener { share() }
         }
-
         // toolbar button clicks
         singlepicture_infoButton.setOnClickListener { showImageProperties() }
-        singlepicture_snakeTagButton.setOnClickListener { tag() }
-        singlepicture_shareButton.setOnClickListener { share() }
+
 
         // register GestureDetector for
         registerGestureDetector()

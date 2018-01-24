@@ -15,6 +15,8 @@ import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
+import android.R.attr.path
+import android.support.v4.content.FileProvider
 
 
 /**
@@ -150,24 +152,28 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
             val currentFile = File(it.path)
 
             val parent = currentFile.parent
-            //val trashFile = File(parent + "/." + currentFile.name)
-            val trashFile = File(parent + "/trash/" + currentFile.name)
+            val trashFile = File(parent + "/." + currentFile.name)
 
-
-            File(parent + "/" + "trash").mkdirs()
-            File(parent + "/" + "trash/.nomedia").createNewFile()
+            //val trashFile = File(parent + "/trash/" + currentFile.name)
+            //File(parent + "/" + "trash").mkdirs()
+            //File(parent + "/" + "trash/.nomedia").createNewFile()
 
             if (currentFile.exists()) {
+                val oldPath = currentFile.path
+
                 currentFile.renameTo(trashFile)
                 log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
                 db.insertUpdateTrashedItem(trashFile.path, if ("" != it.path) it.type else -1)
+
+                val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
+                val d = applicationContext.getContentResolver().delete(uri,MediaStore.MediaColumns.DATA + "=?", arrayOf<String>(currentFile.path))
+                print(d)
                 // TODO - update cache (?)
             }
         }
 
         // scan old paths
-        val foo = log.map { it.originalPath }
-        val work = foo.toTypedArray<String>()
+        val work = log.map { it.originalPath }.toTypedArray<String>()
         MediaScannerConnection.scanFile(applicationContext, work, null, null)
 
         return log
@@ -199,8 +205,8 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
         items.forEach {
             val trashFile = File(it.path)
-            //val restoredFile = File(trashFile.parent + "/" + trashFile.name.removePrefix("."))
-            val restoredFile = File(trashFile.parent.removeSuffix("trash/") + trashFile.name)
+            val restoredFile = File(trashFile.parent + "/" + trashFile.name.removePrefix("."))
+            //val restoredFile = File(trashFile.parent.removeSuffix("trash/") + trashFile.name)
 
             if (trashFile.exists() && !restoredFile.exists()) {
                 untrash.add(trashFile.path)

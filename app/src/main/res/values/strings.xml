@@ -92,9 +92,9 @@
     <string name="prefCategoryBehave">Behaviour</string>
     <string name="prefLicense">About</string>
     <string name="prefAccentColor">Accent Color</string>
-    <string name="prefStyleTitlebarcolorTitle">Use collection color for title bar</string>
-    <string name="prefStyleHideDrawerHeader">Hide drawer header</string>
-    <string name="prefStyleImageBackgroundColor">Use part of image color as background</string>
+    <string name="prefStyleTitlebarcolorTitle">Colored title bars</string>
+    <string name="prefStyleHideDrawerHeader">Hide the bird</string>
+    <string name="prefStyleImageBackgroundColor">Colored image backgrounds</string>
 
     <!-- Color -->
     <string name="prefStyleColorTitle">Base Color</string>
