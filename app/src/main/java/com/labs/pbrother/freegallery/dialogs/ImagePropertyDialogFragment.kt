@@ -5,6 +5,7 @@ import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
 import android.view.WindowManager
 
 import com.labs.pbrother.freegallery.R
@@ -65,6 +66,10 @@ class ImagePropertyDialogFragment : DialogFragment() {
         val f = File(item.path)
         dialog.imgproperty_txtPath.text = f?.parent ?: ""
         dialog.imgproperty_txtTags.text = item.tagString
+        if (item.tagString.length == 0) {
+            dialog.imgproperty_lblTags.visibility = View.INVISIBLE
+            dialog.imgproperty_txtTags.visibility = View.INVISIBLE
+        }
         dialog.imgproperty_txtName.text = item.fileName
         dialog.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
         dialog.imgproperty_txtSize.text = byteSizeToNiceString(item.size)

@@ -124,11 +124,4 @@ class ImagePageFragment() : Fragment() {
     fun setItem(item: Item) {
         this.item = item
     }
-
-    fun rotate90(multi: Int) {
-        // TODO - code not complete by far
-        val rotation = AnimationUtils.loadAnimation(this.activity, R.anim.rotate90)
-        imageView.orientation = 90
-        imageView.startAnimation(rotation)
-    }
 }

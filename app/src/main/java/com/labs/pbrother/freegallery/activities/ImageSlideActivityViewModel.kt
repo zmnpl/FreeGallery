@@ -67,9 +67,10 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
         return uris
     }
 
-    fun namingMethodsIsHard(path: String) {
+    fun getItemForExternalUri(uri: Uri) {
         val itms = ArrayList<Item>()
-        itms.add(Item(type = TYPE_IMAGE, path = path))
+        val itm = foo.itemForUri(uri)
+        itms.add(itm)
         items.postValue(itms)
 
         // Branch for when Activity gets called by intent from other app

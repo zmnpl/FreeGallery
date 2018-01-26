@@ -65,7 +65,7 @@ internal class MediaResolver(private val context: Context) {
                             type = TYPE_FOLDER,
                             thumb = thumb.path,
                             count = countBucket(c.getString(0)),
-                            color = settings.higlightColor
+                            color = settings.defaultCollectionColor
                     )
                     val meta = collectionMeta[ci.id]
                     if (null != meta) ci.infuseMeta(meta)
@@ -102,7 +102,7 @@ internal class MediaResolver(private val context: Context) {
                     type = TYPE_TAG,
                     thumb = db.thumbForTrash,
                     count = db.countTrashItems(),
-                    color = settings.higlightColor)
+                    color = settings.defaultCollectionColor)
 
             val meta = db.collectionMetaFor(trash.id)
             if (null != meta) trash.infuseMeta(meta)
@@ -119,7 +119,7 @@ internal class MediaResolver(private val context: Context) {
                         type = TYPE_TAG,
                         thumb = db.getThumbForTag(tag),
                         count = db.countItemsForTag(tag),
-                        color = settings.higlightColor)
+                        color = settings.defaultCollectionColor)
 
                 val meta = collectionMeta[itm.id]
                 if (null != meta) itm.infuseMeta(meta)
@@ -215,8 +215,10 @@ internal class MediaResolver(private val context: Context) {
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
         val tags = db.itemTags()
-        val x = db.getPathsForTag(tag).mapTo(items) {
-            makeSingleItemFromPath(it, tags)
+        val x = db.getPathsForTag(tag).forEach {
+            val itm = makeSingleItemFromPath(it)
+            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+            items.add(itm)
         }
         return items
     }
@@ -247,7 +249,7 @@ internal class MediaResolver(private val context: Context) {
         return items
     }
 
-    private fun makeSingleItemFromPath(path: String, tags: HashMap<String, HashSet<String>>): Item {
+    fun makeSingleItemFromPath(path: String): Item {
         val IMAGE_SELECTION = MediaStore.Images.Media.DATA + " = (?) "
         val VID_SELECTION = MediaStore.Video.Media.DATA + " = (?) "
 
@@ -273,7 +275,6 @@ internal class MediaResolver(private val context: Context) {
                     c.getInt(HEIGHT),
                     c.getLong(LAT).toDouble(),
                     c.getLong(LONG).toDouble())
-            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
             return itm
         }
 
@@ -295,7 +296,6 @@ internal class MediaResolver(private val context: Context) {
                     c.getInt(HEIGHT),
                     c.getLong(LAT).toDouble(),
                     c.getLong(LONG).toDouble())
-            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
             return itm
         }
         c.close()

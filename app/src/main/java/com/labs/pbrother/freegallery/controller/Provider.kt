@@ -15,8 +15,10 @@ import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
-import android.R.attr.path
 import android.support.v4.content.FileProvider
+import com.bumptech.glide.Glide
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 
 /**
@@ -82,6 +84,22 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         if (overviewCache.size == 0) overviewItems
         if (drawerCache.size == 0) drawerItems
         return overviewCache[collectionId] ?: drawerCache[collectionId] ?: CollectionItem()
+    }
+
+    fun itemForUri(uri: Uri): Item {
+        var cursor: Cursor? = null
+        var path = ""
+        try {
+            cursor = applicationContext.contentResolver.query(uri, IMAGE_PROJECTION, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                path = cursor.getString(PATH)
+            }
+        } catch (e: Exception) {
+        } finally {
+            cursor?.close()
+        }
+
+        return resolver.makeSingleItemFromPath(path)
     }
 
     fun collectionItemForImageUri(imageUri: Uri): CollectionItem {
@@ -162,12 +180,13 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
                 val oldPath = currentFile.path
 
                 currentFile.renameTo(trashFile)
+
                 log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
                 db.insertUpdateTrashedItem(trashFile.path, if ("" != it.path) it.type else -1)
 
                 val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
-                val d = applicationContext.getContentResolver().delete(uri,MediaStore.MediaColumns.DATA + "=?", arrayOf<String>(currentFile.path))
-                print(d)
+                val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
+
                 // TODO - update cache (?)
             }
         }
@@ -230,7 +249,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     override fun colorizeCollection(collection: CollectionItem, c: Int?) {
         var color = c
-        if (null == color) color = SettingsHelper(applicationContext).higlightColor
+        if (null == color) color = SettingsHelper(applicationContext).defaultCollectionColor
         val db = MyDb(applicationContext)
         collection.colorize(color)
         db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)

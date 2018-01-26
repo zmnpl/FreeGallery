@@ -125,7 +125,7 @@ class SettingsHelper(val context: Context) {
             }
         }
 
-    val higlightColor: Int
+    val defaultCollectionColor: Int
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
 

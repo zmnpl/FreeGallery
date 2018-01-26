@@ -45,7 +45,7 @@
         android:layout_height="@dimen/material_drawer_account_header_height"
         android:layout_gravity="end"
         android:paddingTop="24dp"
-        android:scaleType="fitStart"
+        android:scaleType="fitEnd"
         app:srcCompat="@mipmap/bgbird" />
 
 </FrameLayout>

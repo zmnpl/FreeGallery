@@ -198,9 +198,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
                 viewModel.refresh(collectionId)
             } else {
-                doAsync {
-                    viewModel.namingMethodsIsHard(intent.data.toString())
-                }
+                if (null != intent.data) viewModel.getItemForExternalUri(intent.data)
             }
         }
     }
@@ -236,10 +234,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
                 }
                 R.id.singlepicture_delete -> {
                     delete()
-                    true
-                }
-                R.id.singlepicture_rot90 -> {
-                    // TODO - rotation
                     true
                 }
                 else -> super.onOptionsItemSelected(item)

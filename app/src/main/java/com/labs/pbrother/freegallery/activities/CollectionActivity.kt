@@ -126,6 +126,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK &&
                 (data.getBooleanExtra(DELETION, false) || data.getBooleanExtra(CROP_SAVED, false))) {
             refresh(false, false, true, false)
+            informCallerOfChange()
         }
     }
 
@@ -149,7 +150,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             toolbar = main_toolbar
 
             displayBelowStatusBar = true
-            translucentStatusBar = true
+            translucentStatusBar = false
 
             actionBarDrawerToggleEnabled = true
             actionBarDrawerToggleAnimated = true
@@ -170,7 +171,14 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             }
 
             onSlide { drawerView, slideOffset ->
-                //translucentStatusBar = true
+                /*when(window.statusBarColor) {
+                    getColor(R.color.primary_dark) -> {
+                        colorizeTitlebar(viewModel.liveColor.value!!)
+                    }
+                    else -> {
+                        window.statusBarColor = settings.colorPrimaryDark
+                    }
+                }*/
             }
         }
 
@@ -243,11 +251,11 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private fun colorizeTitlebar(color: Int) {
         main_toolbar.setBackgroundColor(color)
 
-        if (color != settings.higlightColor) {
-            //window.statusBarColor = darkenColor(color, 0.5f)
-            window.statusBarColor = adjustColorAlpha(color, 0.75f)
+        if (color != settings.defaultCollectionColor) {
+            window.statusBarColor = adjustColorAlpha(color, 0.8f)
         } else {
-            //window.statusBarColor = settings.colorPrimaryDark
+            //window.statusBarColor = adjustColorAlpha(settings.colorPrimaryDark, 0.8f)
+            window.statusBarColor = settings.colorPrimaryDark
         }
     }
 
@@ -601,7 +609,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Callbacks
     override fun tagCancel() {}
-
     override fun tagOk(tag: String) {
         dataChanged = true
         informCallerOfChange()
