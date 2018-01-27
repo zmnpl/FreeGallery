@@ -47,7 +47,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private val CID: String = "cid"
     private val DATA_CHANGED: String = "changed"
 
-    // init parameters
+    // parameters
     private lateinit var collectionId: String
 
     // helper
