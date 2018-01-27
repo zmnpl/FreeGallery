@@ -464,6 +464,9 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         informCallerOfChange()
 
         val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
+        if (deletionItems.count() > 25) {
+            Toast.makeText(this, getString(R.string.TrashingStarted), Toast.LENGTH_SHORT).show()
+        }
 
         // remove items from ui
         adapter.removeMultiple(adapter.getSelectedItems())
@@ -609,10 +612,13 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Callbacks
     override fun tagCancel() {}
+
     override fun tagOk(tag: String) {
+        doAsync {
+            viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
+        }
         dataChanged = true
         informCallerOfChange()
-        viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
         actionMode?.finish()
     }
 

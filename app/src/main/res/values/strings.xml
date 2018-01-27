@@ -84,6 +84,7 @@
     <string name="DeleteSnackbarUndo">Undo</string>
     <!-- Toasts -->
     <string name="SetVideoAsMakesNoSense">Setting video as …? Makes no sense.</string>
+    <string name="TrashingStarted">Moving to trash ...</string>
 
 
     <!-- Preferences -->

@@ -54,7 +54,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         if (cached) {
             items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
         } else {
-            items.postValue(foo.itemsFor(collection, Item.SORT_ORDER))
+            items.postValue(foo.itemsFor(collection))
         }
     }
 

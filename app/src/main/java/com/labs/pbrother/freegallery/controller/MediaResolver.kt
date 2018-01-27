@@ -1,12 +1,14 @@
 package com.labs.pbrother.freegallery.controller
 
 import android.content.Context
+import android.database.Cursor
 import android.provider.MediaStore
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by simon on 21.02.17.
@@ -132,11 +134,11 @@ internal class MediaResolver(private val context: Context) {
     // media items
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    fun itemsForCollection(ci: CollectionItem, sortOrder: Int): TreeSet<Item> = when {
-        ci.id == context.getString(R.string.trashName) -> trashItems(sortOrder)
-        ci.id == context.getString(R.string.timelineName) -> allItems(sortOrder)
-        ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, sortOrder)
-        ci.type == TYPE_TAG -> tagItems(ci.id, sortOrder)
+    fun itemsForCollection(ci: CollectionItem): TreeSet<Item> = when {
+        ci.id == context.getString(R.string.trashName) -> trashItems(Item.SORT_ORDER)
+        ci.id == context.getString(R.string.timelineName) -> allItems()
+        ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, Item.SORT_ORDER)
+        ci.type == TYPE_TAG -> tagItems(ci.id, Item.SORT_ORDER)
         else -> TreeSet<Item>()
     }
 
@@ -214,12 +216,20 @@ internal class MediaResolver(private val context: Context) {
 
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
+        val paths = db.getPathsForTag(tag)
+        if (paths.count() < 1) return  items // don't do the rest of the operations, when not necessary
         val tags = db.itemTags()
-        val x = db.getPathsForTag(tag).forEach {
-            val itm = makeSingleItemFromPath(it)
-            if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
-            items.add(itm)
+
+        if(paths.count() <= 200) {
+            val x = paths.forEach {
+                val itm = makeSingleItemFromPath(it)
+                if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
+                items.add(itm)
+            }
+            return items
         }
+
+        items.addAll(allItems().filter { tags.containsKey(it.path) })
         return items
     }
 
@@ -241,11 +251,11 @@ internal class MediaResolver(private val context: Context) {
         return items
     }
 
-    private fun allItems(sortOrder: Int): TreeSet<Item> {
-        val items = orderedItemsTreeSet(sortOrder)
+    private fun allItems(): TreeSet<Item> {
+        val items = orderedItemsTreeSet(Item.SORT_ORDER)
         val tags = db.itemTags()
-        items.addAll(imagesForBucket("%", sortOrder, tags))
-        items.addAll(vidsForBucket("%", sortOrder, tags))
+        items.addAll(imagesForBucket("%", Item.SORT_ORDER, tags))
+        items.addAll(vidsForBucket("%", Item.SORT_ORDER, tags))
         return items
     }
 
@@ -301,6 +311,64 @@ internal class MediaResolver(private val context: Context) {
         c.close()
         // Return empty item
         return Item()
+    }
+
+    fun itemsFromPaths(paths: List<String>): List<Item> {
+
+        val params = "?" + ", ?".repeat(if(paths.count() > 1) paths.count() -1 else 0)
+        val items = ArrayList<Item>()
+        val IMAGE_SELECTION = MediaStore.Images.Media.DATA + "in ($params) "
+        val VID_SELECTION = MediaStore.Video.Media.DATA + " in ($params) "
+        val r = context.contentResolver
+
+        // Try Image
+        var c = r.query(
+                MediaStore.Files.getContentUri("external"),
+                IMAGE_PROJECTION,
+                IMAGE_SELECTION,
+                paths.toTypedArray(),
+                null
+        )
+        if (c != null && c.moveToFirst()) {
+            do{
+                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+                        c.getString(PATH),
+                        c.getLong(DATEADDED),
+                        c.getLong(DATETAKEN),
+                        c.getLong(SIZE),
+                        c.getInt(WIDTH),
+                        c.getInt(HEIGHT),
+                        c.getLong(LAT).toDouble(),
+                        c.getLong(LONG).toDouble())
+                items.add(itm)
+            } while (c.moveToNext())
+        }
+
+        // Try Vid
+        c = r.query(
+                MediaStore.Files.getContentUri("external"),
+                VID_PROJECTION,
+                VID_SELECTION,
+                paths.toTypedArray(),
+                null
+        )
+        if (c != null && c.moveToFirst()) {
+            do{
+            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+                    c.getString(PATH),
+                    c.getLong(DATEADDED),
+                    c.getLong(DATETAKEN),
+                    c.getLong(SIZE),
+                    c.getInt(WIDTH),
+                    c.getInt(HEIGHT),
+                    c.getLong(LAT).toDouble(),
+                    c.getLong(LONG).toDouble())
+            } while (c.moveToNext())
+
+        }
+        c.close()
+        // Return empty item
+        return items
     }
 
 
