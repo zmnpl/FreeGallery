@@ -90,9 +90,12 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         var cursor: Cursor? = null
         var path = ""
         try {
-            cursor = applicationContext.contentResolver.query(uri, IMAGE_PROJECTION, null, null, null)
-            if (cursor != null && cursor.moveToFirst()) {
-                path = cursor.getString(PATH)
+
+
+            val proj = arrayOf(MediaStore.Images.Media.DATA)
+            val bla = applicationContext.contentResolver.query(uri, proj, null, null, null)
+            if (bla?.moveToFirst() == true) {
+                path = bla.getString(bla.getColumnIndex(MediaStore.Images.Media.DATA))
             }
         } catch (e: Exception) {
         } finally {
