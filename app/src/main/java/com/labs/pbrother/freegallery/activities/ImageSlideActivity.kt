@@ -323,14 +323,14 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         }
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
-        val uri = Uri.parse(item.fileUrl)
+        val uri = Uri.parse(item.fileUri)
         intent.setDataAndType(uri, "image/*")
         intent.putExtra("mimeType", "image/*")
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
     }
 
     private fun edit() {
-        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUrl
+        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUri
         startActivityForResult(
                 intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY)
     }

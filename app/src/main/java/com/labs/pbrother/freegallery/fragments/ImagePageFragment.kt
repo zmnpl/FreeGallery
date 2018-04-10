@@ -11,7 +11,6 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -66,14 +65,13 @@ class ImagePageFragment() : Fragment() {
                 if ("gif" == File(item.path).extension.toLowerCase()) {
                     imageView.visibility = View.INVISIBLE
                     vidView.visibility = View.VISIBLE
-                    Glide.with(this).load(item.fileUrl).into(vidView)
+                    Glide.with(this).load(item.fileUri).into(vidView)
                 } else {
                     imageView.apply {
                         setParallelLoadingEnabled(true)
                         setMinimumTileDpi(196) // 196 -> recommendation from franciscofranco on github
                         setImage(ImageSource.uri(item.path))
                         setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
-
                         setBackgroundColorBasedOnImage()
                     }
                 }
@@ -95,7 +93,7 @@ class ImagePageFragment() : Fragment() {
                     startActivity(intent)
                 }
 
-                Glide.with(this).load(item.fileUrl).into(vidView)
+                Glide.with(this).load(item.fileUri).into(vidView)
             }
         }
 

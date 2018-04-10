@@ -88,21 +88,14 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     fun itemForUri(uri: Uri): Item {
         var cursor: Cursor? = null
-        var path = ""
-        try {
+        var path = applicationContext.getRealPathFromURI(uri)
 
-
-            val proj = arrayOf(MediaStore.Images.Media.DATA)
-            val bla = applicationContext.contentResolver.query(uri, proj, null, null, null)
-            if (bla?.moveToFirst() == true) {
-                path = bla.getString(bla.getColumnIndex(MediaStore.Images.Media.DATA))
-            }
-        } catch (e: Exception) {
-        } finally {
-            cursor?.close()
+        if ("" != path && null != path) {
+            return resolver.makeSingleItemFromPath(path)
         }
-
-        return resolver.makeSingleItemFromPath(path)
+        val result = Item()
+        result.path = uri.toString()
+        return result
     }
 
     fun collectionItemForImageUri(imageUri: Uri): CollectionItem {
