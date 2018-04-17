@@ -15,7 +15,7 @@ import java.io.File
  * Created by simon on 21.11.17.
  */
 class CollectionActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private var foo = Provider(getApplication())
+    private var provider = Provider(getApplication())
     private var collectionID = ""
     private lateinit var collection: CollectionItem
 
@@ -26,7 +26,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         get() = collectionItem.value?.id
 
     val tags
-        get() = foo.tags()
+        get() = provider.tags()
 
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
     var collectionItem = MutableLiveData<CollectionItem>()
@@ -41,20 +41,20 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     }
 
     private fun refreshCollection(collectionId: String) {
-        collection = foo.collectionItem(collectionId)
+        collection = provider.collectionItem(collectionId)
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
     }
 
     fun refreshDrawerItems() {
-        drawerItems.postValue(foo.drawerItems)
+        drawerItems.postValue(provider.drawerItems)
     }
 
     private fun refreshItems(cached: Boolean = false) {
         if (cached) {
-            items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
+            items.postValue(provider.cachedItemsFor(collection, Item.SORT_ORDER))
         } else {
-            items.postValue(foo.itemsFor(collection))
+            items.postValue(provider.itemsFor(collection))
         }
     }
 
@@ -80,30 +80,24 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         refresh(false, false, true, collectionID)
     }
 
-    fun colorize(collection: CollectionItem, color: Int) {
-        foo.colorizeCollection(collection, color)
-    }
-
     fun removeColor() {
-        foo.colorizeCollection(collection, null)
+        provider.colorizeCollection(collection, null)
         liveColor.postValue(collection.color)
     }
 
-    fun deleteTag() = foo.deleteTag(collectionItem.value?.id ?: "")
+    fun deleteTag() = provider.deleteTag(collectionItem.value?.id ?: "")
 
-    fun emptyTrash() = foo.emptyTrash()
+    fun emptyTrash() = provider.emptyTrash()
 
-    fun restoreItems(items: List<Item>) = foo.restore(items)
+    fun restoreItems(items: List<Item>) = provider.restore(items)
 
-    fun trashItems(items: List<Item>): Int = foo.trashItems(items)
+    fun trashItems(items: List<Item>): Int = provider.trashItems(items)
 
-    fun undoTrashing(id: Int) = foo.undoTrashing(id)
+    fun undoTrashing(id: Int) = provider.undoTrashing(id)
 
-    fun untag(items: List<Item>) = items.forEach { foo.untagItem(it, collectionID) }
+    fun untag(items: List<Item>) = items.forEach { provider.untagItem(it, collectionID) }
 
-    fun tagItems(items: List<Item>, tag: String) {
-        items.forEach { foo.tagItem(it, tag) }
-    }
+    fun tagItems(items: List<Item>, tag: String) = provider.tagItems(items, tag)
 
     fun urisToShare(items: List<Item>): ArrayList<Uri> {
         val uris = ArrayList<Uri>()
@@ -116,7 +110,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     fun colorizeCollection(color: Int) {
         val col = collectionItem.value
         if (null != col) {
-            foo.colorizeCollection(col, color)
+            provider.colorizeCollection(col, color)
             liveColor.postValue(color)
         }
     }

@@ -174,17 +174,14 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
             if (currentFile.exists()) {
                 val oldPath = currentFile.path
-
                 currentFile.renameTo(trashFile)
-
-                log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
                 db.insertUpdateTrashedItem(trashFile.path, if ("" != it.path) it.type else -1)
-
-                val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
-                val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
-
-                // TODO - update cache (?)
             }
+            log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
+            val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
+            val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
+
+            // TODO - update cache (?)
         }
 
         // scan old paths
@@ -251,11 +248,21 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
     }
 
-    override fun tagItem(item: Item, tag: String) {
+    fun tagItems (items: List<Item>, tag: String) {
+        tagCache.add(tag)
         val db = MyDb(applicationContext)
+        items.forEach { tagIt(it, tag, db) }
+    }
+
+    override fun tagItem(item: Item, tag: String) {
+        tagCache.add(tag)
+        val db = MyDb(applicationContext)
+        tagIt(item, tag, db)
+    }
+
+    private fun tagIt(item: Item, tag: String, db: MyDb) {
         db.insertTag(item.id, tag)
         item.addTag(tag)
-        tagCache.add(tag)
     }
 
     fun copyTags(fromID: String, toID: String) {
