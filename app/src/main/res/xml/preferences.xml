@@ -47,5 +47,11 @@
             android:entryValues="@array/prefOrderByEntries"
             android:key="pref_key_order_by"
             android:title="@string/prefOrderBy" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_key_orientation_exif"
+            android:title="@string/prefUseExifOrientation" />
+
     </PreferenceCategory>
 </PreferenceScreen>

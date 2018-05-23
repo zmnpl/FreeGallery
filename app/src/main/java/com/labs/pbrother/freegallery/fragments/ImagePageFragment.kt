@@ -52,6 +52,8 @@ class ImagePageFragment() : Fragment() {
                 R.layout.fragment_singlepicture_slide_page, container, false) as ViewGroup
 
         imageView = rootView.singlepicture_scrollview_Pic
+        if (settings.orientationFromExif) imageView.orientation = SubsamplingScaleImageView.ORIENTATION_USE_EXIF
+
         vidView = rootView.singlepicture_scrollview_Vid
         vidIcon = rootView.singlepicture_scrollview_VidIcon
 

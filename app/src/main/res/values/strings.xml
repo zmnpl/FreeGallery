@@ -117,6 +117,8 @@
     </string-array>
 
     <!-- Order By -->
+    <string name="prefUseExifOrientation">Use Exif data for rotation</string>
+
     <string name="prefOrderBy">Order Items by</string>
     <string name="prefOrderByDialogTitle">By</string>
     <string-array name="prefOrderByEntries">

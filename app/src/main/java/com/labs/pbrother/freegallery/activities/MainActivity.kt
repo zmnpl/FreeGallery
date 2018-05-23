@@ -346,7 +346,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     // Permissions
 
-    @TargetApi(Build.VERSION_CODES.M)
+    //@TargetApi(Build.VERSION_CODES.M)
     private fun requestPermissions() {
         val checkRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
         val checkWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)

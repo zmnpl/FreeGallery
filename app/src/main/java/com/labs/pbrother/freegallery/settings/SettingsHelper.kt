@@ -33,6 +33,8 @@ class SettingsHelper(val context: Context) {
         private val KEY_PREF_STYLE_HIDE_DRAWER_HEADER = "pref_key_style_hide_drawer_header"
         @JvmStatic
         val KEY_PREF_ORDER_BY = "pref_key_order_by"
+        @JvmStatic
+        val Key_PREF_EXIF_ORIENTATION = "pref_key_orientation_exif"
     }
 
     private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -78,6 +80,11 @@ class SettingsHelper(val context: Context) {
             }
         }
     }
+
+    val orientationFromExif: Boolean
+        get() {
+            return sharedPref.getBoolean(Key_PREF_EXIF_ORIENTATION, true)
+        }
 
     val orderBy: Int
         get() {
@@ -162,7 +169,7 @@ class SettingsHelper(val context: Context) {
         }
 
     val highlightColorAccent: Int
-            // TODO - Accent from custom choice...
+    // TODO - Accent from custom choice...
         get() = ContextCompat.getColor(context, R.color.accent)
 
     var columnsInPortrait: Int

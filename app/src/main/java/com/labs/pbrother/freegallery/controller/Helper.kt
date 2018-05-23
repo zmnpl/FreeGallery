@@ -42,6 +42,7 @@ val BUCKETID = 9
 val IMAGE_PROJECTION = arrayOf("DISTINCT " +
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DATA,
+        //MediaStore.Images.Media.INTERNAL_CONTENT_URI,
         MediaStore.Images.Media.DATE_ADDED,
         MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.WIDTH,
