@@ -164,18 +164,9 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c.moveToFirst()) {
             do {
-                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
-                        c.getString(PATH),
-                        c.getLong(DATEADDED),
-                        c.getLong(DATETAKEN),
-                        c.getLong(SIZE),
-                        c.getInt(WIDTH),
-                        c.getInt(HEIGHT),
-                        c.getLong(LAT).toDouble(),
-                        c.getLong(LONG).toDouble())
+                val itm = c.makeImageItem()
                 if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
-
-                images.add(itm) // TODO - seems to be wrong; always 56 and 6 ... wtf?
+                images.add(itm)
             } while (c.moveToNext())
         }
         c.close()
@@ -196,18 +187,9 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c.moveToFirst()) {
             do {
-                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
-                        c.getString(PATH),
-                        c.getLong(DATEADDED),
-                        c.getLong(DATETAKEN),
-                        c.getLong(SIZE),
-                        c.getInt(WIDTH),
-                        c.getInt(HEIGHT),
-                        c.getLong(LAT).toDouble(),
-                        c.getLong(LONG).toDouble())
+                val itm = c.makeVideoItem()
                 if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
-
-                vids.add(itm) // TODO - seems to be wrong; always 56 and 6 ... wtf?
+                vids.add(itm)
             } while (c.moveToNext())
         }
         c.close()
@@ -275,18 +257,7 @@ internal class MediaResolver(private val context: Context) {
                 SELECTION_ARGS,
                 null
         )
-        if (c != null && c.moveToFirst()) {
-            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
-                    c.getString(PATH),
-                    c.getLong(DATEADDED),
-                    c.getLong(DATETAKEN),
-                    c.getLong(SIZE),
-                    c.getInt(WIDTH),
-                    c.getInt(HEIGHT),
-                    c.getLong(LAT).toDouble(),
-                    c.getLong(LONG).toDouble())
-            return itm
-        }
+        if (c != null && c.moveToFirst()) return c.makeImageItem()
 
         // Try Vid
         c = r.query(
@@ -296,18 +267,7 @@ internal class MediaResolver(private val context: Context) {
                 SELECTION_ARGS,
                 null
         )
-        if (c != null && c.moveToFirst()) {
-            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
-                    c.getString(PATH),
-                    c.getLong(DATEADDED),
-                    c.getLong(DATETAKEN),
-                    c.getLong(SIZE),
-                    c.getInt(WIDTH),
-                    c.getInt(HEIGHT),
-                    c.getLong(LAT).toDouble(),
-                    c.getLong(LONG).toDouble())
-            return itm
-        }
+        if (c != null && c.moveToFirst()) return c.makeVideoItem()
         c.close()
         // Return empty item
         return Item()
@@ -331,16 +291,7 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c != null && c.moveToFirst()) {
             do{
-                val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
-                        c.getString(PATH),
-                        c.getLong(DATEADDED),
-                        c.getLong(DATETAKEN),
-                        c.getLong(SIZE),
-                        c.getInt(WIDTH),
-                        c.getInt(HEIGHT),
-                        c.getLong(LAT).toDouble(),
-                        c.getLong(LONG).toDouble())
-                items.add(itm)
+                items.add(c.makeImageItem())
             } while (c.moveToNext())
         }
 
@@ -354,15 +305,7 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c != null && c.moveToFirst()) {
             do{
-            val itm = Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
-                    c.getString(PATH),
-                    c.getLong(DATEADDED),
-                    c.getLong(DATETAKEN),
-                    c.getLong(SIZE),
-                    c.getInt(WIDTH),
-                    c.getInt(HEIGHT),
-                    c.getLong(LAT).toDouble(),
-                    c.getLong(LONG).toDouble())
+                items.add(c.makeVideoItem())
             } while (c.moveToNext())
 
         }

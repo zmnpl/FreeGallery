@@ -64,6 +64,30 @@ val VID_PROJECTION = arrayOf("DISTINCT " +
         MediaStore.Images.Media.SIZE,
         MediaStore.Images.Media.BUCKET_ID)
 
+fun Cursor.makeImageItem(): Item {
+    return Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+            getString(PATH),
+            getLong(DATEADDED),
+            getLong(DATETAKEN),
+            getLong(SIZE),
+            getInt(WIDTH),
+            getInt(HEIGHT),
+            getLong(LAT).toDouble(),
+            getLong(LONG).toDouble())
+}
+
+fun Cursor.makeVideoItem(): Item {
+    return Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO,
+            getString(PATH),
+            getLong(DATEADDED),
+            getLong(DATETAKEN),
+            getLong(SIZE),
+            getInt(WIDTH),
+            getInt(HEIGHT),
+            getLong(LAT).toDouble(),
+            getLong(LONG).toDouble())
+}
+
 interface MetaUpdatorizer {
     // for collections
     fun loveCollection(collection: CollectionItem, loved: Boolean)
