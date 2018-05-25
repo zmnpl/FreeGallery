@@ -87,7 +87,6 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     }
 
     fun itemForUri(uri: Uri): Item {
-        var cursor: Cursor? = null
         var path = applicationContext.getRealPathFromURI(uri)
 
         if ("" != path && null != path) {
@@ -98,6 +97,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         return result
     }
 
+    // TODO - never finished this one
     fun collectionItemForImageUri(imageUri: Uri): CollectionItem {
         var cursor: Cursor? = null
         try {
@@ -116,12 +116,9 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     fun tags(): List<String> = tagCache.toList()
 
     fun deleteTag(tag: String): Boolean {
-        if (tag == applicationContext.getString(R.string.timelineName) || tag == applicationContext.getString(R.string.trashName)) {
-            return false
-        }
+        if (tag == applicationContext.getString(R.string.timelineName) || tag == applicationContext.getString(R.string.trashName)) return false
 
-        val db = MyDb(applicationContext)
-        if (db.deleteTag(tag) > 0) {
+        if (MyDb(applicationContext).deleteTag(tag) > 0) {
             drawerCache.remove(tag)
             return true
         }
