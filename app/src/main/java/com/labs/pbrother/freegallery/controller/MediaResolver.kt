@@ -5,6 +5,8 @@ import android.database.Cursor
 import android.provider.MediaStore
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.db.MyDb
+import com.labs.pbrother.freegallery.extension.makeImageItem
+import com.labs.pbrother.freegallery.extension.makeVideoItem
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
