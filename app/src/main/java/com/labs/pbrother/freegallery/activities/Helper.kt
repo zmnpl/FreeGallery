@@ -1,7 +1,9 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.mikepenz.iconics.IconicsDrawable
@@ -15,6 +17,11 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 val STARTED_FROM_ACTIVITY = 1
 val PERMISSION_READ_WRITE_STORAGE = 1337
 val PERMISSION_WRITE_STORAGE = 1338
+
+val READ_REQUEST_CODE = 42
+val COLLECTION_ACTIVITY_REQUEST_CODE = 0
+val IMAGE_SLIDE_ACTIVITY_REQUEST_CODE = 1
+val EDIT_ACTIVITY_REQUEST_CODE = 2
 
 val EXTRA_COLLECTIONID = "collectionId"
 val EXTRA_COLLECTION_INDEX = "collectionIndex"

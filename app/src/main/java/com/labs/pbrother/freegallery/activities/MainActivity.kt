@@ -1,14 +1,14 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -33,6 +33,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
+
+
+
 
 
 class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
@@ -129,7 +132,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                                         intentFor<CollectionActivity>(
                                                 EXTRA_COLLECTION_INDEX to position,
                                                 EXTRA_COLLECTIONID to it.id),
-                                        COLLECTION_ACTIVITY)
+                                        COLLECTION_ACTIVITY_REQUEST_CODE)
                                 false
                             })
         }
@@ -187,9 +190,19 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         if (reloadPlz) buildUiSafe()
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == COLLECTION_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+
+        if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) uri = data.getData()
+
+            val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            // Check for the freshest data.
+            contentResolver.takePersistableUriPermission(uri, takeFlags)
+            // TODO - What now? How to use this uri now?
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -203,6 +216,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             R.id.menu_refresh -> {
                 swipeRefreshMain.isRefreshing = true
                 buildUiSafe()
+                //openSAFTreeSelection()
                 return true
             }
             R.id.menu_settings -> {
@@ -237,7 +251,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                     intentFor<CollectionActivity>(
                             EXTRA_ITEM_INDEX to position,
                             EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
-                    COLLECTION_ACTIVITY)
+                    COLLECTION_ACTIVITY_REQUEST_CODE)
         }
     }
 
@@ -258,7 +272,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             //if (!onTablet) drawerLayoutMain.closeDrawers()
             //startActivityForResult(
             //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-            //        COLLECTION_ACTIVITY)
+            //        COLLECTION_ACTIVITY_REQUEST_CODE)
         }
     }
 
@@ -385,7 +399,4 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         }
     }
 
-    companion object {
-        private val COLLECTION_ACTIVITY = 0
-    }
 }

@@ -123,7 +123,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == IMAGE_SLIDE_ACTIVITY && resultCode == Activity.RESULT_OK &&
+        if (requestCode == IMAGE_SLIDE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
                 (data.getBooleanExtra(DELETION, false) || data.getBooleanExtra(CROP_SAVED, false))) {
             refresh(false, false, true, false)
             informCallerOfChange()
@@ -508,7 +508,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             startActivityForResult(intentFor<ImageSlideActivity>(
                     EXTRA_COLLECTIONID to collectionId,
                     EXTRA_ITEM_INDEX to position,
-                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY)
+                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY_REQUEST_CODE)
         }
     }
 
@@ -633,7 +633,4 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         }
     }
 
-    companion object {
-        private val IMAGE_SLIDE_ACTIVITY = 1
-    }
 }

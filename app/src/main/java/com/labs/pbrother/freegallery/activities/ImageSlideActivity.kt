@@ -38,8 +38,6 @@ import java.io.File
 
 class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListener, ImagePropertyDialogFragment.ImagePropertyDialogListener {
 
-    private val EDIT_ACTIVITY = 0
-
     // providers
     private lateinit var viewModel: ImageSlideActivityViewModel
 
@@ -135,7 +133,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == EDIT_ACTIVITY && resultCode == Activity.RESULT_OK && data.getBooleanExtra(CROP_SAVED, false)) {
+        if (requestCode == EDIT_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(CROP_SAVED, false)) {
             doAsync {
                 resultIntent.putExtra(CROP_SAVED, true)
                 val from = data.getStringExtra(ORIGINAL_PATH)
@@ -332,7 +330,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private fun edit() {
         var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUri
         startActivityForResult(
-                intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY)
+                intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY_REQUEST_CODE)
     }
 
 
