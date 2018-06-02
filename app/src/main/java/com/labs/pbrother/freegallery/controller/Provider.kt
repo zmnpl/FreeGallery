@@ -17,6 +17,7 @@ import java.io.File
 import java.util.*
 import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
+import com.labs.pbrother.freegallery.extension.getRealPathFromURI
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
