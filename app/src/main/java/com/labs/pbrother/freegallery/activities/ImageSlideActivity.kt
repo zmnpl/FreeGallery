@@ -321,9 +321,16 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         }
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
-        val uri = Uri.parse(item.fileUri)
-        intent.setDataAndType(uri, "image/*")
+        //val uri = Uri.parse(item.fileUri)
+        val uri = Uri.fromFile(File(item.path))
+        intent.type = "image/*"
+        //intent.setDataAndType(uri, "image/*")
         intent.putExtra("mimeType", "image/*")
+        intent.putExtra(Intent.EXTRA_STREAM,
+                FileProvider.getUriForFile(
+                        this,
+                        packageName + ".provider",
+                        File(item?.path)))
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
     }
 

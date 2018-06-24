@@ -1,7 +1,6 @@
 package com.labs.pbrother.freegallery.controller
 
 import android.content.Context
-import android.database.Cursor
 import android.provider.MediaStore
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.db.MyDb
@@ -201,10 +200,10 @@ internal class MediaResolver(private val context: Context) {
     private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
         val items = orderedItemsTreeSet(sortOrder)
         val paths = db.getPathsForTag(tag)
-        if (paths.count() < 1) return  items // don't do the rest of the operations, when not necessary
+        if (paths.count() < 1) return items // don't do the rest of the operations, when not necessary
         val tags = db.itemTags()
 
-        if(paths.count() <= 200) {
+        if (paths.count() <= 200) {
             val x = paths.forEach {
                 val itm = makeSingleItemFromPath(it)
                 if (tags.containsKey(itm.path)) itm.addAllTags(tags.getValue(itm.path))
@@ -271,13 +270,14 @@ internal class MediaResolver(private val context: Context) {
         )
         if (c != null && c.moveToFirst()) return c.makeVideoItem()
         c.close()
+
         // Return empty item
         return Item()
     }
 
     fun itemsFromPaths(paths: List<String>): List<Item> {
 
-        val params = "?" + ", ?".repeat(if(paths.count() > 1) paths.count() -1 else 0)
+        val params = "?" + ", ?".repeat(if (paths.count() > 1) paths.count() - 1 else 0)
         val items = ArrayList<Item>()
         val IMAGE_SELECTION = MediaStore.Images.Media.DATA + "in ($params) "
         val VID_SELECTION = MediaStore.Video.Media.DATA + " in ($params) "
@@ -292,7 +292,7 @@ internal class MediaResolver(private val context: Context) {
                 null
         )
         if (c != null && c.moveToFirst()) {
-            do{
+            do {
                 items.add(c.makeImageItem())
             } while (c.moveToNext())
         }
@@ -306,7 +306,7 @@ internal class MediaResolver(private val context: Context) {
                 null
         )
         if (c != null && c.moveToFirst()) {
-            do{
+            do {
                 items.add(c.makeVideoItem())
             } while (c.moveToNext())
 
@@ -380,6 +380,7 @@ internal class MediaResolver(private val context: Context) {
                 SELECTION,
                 SELECTION_ARGS, null
         )
+
         if (c != null && c.moveToFirst()) {
             count = c.getInt(0)
         }
