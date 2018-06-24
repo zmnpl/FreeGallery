@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.larswerkman:LicenseView-1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/LicenseView-1.1.aar/416a693c77c66441b9386a336d34f77e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/LicenseView-1.1.aar/416a693c77c66441b9386a336d34f77e/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.larswerkman/LicenseView/1.1/24f5abc50b487cc11a995d98a67b9cccbdbc3005/LicenseView-1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
