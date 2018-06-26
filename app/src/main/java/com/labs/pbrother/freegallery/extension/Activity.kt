@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import com.labs.pbrother.freegallery.activities.READ_REQUEST_CODE
 
 fun AppCompatActivity.openSAFTreeSelection() {
-    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+    val intent =
     //intent.addCategory(Intent.CATEGORY_OPENABLE)1
     // intent.type = "image/*"
-    startActivityForResult(intent, READ_REQUEST_CODE)
+    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
 }

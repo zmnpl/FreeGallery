@@ -26,6 +26,7 @@ import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
+import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
@@ -194,12 +195,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
 
         if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
-            var uri: Uri? = null
-            if (data != null) uri = data.getData()
-
+            var uri: Uri? = data?.getData()
             val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             // Check for the freshest data.
             contentResolver.takePersistableUriPermission(uri, takeFlags)
+            settings.sdCardUri = uri.toString()
             // TODO - What now? How to use this uri now?
         }
 
@@ -233,6 +233,10 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             }
             R.id.menu_collectionZoomViewOut -> {
                 applyZoom(+1)
+                return true
+            }
+            R.id.menu_takeSdCardPermission -> {
+                openSAFTreeSelection()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)

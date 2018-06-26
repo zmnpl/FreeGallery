@@ -42,4 +42,10 @@
         android:title="@string/prefLicense"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_takeSdCardPermission"
+        android:orderInCategory="140"
+        android:title="SD Card Permission"
+        app:showAsAction="never" />
+
 </menu>

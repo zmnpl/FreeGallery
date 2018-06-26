@@ -190,6 +190,15 @@ class SettingsHelper(val context: Context) {
             }
         }
 
+    var sdCardUri: String
+        get() = sharedPref.getString(("SDCARDURI"), "")
+        set(value) {
+            sharedPref.edit().apply() {
+                putString("SDCARDURI", value)
+                commit()
+            }
+        }
+
     fun colorizeTitlebar(): Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_COLORTITLE, false)
 
     fun hideDrawerHeader(): Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_HIDE_DRAWER_HEADER, false)

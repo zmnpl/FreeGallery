@@ -13,7 +13,8 @@ fun Cursor.makeImageItem(): Item {
             getInt(WIDTH),
             getInt(HEIGHT),
             getLong(LAT).toDouble(),
-            getLong(LONG).toDouble())
+            getLong(LONG).toDouble()
+    )
 }
 
 fun Cursor.makeVideoItem(): Item {

@@ -4,7 +4,10 @@ import android.app.Application
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.support.v4.content.FileProvider
+import android.support.v4.provider.DocumentFile
 import android.util.SparseArray
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Cache.drawerCache
@@ -12,14 +15,10 @@ import com.labs.pbrother.freegallery.controller.Cache.itemCache
 import com.labs.pbrother.freegallery.controller.Cache.overviewCache
 import com.labs.pbrother.freegallery.controller.Cache.tagCache
 import com.labs.pbrother.freegallery.controller.db.MyDb
+import com.labs.pbrother.freegallery.extension.getRealPathFromURI
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import java.io.File
 import java.util.*
-import android.support.v4.content.FileProvider
-import com.bumptech.glide.Glide
-import com.labs.pbrother.freegallery.extension.getRealPathFromURI
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 
 /**
@@ -129,8 +128,63 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     fun trashItems(items: List<Item>): Int {
         val id = Random().nextInt(999999)
+
+        // sdcard
+
+        items.forEach() {
+            //val uri = getImageContentUri(applicationContext, File(it.path))
+            val uri = Uri.parse(findSDUri(it.path))
+            DocumentsContract.deleteDocument(applicationContext.getContentResolver(), uri)
+            print(uri.toString())
+        }
+
         deletions.put(id, sendToTrash(items))
         return id
+    }
+
+    fun findSDUri(path: String): String {
+        val settings = SettingsHelper(applicationContext)
+        //First we get `DocumentFile` from the `TreeUri` which in our case is `sdCardUri`.
+        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(applicationContext, Uri.parse(settings.sdCardUri))
+
+        val parts = path.split("/")
+
+        for (i in 3 until parts.size) {
+            if (documentFile != null) {
+                documentFile = documentFile.findFile(parts[i])
+            }
+        }
+        return documentFile?.uri.toString()
+
+        /*if (documentFile == null) {
+
+            // File not found on tree search
+            // User selected a wrong directory as the sd-card
+            // Here must inform user about how to get the correct sd-card
+            // and invoke file chooser dialog again.
+
+        } else {
+
+            // File found on sd-card and it is a correct sd-card directory
+            // save this path as a root for sd-card on your database(SQLite, XML, txt,...)
+
+            // Now do whatever you like to do with documentFile.
+            // Here I do deletion to provide an example.
+
+
+            if (documentFile.delete()) {// if delete file succeed
+                // Remove information related to your media from ContentResolver,
+                // which documentFile.delete() didn't do the trick for me.
+                // Must do it otherwise you will end up with showing an empty
+                // ImageView if you are getting your URLs from MediaStore.
+                //
+                //val mediaContentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, longMediaId)
+                //applicationContext.contentResolver.delete(mediaContentUri, null, null)
+            }
+
+
+        }
+        return documentFile.toString()*/
     }
 
     fun undoTrashing(id: Int): Boolean {
