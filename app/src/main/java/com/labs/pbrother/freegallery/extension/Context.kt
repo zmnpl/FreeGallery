@@ -17,8 +17,8 @@ fun Context.getRealPathFromURI(uri: Uri): String? {
 
     when (uri.authority) {
         "com.android.providers.downloads.documents" -> {
-            val id = DocumentsContract.getDocumentId(uri)
-            val idLong = id.toLongOrNull()
+            val documentId = DocumentsContract.getDocumentId(uri)
+            val idLong = documentId.toLongOrNull()
             if (null != idLong) {
                 val newUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), idLong)
                 val path = getDataColumn(newUri)

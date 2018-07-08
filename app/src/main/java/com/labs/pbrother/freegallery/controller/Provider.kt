@@ -128,18 +128,18 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     fun trashItems(items: List<Item>): Int {
         val id = Random().nextInt(999999)
-
-        // sdcard
-
-        items.forEach() {
-            //val uri = getImageContentUri(applicationContext, File(it.path))
-            val uri = Uri.parse(findSDUri(it.path))
-            DocumentsContract.deleteDocument(applicationContext.getContentResolver(), uri)
-            print(uri.toString())
-        }
-
         deletions.put(id, sendToTrash(items))
         return id
+    }
+
+    fun trashForSDItems() {
+//        // sdcard
+//        items.forEach() {
+//            //val uri = getImageContentUri(applicationContext, File(it.path))
+//            val uri = Uri.parse(findSDUri(it.path))
+//            DocumentsContract.deleteDocument(applicationContext.getContentResolver(), uri)
+//            print(uri.toString())
+//        }
     }
 
     fun findSDUri(path: String): String {

@@ -34,7 +34,10 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         val KEY_PREF_ORDER_BY = "pref_key_order_by"
         @JvmStatic
-        val Key_PREF_EXIF_ORIENTATION = "pref_key_orientation_exif"
+        val KEY_PREF_EXIF_ORIENTATION = "pref_key_orientation_exif"
+        @JvmStatic
+        val KEY_SDURI = "SDCARDURI"
+
     }
 
     private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -83,7 +86,7 @@ class SettingsHelper(val context: Context) {
 
     val orientationFromExif: Boolean
         get() {
-            return sharedPref.getBoolean(Key_PREF_EXIF_ORIENTATION, true)
+            return sharedPref.getBoolean(KEY_PREF_EXIF_ORIENTATION, true)
         }
 
     val orderBy: Int
@@ -182,7 +185,7 @@ class SettingsHelper(val context: Context) {
         }
 
     var mainColumnsInPortrait: Int
-        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))!!
+        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))
         set(value) {
             sharedPref.edit().apply() {
                 putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
@@ -191,10 +194,10 @@ class SettingsHelper(val context: Context) {
         }
 
     var sdCardUri: String
-        get() = sharedPref.getString(("SDCARDURI"), "")
+        get() = sharedPref.getString((KEY_SDURI), "")
         set(value) {
             sharedPref.edit().apply() {
-                putString("SDCARDURI", value)
+                putString(KEY_SDURI, value)
                 commit()
             }
         }

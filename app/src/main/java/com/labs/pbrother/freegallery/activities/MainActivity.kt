@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     private lateinit var settings: SettingsHelper
     private lateinit var viewModel: MainActivityViewModel
 
-    private var colCount = 2
     private var onTablet = false
     private var reloadPlz = false
     private var permissionsGood = false
@@ -70,8 +69,8 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
         overviewRecycler.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@MainActivity, colCount)
-            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, colCount))
+            layoutManager = GridLayoutManager(this@MainActivity,  settings.mainColumnsInPortrait)
+            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, settings.mainColumnsInPortrait))
         }
 
         bindViewModel()
@@ -176,10 +175,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     private fun applyZoom(zoom: Int) {
-        colCount += zoom
-        if (colCount < 1) colCount = 1
-        settings.mainColumnsInPortrait = colCount
-        overviewRecycler.layoutManager = GridLayoutManager(this@MainActivity, colCount)
+        var cols = settings.mainColumnsInPortrait
+        cols += zoom
+        if (cols < 1) cols = 1
+        settings.mainColumnsInPortrait = cols
+        overviewRecycler.layoutManager = GridLayoutManager(this@MainActivity, cols)
     }
 
     // Lifecycle
@@ -194,15 +194,13 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
 
+        // SD card uri selected
         if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
             var uri: Uri? = data?.getData()
             val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            // Check for the freshest data.
             contentResolver.takePersistableUriPermission(uri, takeFlags)
             settings.sdCardUri = uri.toString()
-            // TODO - What now? How to use this uri now?
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
