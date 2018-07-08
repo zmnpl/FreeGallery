@@ -22,7 +22,7 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     companion object {
         val SORT_DESC = 1 // regular; newest to oldest
         val SORT_ASC = -1
-        var SORT_ORDER: Int = SORT_DESC
+        var SORT_ORDER = SORT_DESC
 
         val ORDER_BY_DATE_ADDED = 0
         val ORDER_BY_DATE_TAKEN = 1

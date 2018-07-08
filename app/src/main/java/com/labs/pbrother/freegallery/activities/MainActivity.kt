@@ -28,6 +28,7 @@ import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
+import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         drawerItems.forEach {
             this@MainActivity
                     .drawerResult
-                    .addItem(primaryDrawerItemFromItem(applicationContext, it, getString(R.string.tagLetter))
+                    .addItem(primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                             .withOnDrawerItemClickListener { view, position, drawerItem ->
                                 startActivityForResult(
                                         intentFor<CollectionActivity>(

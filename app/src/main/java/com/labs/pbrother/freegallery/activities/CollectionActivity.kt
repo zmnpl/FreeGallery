@@ -28,6 +28,8 @@ import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
+import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
+import com.labs.pbrother.freegallery.extension.tagSymbol
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
@@ -100,7 +102,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
         // floating action button
         collection_shareFloatingActionButton.setOnClickListener { tag() }
-        collection_shareFloatingActionButton.image = tagSymbol(applicationContext)
+        collection_shareFloatingActionButton.image = tagSymbol()
 
         // swipe fullRefresh
         swipeRefreshCollection.setOnRefreshListener {
@@ -194,7 +196,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         drawerResult.removeAllItems()
 
         drawerItems.forEach {
-            val itm = primaryDrawerItemFromItem(applicationContext, it, getString(R.string.tagLetter))
+            val itm = primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                     .withOnDrawerItemClickListener { view, position, drawerItem ->
                         if (it.id != collectionId) {
                             if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true

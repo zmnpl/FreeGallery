@@ -25,6 +25,7 @@ import com.labs.pbrother.freegallery.controller.TPYE_VIDEO
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import com.labs.pbrother.freegallery.dialogs.ImagePropertyDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
+import com.labs.pbrother.freegallery.extension.tagSymbol
 import com.labs.pbrother.freegallery.fragments.ImagePageFragment
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.settings.SettingsHelper
@@ -94,7 +95,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         // toolbar
         setSupportActionBar(singlepicture_Toolbar)
         singlepicture_Toolbar.popupTheme = settings.theme
-        singlepicture_tag.background = tagSymbol(this)
+        singlepicture_tag.background = tagSymbol()
 
         if (collectionId == getString(R.string.trashName)) {
             singlepicture_tag.visibility = View.INVISIBLE

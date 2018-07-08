@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.tagSymbol
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.MetaUpdatorizer
+import com.labs.pbrother.freegallery.extension.tagSymbol
 import kotlinx.android.synthetic.main.collection_item.view.*
 import java.io.File
 import java.util.*
@@ -57,7 +57,7 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
         Glide.with(context).load(img).into(holder.pic)
         holder.selectedOverlay.visibility = if (isSelected(position)) View.VISIBLE else View.INVISIBLE
         holder.videoIconOverlay.visibility = if (itm.type == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO) View.VISIBLE else View.INVISIBLE
-        holder.tagIndicator.background = tagSymbol(context)
+        holder.tagIndicator.background = context.tagSymbol()
         holder.tagIndicator.visibility = if (itm.isTagged) View.VISIBLE else View.INVISIBLE
     }
 

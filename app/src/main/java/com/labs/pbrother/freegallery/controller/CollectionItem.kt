@@ -67,6 +67,14 @@ data class CollectionItem constructor(val id: String = "",
         this.color = colorId
     }
 
+    /**
+     * Sets objects meta from received CollectionMeta object
+     */
+    fun infuseMeta(meta: CollectionMeta) {
+        this.colorize(meta.color)
+        this.love(meta.loved)
+    }
+
     override operator fun compareTo(ccitem: CollectionItem): Int = sortRegular(ccitem)
 
     private fun sortRegular(ccitem: CollectionItem): Int = when {

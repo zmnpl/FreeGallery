@@ -16,7 +16,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
  */
 val STARTED_FROM_ACTIVITY = 1
 val PERMISSION_READ_WRITE_STORAGE = 1337
-val PERMISSION_WRITE_STORAGE = 1338
 
 val READ_REQUEST_CODE = 42
 val COLLECTION_ACTIVITY_REQUEST_CODE = 0
@@ -31,27 +30,6 @@ val EXTRA_SORT_ORDER = "sortOrder"
 val DELETION = "deletion"
 val SHOULD_RELOAD = "reload"
 val CROP_SAVED = "savedCroppedImage"
-
-
-fun primaryDrawerItemFromItem(context: Context, item: CollectionItem, tagLetter: String): PrimaryDrawerItem {
-    return PrimaryDrawerItem()
-            .withTag(item.id)
-            .withName(item.displayName.removePrefix(tagLetter))
-            .withIcon(Ionicons.Icon.ion_pound)
-            .withSelectedIconColor(item.color)
-            .withBadge(item.count.toString())
-            .withBadgeStyle(BadgeStyle(item.color, context.getColor(R.color.material_drawer_dark_background)))
-            .withSelectedColor(adjustColorAlpha(item.color, 0.9F)) // Set some transparancy for selection to make badge and tag shine through
-            .withSelectedIconColor(item.color)
-            .withSelectedTextColor(Color.WHITE)
-}
-
-fun tagSymbol(context: Context): IconicsDrawable {
-    return IconicsDrawable(context)
-            .icon(Ionicons.Icon.ion_pound)
-            .color(Color.WHITE)
-            .sizeDp(24)
-}
 
 fun adjustColorAlpha(color: Int, factor: Float): Int {
     val alpha = Math.round(Color.alpha(color) * factor)

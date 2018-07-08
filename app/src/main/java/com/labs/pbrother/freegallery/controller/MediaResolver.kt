@@ -35,11 +35,6 @@ internal class MediaResolver(private val context: Context) {
     // collection items for purposes
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private fun CollectionItem.infuseMeta(meta: CollectionMeta) {
-        this.colorize(meta.color)
-        this.love(meta.loved)
-    }
-
     // result set
     // build up query
     val overviewCollections: TreeSet<CollectionItem>
