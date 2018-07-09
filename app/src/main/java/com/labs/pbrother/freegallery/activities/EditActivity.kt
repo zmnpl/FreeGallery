@@ -3,7 +3,6 @@ package com.labs.pbrother.freegallery.activities
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
@@ -28,14 +27,12 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     companion object {
         val EXTRA_URI_STRING = "itemuri"
-
         val ORIGINAL_PATH = "originalPath"
         val NEW_VERSION_PATH = "newVersionPath"
     }
 
     private lateinit var itemUri: Uri
     private lateinit var cropper: CropImageView
-
     private val resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {

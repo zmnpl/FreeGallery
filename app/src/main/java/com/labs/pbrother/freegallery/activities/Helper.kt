@@ -1,15 +1,6 @@
 package com.labs.pbrother.freegallery.activities
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.mikepenz.iconics.IconicsDrawable
-import com.mikepenz.ionicons_typeface_library.Ionicons
-import com.mikepenz.materialdrawer.holder.BadgeStyle
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 
 /**
  * Created by simon on 10.09.17.

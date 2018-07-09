@@ -4,7 +4,6 @@ import android.app.Application
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v4.provider.DocumentFile

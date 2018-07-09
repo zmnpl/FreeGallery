@@ -8,8 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -27,6 +25,7 @@ import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
+import com.labs.pbrother.freegallery.extension.discoverSDPath
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.settings.SettingsHelper
@@ -36,7 +35,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
-import java.io.File
 
 
 class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
@@ -76,14 +74,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         bindViewModel()
         swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
 
-//        val foo = getExternalFilesDirs(Environment.DIRECTORY_PICTURES)
-//        val parts = foo[1].absolutePath.split("/")
-//        val sdpath = "/"+parts[0]+"/"+parts[1]
-//        val bar = File(sdpath+"/test.txt")
-//        bar.mkdirs()
-//        bar.createNewFile()
-//        bar.writeText("test")
-//        print("foo")
+        discoverSDPath()
     }
 
     private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {

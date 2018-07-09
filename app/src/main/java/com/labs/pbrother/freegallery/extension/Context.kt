@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.adjustColorAlpha
 import com.labs.pbrother.freegallery.controller.CollectionItem
+import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.ionicons_typeface_library.Ionicons
 import com.mikepenz.materialdrawer.holder.BadgeStyle
@@ -129,4 +130,10 @@ fun Context.getImageContentUri(imageFile: File): Uri? {
             return null
         }
     }
+}
+
+// first element is primary, so second (probably -.-) is sd
+fun Context.discoverSDPath() {
+    val stores = getExternalFilesDirs(Environment.DIRECTORY_PICTURES)
+    SettingsHelper(this).sdCardRootPath = stores[1].absolutePath.split("/Android")[0]
 }

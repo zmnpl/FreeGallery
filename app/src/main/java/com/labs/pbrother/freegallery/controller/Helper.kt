@@ -1,10 +1,6 @@
 package com.labs.pbrother.freegallery.controller
 
-import android.content.ContentValues
-import android.content.Context
-import android.net.Uri
 import android.provider.MediaStore
-import java.io.File
 
 
 /**

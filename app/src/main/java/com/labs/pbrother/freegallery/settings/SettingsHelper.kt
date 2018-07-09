@@ -37,6 +37,8 @@ class SettingsHelper(val context: Context) {
         val KEY_PREF_EXIF_ORIENTATION = "pref_key_orientation_exif"
         @JvmStatic
         val KEY_SDURI = "SDCARDURI"
+        @JvmStatic
+        val KEY_SDROOT = "SDCARDROOTPATH"
 
     }
 
@@ -198,6 +200,15 @@ class SettingsHelper(val context: Context) {
         set(value) {
             sharedPref.edit().apply() {
                 putString(KEY_SDURI, value)
+                commit()
+            }
+        }
+
+    var sdCardRootPath: String
+        get() = sharedPref.getString((KEY_SDROOT), "/NOUSABLEPATH")
+        set(value) {
+            sharedPref.edit().apply() {
+                putString(KEY_SDROOT, value)
                 commit()
             }
         }

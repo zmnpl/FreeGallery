@@ -3,14 +3,10 @@ package com.labs.pbrother.freegallery.activities
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.support.v4.content.FileProvider
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.Provider
-import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
-import com.labs.pbrother.freegallery.controller.getImageContentUri
 import org.jetbrains.anko.doAsync
 import java.io.File
 
