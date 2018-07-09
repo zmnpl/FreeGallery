@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -112,10 +114,13 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         var version = 0;
         var hit = false
         var testfile: File?
-        val basePath = originalFile.path.removeSuffix("." + originalFile.extension)
+
         val extension = originalFile.extension
+        val fileName = originalFile.name.removeSuffix("." + extension)
+        val basePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/FreeGallery"
+        File(basePath).mkdirs() // TODO - Test, not sure if that crashes the app?
         while (!hit) {
-            val testpath = basePath + "_v" + version.toString() + "." + extension
+            val testpath = basePath  + "/" + fileName + "_v" + version.toString() + "." + extension
             testfile = File(testpath)
             if (testfile.exists()) {
                 version += 1
