@@ -33,7 +33,7 @@ class DeviceConfiguration private constructor() {
 
     companion object {
         @JvmStatic
-        val instance = DeviceConfiguration()
+        var instance = DeviceConfiguration()
         @JvmStatic
         val PORTRAIT = "p"
         @JvmStatic
