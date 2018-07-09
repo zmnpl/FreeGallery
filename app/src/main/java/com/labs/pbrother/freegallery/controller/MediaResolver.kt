@@ -6,7 +6,7 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.extension.makeImageItem
 import com.labs.pbrother.freegallery.extension.makeVideoItem
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -22,7 +22,6 @@ import kotlin.collections.ArrayList
 internal class MediaResolver(private val context: Context) {
 
     private val db: MyDb
-    private var settings: SettingsHelper = SettingsHelper(context)
 
     init {
         db = MyDb(context)
@@ -63,7 +62,7 @@ internal class MediaResolver(private val context: Context) {
                             type = TYPE_FOLDER,
                             thumb = thumb.path,
                             count = countBucket(c.getString(0)),
-                            color = settings.defaultCollectionColor
+                            color = prefs.defaultCollectionColor
                     )
                     val meta = collectionMeta[ci.id]
                     if (null != meta) ci.infuseMeta(meta)
@@ -80,13 +79,13 @@ internal class MediaResolver(private val context: Context) {
             val id = context.getString(R.string.timelineName)
             val thumb = latestItemPath
             val cnt = countAllItems()
-            val color = settings.highlightColorAccent
+            val color = prefs.highlightColorAccent
 
             val timeline = CollectionItem(id = context.getString(R.string.timelineName),
                     type = TYPE_TAG,
                     thumb = latestItemPath,
                     count = countAllItems(),
-                    color = settings.highlightColorAccent)
+                    color = prefs.highlightColorAccent)
 
             val meta = db.collectionMetaFor(timeline.id)
             if (null != meta) timeline.infuseMeta(meta)
@@ -100,7 +99,7 @@ internal class MediaResolver(private val context: Context) {
                     type = TYPE_TAG,
                     thumb = db.thumbForTrash,
                     count = db.countTrashItems(),
-                    color = settings.defaultCollectionColor)
+                    color = prefs.defaultCollectionColor)
 
             val meta = db.collectionMetaFor(trash.id)
             if (null != meta) trash.infuseMeta(meta)
@@ -117,7 +116,7 @@ internal class MediaResolver(private val context: Context) {
                         type = TYPE_TAG,
                         thumb = db.getThumbForTag(tag),
                         count = db.countItemsForTag(tag),
-                        color = settings.defaultCollectionColor)
+                        color = prefs.defaultCollectionColor)
 
                 val meta = collectionMeta[itm.id]
                 if (null != meta) itm.infuseMeta(meta)

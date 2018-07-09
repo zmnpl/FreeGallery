@@ -26,8 +26,8 @@ import com.labs.pbrother.freegallery.dialogs.ImagePropertyDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
 import com.labs.pbrother.freegallery.extension.tagSymbol
 import com.labs.pbrother.freegallery.fragments.ImagePageFragment
+import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
-import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.DepthPageTransformer
 import kotlinx.android.synthetic.main.activity_image_slide.*
 import kotlinx.android.synthetic.main.singlepicture_toolbar.*
@@ -57,7 +57,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private var reloadPlz = true
     private val INITIAL_HIDE_DELAY = 10000
     private val resultIntent = Intent()
-    private lateinit var settings: SettingsHelper
     private lateinit var decorView: View
     private lateinit var clickDetector: GestureDetector
     private var hideSystemUiHandler: Handler = object : Handler() {
@@ -80,9 +79,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
             finish() // TODO temporary - should not finish
         }
 
-        // helper for settings
-        settings = SettingsHelper(applicationContext)
-        setTheme(settings.theme)
+        setTheme(prefs.theme)
 
         // layout
         setContentView(R.layout.activity_image_slide)
@@ -93,7 +90,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
         // toolbar
         setSupportActionBar(singlepicture_Toolbar)
-        singlepicture_Toolbar.popupTheme = settings.theme
+        singlepicture_Toolbar.popupTheme = prefs.theme
         singlepicture_tag.background = tagSymbol()
 
         if (collectionId == getString(R.string.trashName)) {

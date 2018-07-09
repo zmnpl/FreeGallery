@@ -25,9 +25,9 @@ import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
-import com.labs.pbrother.freegallery.extension.discoverSDPath
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
+import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
@@ -39,7 +39,6 @@ import org.jetbrains.anko.*
 
 class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
-    private lateinit var settings: SettingsHelper
     private lateinit var viewModel: MainActivityViewModel
 
     private var onTablet = false
@@ -58,8 +57,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         reloadPlz = true
         if (tabletMain != null) onTablet = true
 
-        settings = SettingsHelper(applicationContext)
-        setTheme(settings.theme)
+        setTheme(prefs.theme)
 
         setContentView(R.layout.activity_main)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
@@ -67,14 +65,12 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
         overviewRecycler.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@MainActivity,  settings.mainColumnsInPortrait)
-            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, settings.mainColumnsInPortrait))
+            layoutManager = GridLayoutManager(this@MainActivity,  prefs.mainColumnsInPortrait)
+            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
         }
 
         bindViewModel()
         swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
-
-        discoverSDPath()
     }
 
     private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
@@ -99,7 +95,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
             drawerLayoutRes = R.layout.material_drawer
 
-            if (!settings.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
+            if (!prefs.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
 
             if (onTablet) {
                 //sectionHeader(getString(R.string.drawer_tagsection)) { }
@@ -115,7 +111,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                 }
             }
         }
-        if (!settings.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = settings.primaryColor
+        if (!prefs.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
 
         if (onTablet) {
             nav_tablet.addView(drawerResult.slider)
@@ -175,10 +171,10 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     private fun applyZoom(zoom: Int) {
-        var cols = settings.mainColumnsInPortrait
+        var cols = prefs.mainColumnsInPortrait
         cols += zoom
         if (cols < 1) cols = 1
-        settings.mainColumnsInPortrait = cols
+        prefs.mainColumnsInPortrait = cols
         overviewRecycler.layoutManager = GridLayoutManager(this@MainActivity, cols)
     }
 
@@ -199,7 +195,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             var uri: Uri? = data?.getData()
             val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             contentResolver.takePersistableUriPermission(uri, takeFlags)
-            settings.sdCardUri = uri.toString()
+            prefs.sdCardUri = uri.toString()
         }
     }
 

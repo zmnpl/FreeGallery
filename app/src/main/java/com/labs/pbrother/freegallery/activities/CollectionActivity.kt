@@ -30,8 +30,8 @@ import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.extension.tagSymbol
+import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.settings.DeviceConfiguration
-import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_collection.*
@@ -42,7 +42,6 @@ import org.jetbrains.anko.*
 class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, TagDialogFragment.TagDialogListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
     // wiring
-    private lateinit var settings: SettingsHelper
     private lateinit var viewModel: CollectionActivityViewModel
 
     // instance sates
@@ -79,9 +78,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             dataChanged = savedInstanceState.getBoolean(DATA_CHANGED)
         }
 
-        // helper for settings
-        settings = SettingsHelper(applicationContext)
-        setTheme(settings.theme)
+        setTheme(prefs.theme)
 
         setContentView(R.layout.activity_collection)
 
@@ -159,7 +156,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
             drawerLayoutRes = R.layout.material_drawer
 
-            if (!settings.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
+            if (!prefs.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
 
             footer {
                 primaryItem(getString(R.string.menu_settings)) {
@@ -184,7 +181,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             }
         }
 
-        if (!settings.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = settings.primaryColor
+        if (!prefs.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
 
         if (onTablet) {
             drawerResult.slider.elevation = (-16).toFloat()
@@ -240,8 +237,8 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private fun changeColor(color: Int) {
-        setTheme(settings.theme)
-        if (settings.colorizeTitlebar()) colorizeTitlebar(color)
+        setTheme(prefs.theme)
+        if (prefs.colorizeTitlebar()) colorizeTitlebar(color)
         // refresh items in drawer, to make color change for tag collection visible
         if (viewModel.collectionType == TYPE_TAG) {
             doAsync {
@@ -253,19 +250,19 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private fun colorizeTitlebar(color: Int) {
         main_toolbar.setBackgroundColor(color)
 
-        if (color != settings.defaultCollectionColor) {
+        if (color != prefs.defaultCollectionColor) {
             window.statusBarColor = adjustColorAlpha(color, 0.8f)
         } else {
             //window.statusBarColor = adjustColorAlpha(settings.colorPrimaryDark, 0.8f)
-            window.statusBarColor = settings.colorPrimaryDark
+            window.statusBarColor = prefs.colorPrimaryDark
         }
     }
 
     private val columns: Int
         get() = if (DeviceConfiguration.instance.getRotation(this@CollectionActivity) === DeviceConfiguration.PORTRAIT || DeviceConfiguration.instance.getRotation(this@CollectionActivity) === DeviceConfiguration.REVERSE_PORTRAIT) {
-            settings.columnsInPortrait
+            prefs.columnsInPortrait
         } else {
-            (settings.columnsInPortrait * 1.5).toInt()
+            (prefs.columnsInPortrait * 1.5).toInt()
         }
 
     private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
@@ -392,7 +389,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
         var colCount = columns
         colCount += zoom
         if (colCount < 1) colCount = 1
-        settings.columnsInPortrait = colCount
+        prefs.columnsInPortrait = colCount
         collection_rclPictureCollection.layoutManager = GridLayoutManager(this@CollectionActivity, colCount)
     }
 

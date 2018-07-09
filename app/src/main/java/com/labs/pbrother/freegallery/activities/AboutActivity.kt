@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.toolbar.*
 
 /**
@@ -18,8 +18,7 @@ class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val settings = SettingsHelper(applicationContext)
-        setTheme(settings.theme)
+        setTheme(prefs.theme)
 
         setContentView(R.layout.activity_about)
 

@@ -1,6 +1,7 @@
 package com.labs.pbrother.freegallery.controller
 
 import android.provider.MediaStore
+import com.labs.pbrother.freegallery.prefs
 import java.io.File
 
 /**
@@ -45,6 +46,9 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     fun addAllTags(tags: HashSet<String>) {
         this.tags = tags;
     }
+
+    val isOnSDCard: Boolean
+        get() = path.startsWith(prefs.sdCardRootPath)
 
     val tagString: String
         get() = tags.joinToString(", ")

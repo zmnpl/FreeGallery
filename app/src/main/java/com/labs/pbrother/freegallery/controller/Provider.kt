@@ -15,7 +15,7 @@ import com.labs.pbrother.freegallery.controller.Cache.overviewCache
 import com.labs.pbrother.freegallery.controller.Cache.tagCache
 import com.labs.pbrother.freegallery.controller.db.MyDb
 import com.labs.pbrother.freegallery.extension.getRealPathFromURI
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import java.io.File
 import java.util.*
 
@@ -142,9 +142,8 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     }
 
     fun findSDUri(path: String): String {
-        val settings = SettingsHelper(applicationContext)
         //First we get `DocumentFile` from the `TreeUri` which in our case is `sdCardUri`.
-        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(applicationContext, Uri.parse(settings.sdCardUri))
+        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(applicationContext, Uri.parse(prefs.sdCardUri))
 
         val parts = path.split("/")
 
@@ -293,7 +292,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     override fun colorizeCollection(collection: CollectionItem, c: Int?) {
         var color = c
-        if (null == color) color = SettingsHelper(applicationContext).defaultCollectionColor
+        if (null == color) color = prefs.defaultCollectionColor
         val db = MyDb(applicationContext)
         collection.colorize(color)
         db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
