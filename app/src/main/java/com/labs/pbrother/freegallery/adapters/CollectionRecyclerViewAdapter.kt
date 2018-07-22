@@ -53,7 +53,7 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itm = items.get(position)
         val img = File(itm.path) // TODO - loading via file faster?
-        //Glide.with(context).load(itm.fileUri()).into(holder.pic);
+        //Glide.with(context).load(itm.fileUriString()).into(holder.pic);
         Glide.with(context).load(img).into(holder.pic)
         holder.selectedOverlay.visibility = if (isSelected(position)) View.VISIBLE else View.INVISIBLE
         holder.videoIconOverlay.visibility = if (itm.type == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO) View.VISIBLE else View.INVISIBLE

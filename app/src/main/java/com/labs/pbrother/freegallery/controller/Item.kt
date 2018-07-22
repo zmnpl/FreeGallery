@@ -33,7 +33,7 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     val id: String
         get() = path
 
-    val fileUri: String
+    val fileUriString: String
         get() = "file://" + path
 
 

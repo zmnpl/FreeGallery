@@ -2,6 +2,7 @@ package com.labs.pbrother.freegallery.fragments
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
@@ -15,6 +16,17 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.labs.pbrother.freegallery.BuildConfig
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
@@ -39,6 +51,14 @@ class ImagePageFragment() : Fragment() {
     private lateinit var settings: SettingsHelper
     private var useImageColorAsBackground = true
 
+
+    // exo player stuff
+    private lateinit var exoView: PlayerView
+    private var exoPlayer: SimpleExoPlayer? = null
+    var playWhenReady = false
+    var currentWindow = 0
+    var playbackPosition: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = false
@@ -56,18 +76,71 @@ class ImagePageFragment() : Fragment() {
 
         vidView = rootView.singlepicture_scrollview_Vid
         vidIcon = rootView.singlepicture_scrollview_VidIcon
+        exoView = rootView.singlepicture_scrollview_video_view
 
-        return display(rootView)
+        display()
+
+        return rootView
     }
 
-    private fun display(rootView: ViewGroup): ViewGroup {
+    override fun onPause() {
+        super.onPause()
+        if (Util.SDK_INT <= 23) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (Util.SDK_INT > 23) {
+            releasePlayer()
+        }
+    }
+
+    private fun initializePlayer(uri: Uri) {
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(
+                DefaultRenderersFactory(context),
+                DefaultTrackSelector(), DefaultLoadControl())
+
+        exoView.setPlayer(exoPlayer)
+
+        exoPlayer?.setPlayWhenReady(playWhenReady)
+        exoPlayer?.seekTo(currentWindow, playbackPosition)
+
+        val mediaSource = buildMediaSource(uri);
+        exoPlayer?.prepare(mediaSource, true, false)
+
+        imageView.visibility = View.INVISIBLE
+        exoView.visibility = View.VISIBLE
+    }
+
+    //private fun buildMediaSource(uri: Uri): MediaSource = ExtractorMediaSource.Factory(DefaultHttpDataSourceFactory("exoplayer-codelab")).createMediaSource(uri)
+    private fun buildMediaSource(uri: Uri): MediaSource = ExtractorMediaSource(
+            uri,
+            DefaultDataSourceFactory(context, "fooagent"),
+            DefaultExtractorsFactory(),
+            null,
+            null)
+
+    private fun releasePlayer() {
+        if (exoPlayer != null) {
+            playbackPosition = exoPlayer?.getCurrentPosition() ?: 0
+            currentWindow = exoPlayer?.getCurrentWindowIndex() ?: 0
+            playWhenReady = exoPlayer?.getPlayWhenReady() ?: false
+            exoPlayer?.release();
+            exoPlayer = null;
+        }
+    }
+
+
+    private fun display() {
         // videos will be displayes differently from images ...
         when (item.type) {
             TYPE_IMAGE -> {
                 if ("gif" == File(item.path).extension.toLowerCase()) {
                     imageView.visibility = View.INVISIBLE
                     vidView.visibility = View.VISIBLE
-                    Glide.with(this).load(item.fileUri).into(vidView)
+                    Glide.with(this).load(item.fileUriString).into(vidView)
                 } else {
                     imageView.apply {
                         setParallelLoadingEnabled(true)
@@ -79,27 +152,33 @@ class ImagePageFragment() : Fragment() {
                 }
             }
             else -> {
-                imageView.visibility = View.INVISIBLE
-                vidView.visibility = View.VISIBLE
-                vidIcon.visibility = View.VISIBLE
-
-                vidIcon.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    intent.type = "video/*"
-                    val vid = File(item.path)
-                    val foo = Environment.getExternalStorageDirectory().absolutePath
-                    val uri = FileProvider.getUriForFile(context!!, BuildConfig.APPLICATION_ID + ".provider", vid)
-
-                    intent.data = uri
-                    startActivity(intent)
+                if (true) {
+                    initializePlayer(Uri.parse(item.fileUriString))
+                } else {
+                    displayGlideViewForVideo()
                 }
-
-                Glide.with(this).load(item.fileUri).into(vidView)
             }
         }
+    }
 
-        return rootView
+    fun displayGlideViewForVideo() {
+        imageView.visibility = View.INVISIBLE
+        vidView.visibility = View.VISIBLE
+        vidIcon.visibility = View.VISIBLE
+
+        vidIcon.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.type = "video/*"
+            val vid = File(item.path)
+            val foo = Environment.getExternalStorageDirectory().absolutePath
+            val uri = FileProvider.getUriForFile(context!!, BuildConfig.APPLICATION_ID + ".provider", vid)
+
+            intent.data = uri
+            startActivity(intent)
+        }
+
+        Glide.with(this).load(item.fileUriString).into(vidView)
     }
 
     fun setBackgroundColorBasedOnImage() {

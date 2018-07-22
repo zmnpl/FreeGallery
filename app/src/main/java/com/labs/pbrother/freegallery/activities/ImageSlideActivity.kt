@@ -200,7 +200,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun makeViewPager(items: List<Item>) {
-        image_pager.offscreenPageLimit = 2
+        //image_pager.offscreenPageLimit = 2
         image_pager.adapter = ScreenSlidePagerAdapter(items, supportFragmentManager)
         image_pager.currentItem = itemIndex
         image_pager.setPageTransformer(true, DepthPageTransformer())
@@ -319,7 +319,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         }
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
-        //val uri = Uri.parse(item.fileUri)
+        //val uri = Uri.parse(item.fileUriString)
         val uri = Uri.fromFile(File(item.path))
         intent.type = "image/*"
         //intent.setDataAndType(uri, "image/*")
@@ -333,7 +333,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun edit() {
-        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUri
+        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUriString
         startActivityForResult(
                 intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY_REQUEST_CODE)
     }
