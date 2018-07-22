@@ -16,22 +16,11 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import com.labs.pbrother.freegallery.BuildConfig
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.fragment_singlepicture_slide_page.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -48,7 +37,6 @@ class ImagePageFragment() : Fragment() {
     private lateinit var vidIcon: ImageView
     private lateinit var gestureDetector: GestureDetector
     private lateinit var item: Item
-    private lateinit var settings: SettingsHelper
     private var useImageColorAsBackground = true
 
 
@@ -62,8 +50,7 @@ class ImagePageFragment() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = false
-        settings = SettingsHelper(activity!!.applicationContext)
-        useImageColorAsBackground = settings.useImageColorAsBackground
+        useImageColorAsBackground = prefs.useImageColorAsBackground
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,7 +59,7 @@ class ImagePageFragment() : Fragment() {
                 R.layout.fragment_singlepicture_slide_page, container, false) as ViewGroup
 
         imageView = rootView.singlepicture_scrollview_Pic
-        if (settings.orientationFromExif) imageView.orientation = SubsamplingScaleImageView.ORIENTATION_USE_EXIF
+        if (prefs.orientationFromExif) imageView.orientation = SubsamplingScaleImageView.ORIENTATION_USE_EXIF
 
         vidView = rootView.singlepicture_scrollview_Vid
         vidIcon = rootView.singlepicture_scrollview_VidIcon

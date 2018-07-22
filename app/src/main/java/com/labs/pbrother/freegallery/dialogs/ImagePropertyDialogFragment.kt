@@ -7,13 +7,11 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
-
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_itemroperties.*
 import java.io.File
-
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +21,6 @@ import java.util.*
 
 class ImagePropertyDialogFragment : DialogFragment() {
 
-    private lateinit var settings: SettingsHelper
     private lateinit var item: Item
     private lateinit var listener: ImagePropertyDialogListener
 
@@ -33,9 +30,7 @@ class ImagePropertyDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        settings = SettingsHelper(activity)
-
-        val builder = AlertDialog.Builder(activity, settings.dialogTheme)
+        val builder = AlertDialog.Builder(activity, prefs.dialogTheme)
         val inflater = activity.layoutInflater
 
         // Inflate and set the layout for the dialog

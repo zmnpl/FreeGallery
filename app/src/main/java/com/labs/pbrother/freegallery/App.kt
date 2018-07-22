@@ -2,7 +2,6 @@ package com.labs.pbrother.freegallery
 
 import android.app.Application
 import com.labs.pbrother.freegallery.extension.discoverSDPath
-import com.labs.pbrother.freegallery.settings.DeviceConfiguration.Companion.instance
 import com.labs.pbrother.freegallery.settings.SettingsHelper
 
 val prefs: SettingsHelper by lazy {

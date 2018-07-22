@@ -109,6 +109,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         finish()
     }
 
+    // Returns file name for result in subfolder of general Pictures directory on main storage
     private fun versionedOutputFileName(originalPath: String): String {
         var originalFile = File(originalPath)
         var version = 0;
@@ -118,7 +119,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         val extension = originalFile.extension
         val fileName = originalFile.name.removeSuffix("." + extension)
         val basePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/FreeGallery"
-        File(basePath).mkdirs() // TODO - Test, not sure if that crashes the app?
+        File(basePath).mkdirs()
         while (!hit) {
             val testpath = basePath  + "/" + fileName + "_v" + version.toString() + "." + extension
             testfile = File(testpath)

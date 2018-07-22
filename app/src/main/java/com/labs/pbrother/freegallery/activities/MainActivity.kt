@@ -8,8 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.os.Environment.getExternalStoragePublicDirectory
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -30,7 +28,6 @@ import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.settings.SettingsHelper
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*

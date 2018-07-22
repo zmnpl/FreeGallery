@@ -11,7 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_tag.*
 
 
@@ -28,7 +28,6 @@ class TagDialogFragment : DialogFragment() {
     }
 
     private lateinit var tags: List<String>
-    private lateinit var settings: SettingsHelper
     private lateinit var listener: TagDialogListener
     private lateinit var tagField: AutoCompleteTextView
 
@@ -37,9 +36,7 @@ class TagDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        settings = SettingsHelper(activity.applicationContext)
-
-        val builder = AlertDialog.Builder(activity, settings.dialogTheme)
+        val builder = AlertDialog.Builder(activity, prefs.dialogTheme)
         val inflater = activity.layoutInflater
 
         // Inflate and set the layout for the dialog

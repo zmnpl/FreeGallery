@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.CollectionActivity
-import com.labs.pbrother.freegallery.settings.SettingsHelper
+import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_colorize.view.*
 
 /**
@@ -22,13 +22,10 @@ class ColorizeDialogFragment() : DialogFragment() {
         fun colorCancel()
     }
 
-    private lateinit var settings: SettingsHelper
     private lateinit var listener: ColorDialogListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        settings = SettingsHelper(activity.applicationContext)
-
-        val builder = AlertDialog.Builder(activity, settings.dialogTheme)
+        val builder = AlertDialog.Builder(activity, prefs.dialogTheme)
         val inflater = activity.layoutInflater
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
