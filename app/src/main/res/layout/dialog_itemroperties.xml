@@ -127,7 +127,7 @@
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:text="@string/ImgPropertyLatitude"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:textStyle="normal|bold" />
 
         <TextView
@@ -145,7 +145,7 @@
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:text="@string/ImgPropertyLongitude"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:textStyle="normal|bold" />
 
         <TextView

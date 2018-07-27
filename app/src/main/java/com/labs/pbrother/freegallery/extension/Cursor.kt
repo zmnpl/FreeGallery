@@ -11,9 +11,7 @@ fun Cursor.makeImageItem(): Item {
             getLong(DATETAKEN),
             getLong(SIZE),
             getInt(WIDTH),
-            getInt(HEIGHT),
-            getLong(LAT).toDouble(),
-            getLong(LONG).toDouble()
+            getInt(HEIGHT)
     )
 }
 
@@ -24,7 +22,6 @@ fun Cursor.makeVideoItem(): Item {
             getLong(DATETAKEN),
             getLong(SIZE),
             getInt(WIDTH),
-            getInt(HEIGHT),
-            getLong(LAT).toDouble(),
-            getLong(LONG).toDouble())
+            getInt(HEIGHT)
+    )
 }

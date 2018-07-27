@@ -29,10 +29,8 @@ val DATEADDED = 2
 val DATETAKEN = 3
 val WIDTH = 4
 val HEIGHT = 5
-val LAT = 6
-val LONG = 7
-val SIZE = 8
-val BUCKETID = 9
+val SIZE = 6
+val BUCKETID = 7
 
 val IMAGE_PROJECTION = arrayOf("DISTINCT " +
         MediaStore.Images.Media._ID,
@@ -41,8 +39,6 @@ val IMAGE_PROJECTION = arrayOf("DISTINCT " +
         MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.WIDTH,
         MediaStore.Images.Media.HEIGHT,
-        MediaStore.Images.Media.LATITUDE,
-        MediaStore.Images.Media.LONGITUDE,
         MediaStore.Images.Media.SIZE,
         MediaStore.Images.Media.BUCKET_ID
 )
@@ -55,8 +51,6 @@ val VID_PROJECTION = arrayOf("DISTINCT " +
         MediaStore.Images.Media.DATE_TAKEN,
         MediaStore.Images.Media.WIDTH,
         MediaStore.Images.Media.HEIGHT,
-        MediaStore.Images.Media.LATITUDE,
-        MediaStore.Images.Media.LONGITUDE,
         MediaStore.Images.Media.SIZE,
         MediaStore.Images.Media.BUCKET_ID)
 

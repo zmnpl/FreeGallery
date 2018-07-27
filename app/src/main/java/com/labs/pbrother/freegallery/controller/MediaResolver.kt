@@ -215,10 +215,10 @@ internal class MediaResolver(private val context: Context) {
         for ((path, mediatype) in db.allTrashItems()) {
             when (mediatype) {
                 MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE -> {
-                    items.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE, path, 0, 0, 0, 0, 0, 0.0, 0.0))
+                    items.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE, path, 0, 0, 0, 0, 0))
                 }
                 MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO -> {
-                    items.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO, path, 0, 0, 0, 0, 0, 0.0, 0.0))
+                    items.add(Item(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO, path, 0, 0, 0, 0, 0))
                 }
                 else -> {
                 }

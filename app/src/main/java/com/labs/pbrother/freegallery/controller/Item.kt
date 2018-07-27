@@ -1,5 +1,6 @@
 package com.labs.pbrother.freegallery.controller
 
+import android.media.ExifInterface
 import android.provider.MediaStore
 import com.labs.pbrother.freegallery.prefs
 import java.io.File
@@ -15,8 +16,6 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
                             var size: Long = 0,
                             var width: Int = 0,
                             var height: Int = 0,
-                            var latitude: Double = 0.0,
-                            var longitude: Double = 0.0,
                             private var tags: HashSet<String> = HashSet()
 ) : Comparable<Item> {
 
@@ -29,6 +28,8 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
         val ORDER_BY_DATE_TAKEN = 1
         var ORDER_BY = ORDER_BY_DATE_ADDED
     }
+
+    private val exif = ExifInterface(path)
 
     val id: String
         get() = path
@@ -71,5 +72,24 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
 
     private fun compareByDateAdded(other: Item): Int = if (dateAdded < other.dateAdded) 1 else -1
     private fun compareByDateTaken(other: Item): Int = if (dateTaken < other.dateTaken) 1 else -1
+
+    // exif data
+
+    val latitude: Double
+        get() = exif.getAttributeDouble(ExifInterface.TAG_GPS_LATITUDE, 0.0)
+
+    val longitude: Double
+        get() = exif.getAttributeDouble(ExifInterface.TAG_GPS_LONGITUDE, 0.0)
+
+    val camera: String
+        get() = exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
+
+    val iso: Int
+        get() = exif.getAttributeInt(ExifInterface.TAG_ISO_SPEED_RATINGS, 0)
+
+    val exposureTime: Double
+        get() = exif.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0.0)
+
+
 }
 

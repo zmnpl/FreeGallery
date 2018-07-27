@@ -3,6 +3,7 @@ package com.labs.pbrother.freegallery.fragments
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.Fragment
@@ -16,6 +17,17 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.labs.pbrother.freegallery.BuildConfig
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
@@ -130,7 +142,7 @@ class ImagePageFragment() : Fragment() {
                     Glide.with(this).load(item.fileUriString).into(vidView)
                 } else {
                     imageView.apply {
-                        setParallelLoadingEnabled(true)
+                        setExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                         setMinimumTileDpi(196) // 196 -> recommendation from franciscofranco on github
                         setImage(ImageSource.uri(item.path))
                         setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
@@ -139,7 +151,8 @@ class ImagePageFragment() : Fragment() {
                 }
             }
             else -> {
-                if (true) {
+                // TODO - evaluate if worth it to make own video activity
+                if (false) {
                     initializePlayer(Uri.parse(item.fileUriString))
                 } else {
                     displayGlideViewForVideo()
