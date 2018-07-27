@@ -1,7 +1,6 @@
 package com.labs.pbrother.freegallery.controller
 
 import android.media.ExifInterface
-import android.provider.MediaStore
 import com.labs.pbrother.freegallery.prefs
 import java.io.File
 
@@ -29,7 +28,15 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
         var ORDER_BY = ORDER_BY_DATE_ADDED
     }
 
-    private val exif = ExifInterface(path)
+    private val exif: ExifInterface by lazy {
+        ExifInterface(path)
+    }
+
+    private val latLongHolder = floatArrayOf(0.0f, 0.0f)
+    private val latLong: FloatArray by lazy {
+        exif.getLatLong(latLongHolder)
+        latLongHolder
+    }
 
     val id: String
         get() = path
@@ -73,25 +80,30 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
     private fun compareByDateAdded(other: Item): Int = if (dateAdded < other.dateAdded) 1 else -1
     private fun compareByDateTaken(other: Item): Int = if (dateTaken < other.dateTaken) 1 else -1
 
-    // exif data
-
     val latitude: Double
-        get() = if (type == TYPE_IMAGE) {
-            exif.getAttributeDouble(ExifInterface.TAG_GPS_LATITUDE, 0.0)
-        } else {
-            0.0
+        get() = when (type) {
+            TYPE_IMAGE -> {
+                latLong[0].toDouble()
+            }
+            else -> 0.0
         }
 
     val longitude: Double
-        get() = if (type == TYPE_IMAGE) {
-            exif.getAttributeDouble(ExifInterface.TAG_GPS_LONGITUDE, 0.0)
-        } else {
-            0.0
+        get() = when (type) {
+            TYPE_IMAGE -> {
+                latLong[1].toDouble()
+            }
+            else -> 0.0
         }
 
     val camera: String
         get() = if (type == TYPE_IMAGE) {
-            exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
+            var make = exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
+            if (make != "") {
+                make = make + ", "
+            }
+            val model = exif.getAttribute(ExifInterface.TAG_MODEL) ?: ""
+            make + model
         } else {
             ""
         }
@@ -103,7 +115,7 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
             0
         }
 
-    val exposureTime: Double
+    val exposureTimeSeconds: Double
         get() = if (type == TYPE_IMAGE) {
             exif.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0.0)
         } else {
