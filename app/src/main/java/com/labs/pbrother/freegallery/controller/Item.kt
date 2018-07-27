@@ -9,7 +9,7 @@ import java.io.File
  * Created by simon on 21.02.17.
  */
 //@Parcelize
-data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE,
+data class Item constructor(var type: Int = TYPE_IMAGE,
                             var path: String = "",
                             var dateAdded: Long = 0, // milliseconds since 1. Jan 1970
                             var dateTaken: Long = 0,
@@ -76,20 +76,39 @@ data class Item constructor(var type: Int = MediaStore.Files.FileColumns.MEDIA_T
     // exif data
 
     val latitude: Double
-        get() = exif.getAttributeDouble(ExifInterface.TAG_GPS_LATITUDE, 0.0)
+        get() = if (type == TYPE_IMAGE) {
+            exif.getAttributeDouble(ExifInterface.TAG_GPS_LATITUDE, 0.0)
+        } else {
+            0.0
+        }
 
     val longitude: Double
-        get() = exif.getAttributeDouble(ExifInterface.TAG_GPS_LONGITUDE, 0.0)
+        get() = if (type == TYPE_IMAGE) {
+            exif.getAttributeDouble(ExifInterface.TAG_GPS_LONGITUDE, 0.0)
+        } else {
+            0.0
+        }
 
     val camera: String
-        get() = exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
+        get() = if (type == TYPE_IMAGE) {
+            exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
+        } else {
+            ""
+        }
 
     val iso: Int
-        get() = exif.getAttributeInt(ExifInterface.TAG_ISO_SPEED_RATINGS, 0)
+        get() = if (type == TYPE_IMAGE) {
+            exif.getAttributeInt(ExifInterface.TAG_ISO_SPEED_RATINGS, 0)
+        } else {
+            0
+        }
 
     val exposureTime: Double
-        get() = exif.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0.0)
-
+        get() = if (type == TYPE_IMAGE) {
+            exif.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0.0)
+        } else {
+            0.0
+        }
 
 }
 
