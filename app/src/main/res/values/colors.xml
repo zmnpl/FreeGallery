@@ -12,6 +12,16 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#212121</color>
 
+    <color name="nerd_primary">#000000</color>
+    <color name="nerd_primary_dark">#000000</color>
+    <color name="nerd_primary_light">#000000</color>
+    <color name="nerd_accent">#e91e63</color>
+    <color name="nerd_windowBackground">#000000</color>
+    <color name="nerd_primary_text">#FFFFFFFF</color>
+    <color name="nerd_secondary_text">#B3FFFFFF</color>
+    <color name="nerd_icons">#FFFFFF</color>
+    <color name="nerd_divider">#212121</color>
+
     <color name="itemPreview">#40000000</color>
     <color name="colorHighlightDefault">#33212121</color>
 

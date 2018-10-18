@@ -43,14 +43,14 @@ class SettingsHelper(val context: Context) {
     }
 
     private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private lateinit var colorDefault: String
-    private lateinit var colorIndigo: String
-    private lateinit var colorTeal: String
-    private lateinit var colorPurple: String
-    private lateinit var colorBlueGrey: String
+    private var colorDefault: String
+    private var colorIndigo: String
+    private var colorTeal: String
+    private var colorPurple: String
+    private var colorBlueGrey: String
 
-    private lateinit var orderByDateTaken: String
-    private lateinit var orderByDateAdded: String
+    private var orderByDateTaken: String
+    private var orderByDateAdded: String
 
     init {
         val colorOptions = context.resources.getStringArray(R.array.prefStyleColorValues)

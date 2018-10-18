@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         setContentView(R.layout.activity_main)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
+        main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
         overviewRecycler.apply {
             setHasFixedSize(true)
