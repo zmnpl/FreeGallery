@@ -43,22 +43,16 @@ class SettingsHelper(val context: Context) {
     }
 
     private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    private var colorDefault: String
-    private var colorIndigo: String
-    private var colorTeal: String
-    private var colorPurple: String
-    private var colorBlueGrey: String
+    private var colorNerd: String
+    private var colorClassic: String
 
     private var orderByDateTaken: String
     private var orderByDateAdded: String
 
     init {
         val colorOptions = context.resources.getStringArray(R.array.prefStyleColorValues)
-        colorDefault = colorOptions[0]
-        colorBlueGrey = colorOptions[1]
-        colorIndigo = colorOptions[2]
-        colorTeal = colorOptions[3]
-        colorPurple = colorOptions[4]
+        colorNerd = colorOptions[0]
+        colorClassic = colorOptions[1]
 
         val orderByOptions = context.resources.getStringArray(R.array.prefOrderByEntries)
         orderByDateAdded = orderByOptions[0]
@@ -117,10 +111,7 @@ class SettingsHelper(val context: Context) {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return R.style.DarkAppBase
             return when (color) {
-                colorPurple -> R.style.Purple
-                colorTeal -> R.style.Teal
-                colorIndigo -> R.style.Indigo
-                colorBlueGrey -> R.style.BlueGrey
+                colorClassic -> R.style.BlueGrey
                 else -> R.style.DarkAppBase
             }
         }
@@ -129,10 +120,7 @@ class SettingsHelper(val context: Context) {
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
-                colorPurple -> R.style.DialogPurple
-                colorTeal -> R.style.DialogTeal
-                colorIndigo -> R.style.DialogIndigo
-                colorBlueGrey -> R.style.DialogBlueGrey
+                colorClassic -> R.style.DialogBlueGrey
                 else -> R.style.DarkDialogBase
             }
         }
@@ -148,10 +136,7 @@ class SettingsHelper(val context: Context) {
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
-                colorPurple -> ContextCompat.getColor(context, R.color.colorPrimaryPurple)
-                colorTeal -> ContextCompat.getColor(context, R.color.colorPrimaryTeal)
-                colorIndigo -> ContextCompat.getColor(context, R.color.colorPrimaryIndigo)
-                colorBlueGrey -> ContextCompat.getColor(context, R.color.colorPrimaryBlueGrey)
+                colorClassic -> ContextCompat.getColor(context, R.color.colorPrimaryBlueGrey)
                 else -> ContextCompat.getColor(context, R.color.primary)
             }
         }
@@ -165,10 +150,7 @@ class SettingsHelper(val context: Context) {
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
-                colorPurple -> ContextCompat.getColor(context, R.color.colorSecondaryPurple)
-                colorTeal -> ContextCompat.getColor(context, R.color.colorSecondaryTeal)
-                colorIndigo -> ContextCompat.getColor(context, R.color.colorSecondaryIndigo)
-                colorBlueGrey -> ContextCompat.getColor(context, R.color.colorSecondaryBlueGrey)
+                colorClassic -> ContextCompat.getColor(context, R.color.colorSecondaryBlueGrey)
                 else -> ContextCompat.getColor(context, R.color.primary_light)
             }
         }
