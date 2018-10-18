@@ -3,7 +3,7 @@
     <PreferenceCategory
         android:key="pref_key_style_settings"
         android:title="@string/prefCategoryVisual">
-        <!--
+
                 <ListPreference
                     android:defaultValue="@string/prefStyleColorDefault"
                     android:dialogTitle="@string/prefStyleColorDialogTitle"
@@ -11,14 +11,14 @@
                     android:entryValues="@array/prefStyleColorValues"
                     android:key="pref_key_style_color"
                     android:title="@string/prefStyleColorTitle" />
+        <!--
+                        <com.labs.pbrother.freegallery.settings.ColorPickerPreference
+                            android:defaultValue="64"
+                            android:key="pref_key_style_custcolor"
+                            android:title="@string/prefAccentColor"
 
-                <com.labs.pbrother.freegallery.settings.ColorPickerPreference
-                    android:defaultValue="64"
-                    android:key="pref_key_style_custcolor"
-                    android:title="@string/prefAccentColor"
-
-                    />
-        -->
+                            />
+                -->
 
         <CheckBoxPreference
             android:defaultValue="true"

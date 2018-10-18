@@ -101,19 +101,13 @@
     <string name="prefStyleColorTitle">Base Color</string>
     <string name="prefStyleColorDialogTitle">Choose a color</string>
     <string-array name="prefStyleColors">
-        <item>Default</item>
-        <item>Blue-Grey</item>
-        <item>Indigo</item>
-        <item>Teal</item>
-        <item>Purple</item>
+        <item>Nerd</item>
+        <item>Classic</item>
     </string-array>
-    <string name="prefStyleColorDefault">prefValueColorDefault</string>
+    <string name="prefStyleColorDefault">prefValueColorNerd</string>
     <string-array name="prefStyleColorValues">
-        <item>prefValueColorDefault</item>
-        <item>prefValueColorBlueGrey</item>
-        <item>prefValueColorIndigo</item>
-        <item>prefValueColorTeal</item>
-        <item>prefValueColorPurple</item>
+        <item>prefValueColorNerd</item>
+        <item>prefValueColorClassic</item>
     </string-array>
 
     <!-- Order By -->
