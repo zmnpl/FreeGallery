@@ -66,6 +66,10 @@
     <string name="ImgPropertyLongitude">Longitude</string>
     <string name="ImgPropertyDimens">Dimensions</string>
     <string name="ImgPropertyDone">Affirmative!</string>
+    <string name="ImgPropertyExifHeadline">Exif Data</string>
+    <string name="ImgPropertyCamera">Camera</string>
+    <string name="ImgPropertyISO">ISO</string>
+    <string name="ImgPropertyExpTime">Exposure Time</string>
     <!-- Snaketag Dialog -->
     <string name="SnaketagOk">Tag</string>
     <string name="SnaketagCancel">Cancel</string>
@@ -98,7 +102,7 @@
     <string name="prefStyleImageBackgroundColor">Colored image backgrounds</string>
 
     <!-- Color -->
-    <string name="prefStyleColorTitle">Base Color</string>
+    <string name="prefStyleColorTitle">Theme</string>
     <string name="prefStyleColorDialogTitle">Choose a color</string>
     <string-array name="prefStyleColors">
         <item>Nerd</item>

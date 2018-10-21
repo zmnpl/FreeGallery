@@ -133,6 +133,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPrefe
         companion object {
 
             // Standard creator object using an instance of this class
+            @JvmField
             val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
 
                 override fun createFromParcel(`in`: Parcel): SavedState {

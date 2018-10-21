@@ -14,144 +14,204 @@
         android:text="@string/ImgPropertyHeadline"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-    <LinearLayout
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/imgproperty_lblTags"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyTags"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyDateAdded"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtDateAdded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyFileName"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyPath"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtPath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertySize"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyDimens"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtDimensions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+
+
+    <TextView
+        android:id="@+id/imgproperty_txtExifHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:paddingBottom="20dp"
+        android:paddingTop="40dp"
+        android:text="@string/ImgPropertyExifHeadline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-        <TextView
-            android:id="@+id/imgproperty_lblTags"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyTags"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtTags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyCamera"
+                android:textStyle="normal|bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtCameraModel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyISO"
+                android:textStyle="normal|bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtIso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyLatitude"
+                android:textStyle="normal|bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtLatitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ImgPropertyLongitude"
+                android:textStyle="normal|bold"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/imgproperty_txtLongitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <TextView
             android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyFileName"
-            android:textStyle="normal|bold" />
+            android:text="@string/ImgPropertyExpTime"
+            android:textStyle="normal|bold"
+            android:visibility="visible" />
 
         <TextView
-            android:id="@+id/imgproperty_txtName"
+            android:id="@+id/imgproperty_txtExpTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyPath"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtPath"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertySize"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyDimens"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtDimensions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyDateAdded"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtDateAdded"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyLatitude"
-            android:visibility="visible"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtLatitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:text="@string/ImgPropertyLongitude"
-            android:visibility="visible"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/imgproperty_txtLongitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+    </TableLayout>
 
 </LinearLayout>

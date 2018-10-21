@@ -24,10 +24,9 @@ import com.labs.pbrother.freegallery.controller.TPYE_VIDEO
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
 import com.labs.pbrother.freegallery.dialogs.ImagePropertyDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
-import com.labs.pbrother.freegallery.extension.tagSymbol
+import com.labs.pbrother.freegallery.extension.*
 import com.labs.pbrother.freegallery.fragments.ImagePageFragment
 import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.uiother.DepthPageTransformer
 import kotlinx.android.synthetic.main.activity_image_slide.*
 import kotlinx.android.synthetic.main.singlepicture_toolbar.*
@@ -375,10 +374,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     // In portrait sets padding, so that the toolbar will be above the sofkeys
     // In landscape, right padding will be the width of the vertically right aligned softkeys
     private fun setToolbarPadding() {
-        if (DeviceConfiguration.instance.getRotation(this@ImageSlideActivity) === DeviceConfiguration.PORTRAIT || DeviceConfiguration.instance.getRotation(this@ImageSlideActivity) === DeviceConfiguration.REVERSE_PORTRAIT) {
-            singlepicture_Toolbar.setPadding(0, 0, 0, DeviceConfiguration.instance.getNavBarHeight(this@ImageSlideActivity))
+        if (getRotation() === PORTRAIT || getRotation() === REVERSE_PORTRAIT) {
+            singlepicture_Toolbar.setPadding(0, 0, 0, getNavBarHeight())
         } else {
-            singlepicture_Toolbar.setPadding(0, 0, DeviceConfiguration.instance.getNavBarWidth(this@ImageSlideActivity), 0)
+            singlepicture_Toolbar.setPadding(0, 0, getNavBarWidth(), 0)
         }
     }
 

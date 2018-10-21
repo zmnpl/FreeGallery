@@ -111,8 +111,8 @@ class SettingsHelper(val context: Context) {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return R.style.DarkAppBase
             return when (color) {
-                colorClassic -> R.style.BlueGrey
-                else -> R.style.DarkAppBase
+                colorClassic -> R.style.DarkAppBase
+                else -> R.style.NerdAppBase
             }
         }
 
@@ -120,15 +120,14 @@ class SettingsHelper(val context: Context) {
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
-                colorClassic -> R.style.DialogBlueGrey
-                else -> R.style.DarkDialogBase
+                colorClassic -> R.style.DarkAppBase
+                else -> R.style.NerdDialogBase
             }
         }
 
     val defaultCollectionColor: Int
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-
             return ContextCompat.getColor(context, R.color.colorHighlightDefault)
         }
 
@@ -137,7 +136,7 @@ class SettingsHelper(val context: Context) {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
                 colorClassic -> ContextCompat.getColor(context, R.color.colorPrimaryBlueGrey)
-                else -> ContextCompat.getColor(context, R.color.primary)
+                else -> ContextCompat.getColor(context, R.color.nerd_primary)
             }
         }
 
@@ -156,8 +155,14 @@ class SettingsHelper(val context: Context) {
         }
 
     val highlightColorAccent: Int
-    // TODO - Accent from custom choice...
-        get() = ContextCompat.getColor(context, R.color.accent)
+        // TODO - Accent from custom choice...
+        get() {
+            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
+            return when (color) {
+                colorClassic -> ContextCompat.getColor(context, R.color.accent)
+                else -> ContextCompat.getColor(context, R.color.nerd_accent)
+            }
+        }
 
     var columnsInPortrait: Int
         get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))!!

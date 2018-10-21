@@ -12,6 +12,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/NerdAppBase">
+
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
@@ -83,7 +84,7 @@
         <activity
             android:name=".activities.LicenseActivity"
             android:label="@string/title_activity_license_text"
-            android:theme="@style/Indigo" />
+            android:theme="@style/NerdAppBase" />
         <activity android:name=".activities.EditActivity"></activity>
     </application>
 

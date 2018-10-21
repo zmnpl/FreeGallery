@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.view.Surface
+import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.adjustColorAlpha
 import com.labs.pbrother.freegallery.controller.CollectionItem
@@ -19,6 +21,36 @@ import com.mikepenz.materialdrawer.holder.BadgeStyle
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import java.io.File
 
+
+val PORTRAIT = "p"
+
+    val LANDSCAPE = "l"
+
+    val REVERSE_PORTRAIT = "rp"
+
+    val REVERSE_LANDSCAPE = "rl"
+
+fun Context.getNavBarWidth(): Int {
+    val r = resources
+    val id = r.getIdentifier("navigation_bar_width", "dimen", "android")
+    return r.getDimensionPixelSize(id)
+}
+
+fun Context.getNavBarHeight(): Int {
+    val r = resources
+    val id = r.getIdentifier("navigation_bar_height", "dimen", "android")
+    return r.getDimensionPixelSize(id)
+}
+
+fun Context.getRotation(): String {
+    val rotation = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.orientation
+    return when (rotation) {
+        Surface.ROTATION_0 -> PORTRAIT
+        Surface.ROTATION_90 -> LANDSCAPE
+        Surface.ROTATION_180 -> REVERSE_PORTRAIT
+        else -> REVERSE_LANDSCAPE
+    }
+}
 
 // mostly copied from simple gallery; try out that one!
 fun Context.getRealPathFromURI(uri: Uri): String? {

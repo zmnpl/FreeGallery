@@ -68,9 +68,14 @@ class ImagePropertyDialogFragment : DialogFragment() {
         dialog.imgproperty_txtName.text = item.fileName
         dialog.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
         dialog.imgproperty_txtSize.text = byteSizeToNiceString(item.size)
+        dialog.imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
+
+        // Exif
         dialog.imgproperty_txtLatitude.text = item.latitude.toString()
         dialog.imgproperty_txtLongitude.text = item.longitude.toString()
-        dialog.imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
+        dialog.imgproperty_txtIso.text = item.iso.toString()
+        dialog.imgproperty_txtCameraModel.text = item.camera
+        //dialog.imgproperty_txtShutter.text = item.exposureTimeSeconds()
 
         dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
     }

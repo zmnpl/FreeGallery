@@ -28,10 +28,8 @@ import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
-import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
-import com.labs.pbrother.freegallery.extension.tagSymbol
+import com.labs.pbrother.freegallery.extension.*
 import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.settings.DeviceConfiguration
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_collection.*
@@ -259,7 +257,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     }
 
     private val columns: Int
-        get() = if (DeviceConfiguration.instance.getRotation(this@CollectionActivity) === DeviceConfiguration.PORTRAIT || DeviceConfiguration.instance.getRotation(this@CollectionActivity) === DeviceConfiguration.REVERSE_PORTRAIT) {
+        get() = if (getRotation() === PORTRAIT || getRotation() === REVERSE_PORTRAIT) {
             prefs.columnsInPortrait
         } else {
             (prefs.columnsInPortrait * 1.5).toInt()

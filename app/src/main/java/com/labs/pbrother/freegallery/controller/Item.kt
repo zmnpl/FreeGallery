@@ -51,6 +51,9 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
     val tagsList: ArrayList<String>
         get() = ArrayList(tags.toList())
 
+    val tagsString: String
+        get() = tagsList.joinToString { ", " }
+
     fun addAllTags(tags: HashSet<String>) {
         this.tags = tags;
     }
