@@ -61,11 +61,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         setContentView(R.layout.activity_main)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
-        main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
+        //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
         overviewRecycler.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@MainActivity,  prefs.mainColumnsInPortrait)
+            layoutManager = GridLayoutManager(this@MainActivity, prefs.mainColumnsInPortrait)
             addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
         }
 
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
             drawerLayoutRes = R.layout.material_drawer
 
-            if (!prefs.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
+            if (!prefs.hideDrawerHeader) headerViewRes = R.layout.drawer_header
 
             if (onTablet) {
                 //sectionHeader(getString(R.string.drawer_tagsection)) { }
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                 }
             }
         }
-        if (!prefs.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
+        if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
 
         if (onTablet) {
             nav_tablet.addView(drawerResult.slider)

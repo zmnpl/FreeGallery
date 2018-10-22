@@ -24,11 +24,11 @@ import java.io.File
 
 val PORTRAIT = "p"
 
-    val LANDSCAPE = "l"
+val LANDSCAPE = "l"
 
-    val REVERSE_PORTRAIT = "rp"
+val REVERSE_PORTRAIT = "rp"
 
-    val REVERSE_LANDSCAPE = "rl"
+val REVERSE_LANDSCAPE = "rl"
 
 fun Context.getNavBarWidth(): Int {
     val r = resources

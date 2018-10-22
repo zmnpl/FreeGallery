@@ -229,7 +229,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
             }
             log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
             val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
-            val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
+            val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
 
             // TODO - update cache (?)
         }
@@ -298,7 +298,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
     }
 
-    fun tagItems (items: List<Item>, tag: String) {
+    fun tagItems(items: List<Item>, tag: String) {
         tagCache.add(tag)
         val db = MyDb(applicationContext)
         items.forEach { tagIt(it, tag, db) }

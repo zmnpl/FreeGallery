@@ -8,5 +8,5 @@ fun AppCompatActivity.openSAFTreeSelection() {
     val intent =
     //intent.addCategory(Intent.CATEGORY_OPENABLE)1
     // intent.type = "image/*"
-    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+            startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
 }

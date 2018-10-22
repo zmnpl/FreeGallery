@@ -121,7 +121,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         val basePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/FreeGallery"
         File(basePath).mkdirs()
         while (!hit) {
-            val testpath = basePath  + "/" + fileName + "_v" + version.toString() + "." + extension
+            val testpath = basePath + "/" + fileName + "_v" + version.toString() + "." + extension
             testfile = File(testpath)
             if (testfile.exists()) {
                 version += 1

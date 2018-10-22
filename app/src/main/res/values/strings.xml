@@ -108,7 +108,7 @@
         <item>Nerd</item>
         <item>Classic</item>
     </string-array>
-    <string name="prefStyleColorDefault">prefValueColorNerd</string>
+    <string name="prefStyleColorDefault">prefValueColorClassic</string>
     <string-array name="prefStyleColorValues">
         <item>prefValueColorNerd</item>
         <item>prefValueColorClassic</item>

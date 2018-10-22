@@ -192,7 +192,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         doAsync {
             if (intent.getIntExtra(EXTRA_STARTING_POINT, -1) == STARTED_FROM_ACTIVITY) {
                 viewModel.refresh(collectionId)
-            } else if (null != intent.data){
+            } else if (null != intent.data) {
                 viewModel.getItemForExternalUri(intent.data)
             }
         }

@@ -154,7 +154,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
             drawerLayoutRes = R.layout.material_drawer
 
-            if (!prefs.hideDrawerHeader()) headerViewRes = R.layout.drawer_header
+            if (!prefs.hideDrawerHeader) headerViewRes = R.layout.drawer_header
 
             footer {
                 primaryItem(getString(R.string.menu_settings)) {
@@ -179,7 +179,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
             }
         }
 
-        if (!prefs.hideDrawerHeader()) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
+        if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
 
         if (onTablet) {
             drawerResult.slider.elevation = (-16).toFloat()
@@ -236,7 +236,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun changeColor(color: Int) {
         setTheme(prefs.theme)
-        if (prefs.colorizeTitlebar()) colorizeTitlebar(color)
+        if (prefs.colorizeTitlebar) colorizeTitlebar(color)
         // refresh items in drawer, to make color change for tag collection visible
         if (viewModel.collectionType == TYPE_TAG) {
             doAsync {

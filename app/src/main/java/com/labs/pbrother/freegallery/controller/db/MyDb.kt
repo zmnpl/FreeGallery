@@ -99,8 +99,8 @@ class MyDb(val context: Context) {
                 .distinct()
                 .orderBy(Tag.COLUMN_TAG, SqlOrderDirection.ASC)
                 .parseList(StringParser).filter {
-            true
-        }
+                    true
+                }
         // TODO - filter out all tags for which items are trashed
     }
 

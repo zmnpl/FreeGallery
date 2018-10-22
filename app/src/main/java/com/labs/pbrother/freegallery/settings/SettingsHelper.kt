@@ -19,9 +19,6 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         val ORDER_BY_DATE_ADDED = 1
         @JvmStatic
-        private val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
-
-        @JvmStatic
         private val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
         @JvmStatic
         private val KEY_PREF_STYLE_COLUMNS = "pref_key_style_portrait_columns"
@@ -39,25 +36,26 @@ class SettingsHelper(val context: Context) {
         val KEY_SDURI = "SDCARDURI"
         @JvmStatic
         val KEY_SDROOT = "SDCARDROOTPATH"
+        @JvmStatic
+        private val KEY_PREF_STYLE_COLOR = "pref_key_style_color"
 
     }
 
     private var sharedPref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private var orderByDateTaken: String
+    private var orderByDateAdded: String
     private var colorNerd: String
     private var colorClassic: String
 
-    private var orderByDateTaken: String
-    private var orderByDateAdded: String
-
     init {
-        val colorOptions = context.resources.getStringArray(R.array.prefStyleColorValues)
-        colorNerd = colorOptions[0]
-        colorClassic = colorOptions[1]
-
         val orderByOptions = context.resources.getStringArray(R.array.prefOrderByEntries)
         orderByDateAdded = orderByOptions[0]
         orderByDateTaken = orderByOptions[1]
         setItemSort()
+
+        val colorOptions = context.resources.getStringArray(R.array.prefStyleColorValues)
+        colorNerd = colorOptions[0]
+        colorClassic = colorOptions[1]
     }
 
     fun reactToSettingChange(key: String) {
@@ -105,6 +103,48 @@ class SettingsHelper(val context: Context) {
         get() {
             return sharedPref.getBoolean(KEY_PREF_STYLE_COLOR_IMAGE_BACKGROUND, true)
         }
+
+    var columnsInPortrait: Int
+        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))!!
+        set(value) {
+            sharedPref.edit().apply() {
+                putInt(KEY_PREF_STYLE_COLUMNS, value)
+                commit()
+            }
+        }
+
+    var mainColumnsInPortrait: Int
+        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))
+        set(value) {
+            sharedPref.edit().apply() {
+                putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
+                commit()
+            }
+        }
+
+    var sdCardUri: String
+        get() = sharedPref.getString((KEY_SDURI), "")
+        set(value) {
+            sharedPref.edit().apply() {
+                putString(KEY_SDURI, value)
+                commit()
+            }
+        }
+
+    var sdCardRootPath: String
+        get() = sharedPref.getString((KEY_SDROOT), "/NOUSABLEPATH")
+        set(value) {
+            sharedPref.edit().apply() {
+                putString(KEY_SDROOT, value)
+                commit()
+            }
+        }
+
+    val colorizeTitlebar: Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_COLORTITLE, false)
+    val hideDrawerHeader: Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_HIDE_DRAWER_HEADER, false)
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // themeing
 
     val theme: Int
         get() {
@@ -163,44 +203,4 @@ class SettingsHelper(val context: Context) {
                 else -> ContextCompat.getColor(context, R.color.nerd_accent)
             }
         }
-
-    var columnsInPortrait: Int
-        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))!!
-        set(value) {
-            sharedPref.edit().apply() {
-                putInt(KEY_PREF_STYLE_COLUMNS, value)
-                commit()
-            }
-        }
-
-    var mainColumnsInPortrait: Int
-        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))
-        set(value) {
-            sharedPref.edit().apply() {
-                putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
-                commit()
-            }
-        }
-
-    var sdCardUri: String
-        get() = sharedPref.getString((KEY_SDURI), "")
-        set(value) {
-            sharedPref.edit().apply() {
-                putString(KEY_SDURI, value)
-                commit()
-            }
-        }
-
-    var sdCardRootPath: String
-        get() = sharedPref.getString((KEY_SDROOT), "/NOUSABLEPATH")
-        set(value) {
-            sharedPref.edit().apply() {
-                putString(KEY_SDROOT, value)
-                commit()
-            }
-        }
-
-    fun colorizeTitlebar(): Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_COLORTITLE, false)
-
-    fun hideDrawerHeader(): Boolean = sharedPref.getBoolean(KEY_PREF_STYLE_HIDE_DRAWER_HEADER, false)
 }
