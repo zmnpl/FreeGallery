@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.activities.byteSizeToNiceString
+import com.labs.pbrother.freegallery.activities.unixToReadableDate
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_itemroperties.*
@@ -82,26 +84,6 @@ class ImagePropertyDialogFragment : DialogFragment() {
 
     fun setItem(item: Item) {
         this.item = item
-    }
-
-    // takes date as unix time stamp and returns nice printable date
-    private fun unixToReadableDate(date: Long): String {
-        val d = Date(date * 1000)
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-        return df.format(d)
-    }
-
-    // calculates nice readable size for printing
-    private fun byteSizeToNiceString(size: Long): String {
-        var readableSize = (size / 1024).toFloat()
-
-        if (readableSize < 0) {
-            return size.toString() + " B"
-        } else if (readableSize < 1024) {
-            return readableSize.toString() + " KB"
-        }
-        readableSize /= 1024
-        return String.format(Locale.US, "%.2f", readableSize) + " MB"
     }
 
 }

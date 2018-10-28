@@ -109,7 +109,7 @@ class SettingsHelper(val context: Context) {
         set(value) {
             sharedPref.edit().apply() {
                 putInt(KEY_PREF_STYLE_COLUMNS, value)
-                commit()
+                apply()
             }
         }
 
@@ -118,7 +118,7 @@ class SettingsHelper(val context: Context) {
         set(value) {
             sharedPref.edit().apply() {
                 putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
-                commit()
+                apply()
             }
         }
 
@@ -127,7 +127,7 @@ class SettingsHelper(val context: Context) {
         set(value) {
             sharedPref.edit().apply() {
                 putString(KEY_SDURI, value)
-                commit()
+                apply()
             }
         }
 
@@ -136,7 +136,7 @@ class SettingsHelper(val context: Context) {
         set(value) {
             sharedPref.edit().apply() {
                 putString(KEY_SDROOT, value)
-                commit()
+                apply()
             }
         }
 
@@ -160,7 +160,7 @@ class SettingsHelper(val context: Context) {
         get() {
             val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
             return when (color) {
-                colorClassic -> R.style.DarkAppBase
+                colorClassic -> R.style.DarkDialogBase
                 else -> R.style.NerdDialogBase
             }
         }
@@ -181,9 +181,7 @@ class SettingsHelper(val context: Context) {
         }
 
     val colorPrimaryDark: Int
-        get() {
-            return ContextCompat.getColor(context, R.color.primary_dark)
-        }
+        get() = ContextCompat.getColor(context, R.color.primary_dark)
 
     val secondaryColor: Int
         get() {

@@ -1,6 +1,8 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.graphics.Color
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by simon on 10.09.17.
@@ -35,4 +37,24 @@ fun darkenColor(color: Int, factor: Float): Int {
     val green = Color.green(color)
     val blue = Color.blue(color)
     return Color.rgb((red * factor).toInt(), (green * factor).toInt(), (blue * factor).toInt())
+}
+
+// takes date as unix time stamp and returns nice printable date
+fun unixToReadableDate(date: Long): String {
+    val d = Date(date * 1000)
+    val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+    return df.format(d)
+}
+
+// calculates nice readable size for printing
+fun byteSizeToNiceString(size: Long): String {
+    var readableSize = (size / 1024).toFloat()
+
+    if (readableSize < 0) {
+        return size.toString() + " B"
+    } else if (readableSize < 1024) {
+        return readableSize.toString() + " KB"
+    }
+    readableSize /= 1024
+    return String.format(Locale.US, "%.2f", readableSize) + " MB"
 }
