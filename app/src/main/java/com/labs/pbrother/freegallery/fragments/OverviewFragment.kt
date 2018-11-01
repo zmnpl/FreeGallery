@@ -1,22 +1,21 @@
 package com.labs.pbrother.freegallery.fragments
 
-import android.app.Fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.activities.MainActivityViewModel
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
+import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import kotlinx.android.synthetic.main.fragment_overview.*
@@ -24,60 +23,31 @@ import kotlinx.android.synthetic.main.fragment_overview.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-private lateinit var viewModel: MainActivityViewModel
-private lateinit var adapter: OverviewRecyclerViewAdapter
-
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [OverviewFragment.OnMainFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [OverviewFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
 class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener {
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var viewModel: MainActivityViewModel
     private var listener: OnMainFragmentInteractionListener? = null
+    private lateinit var adapter: OverviewRecyclerViewAdapter
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = ActionModeCallback()
+    private var selection: List<Int>? = null
+    private var actionModeCollectionItems = ArrayList<CollectionItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
         bindViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_overview, container, false)
-
         rootView.overviewRecycler.apply {
             setHasFixedSize(true)
             val ctx = activity as Context
             layoutManager = GridLayoutManager(ctx, prefs.mainColumnsInPortrait)
             addItemDecoration(ItemOffsetDecoration(ctx, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
         }
-
-        rootView.swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
-
-        // Inflate the layout for this fragment
+        rootView.swipeRefreshMain.setOnRefreshListener { refresh() }
         return rootView
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        //listener?.onFragmentInteraction(uri)
     }
 
     override fun onAttach(context: Context) {
@@ -111,13 +81,6 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
         }
     }
 
-    private fun buildUiSafe() {
-        //if (permissionsGood) {
-        refresh()
-        //    reloadPlz = false
-        //}
-    }
-
     private fun refresh() {
         swipeRefreshMain.isRefreshing = true
         doAsync {
@@ -128,29 +91,49 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
         }
     }
 
-
     // clicks on item in main view
     override fun onItemClicked(position: Int) {
-        //if (actionMode != null) {
-        //    toggleSelection(position)
-        //} else {
-        //    startActivityForResult(
-        //            intentFor<CollectionActivity>(
-        //                    EXTRA_ITEM_INDEX to position,
-        //                    EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
-        //            COLLECTION_ACTIVITY_REQUEST_CODE)
-        //}
-        listener?.onMainItemClick(position)
+        if (actionMode != null) {
+            toggleSelection(position)
+        } else {
+            listener?.openCollectionView(position, adapter.getItemStringId(position))
+        }
     }
 
     override fun onItemLongClicked(position: Int): Boolean {
-        //if (actionMode == null) {
-        //    actionMode = startSupportActionMode(actionModeCallback)
-        //}
-        //toggleSelection(position)
-
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
+        }
+        toggleSelection(position)
         return true
     }
+
+    // Toggle the selection state of an item.
+    // If the item was the last one in the selection and is unselected, the selection is stopped.
+    // Note that the selection must already be started (actionMode must not be null).
+    private fun toggleSelection(position: Int) {
+        adapter.toggleSelection(position)
+        val total = adapter.itemCount
+        val count = adapter.selectedItemCount
+
+        if (count == 0) {
+            actionMode?.finish()
+        } else {
+            actionMode?.title = (resources.getString(
+                    R.string.collectionSelection)
+                    + " "
+                    + total.toString()
+                    + " / "
+                    + count.toString())
+            actionMode?.invalidate()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private fun colorize() {
+        ColorizeDialogFragment().show(activity?.fragmentManager, "colorizedialog")
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -164,26 +147,44 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
      * for more information.
      */
     interface OnMainFragmentInteractionListener {
-        fun onMainItemClick(position: Int)
+        fun openCollectionView(position: Int, id: String)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment OverviewFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                OverviewFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
+    private inner class ActionModeCallback : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            mode.menuInflater.inflate(R.menu.menu_main_overviewselected, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            selection = adapter.getSelectedItems()
+            when (item.itemId) {
+                R.id.overviewselection_menu_hidegroup -> {
+                    mode.finish()
+                    return true
                 }
+                R.id.overviewselection_menu_colorizegroup -> {
+                    colorize()
+                    mode.finish()
+                    return true
+                }
+                else -> {
+                    actionModeCollectionItems.clear()
+                    selection = null
+                    return false
+                }
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode) {
+            adapter.clearSelection()
+            actionMode = null
+        }
+
     }
 }

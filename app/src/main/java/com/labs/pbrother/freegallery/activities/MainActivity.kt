@@ -44,12 +44,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     private var onTablet = false
     private var reloadPlz = false
     private var permissionsGood = false
-
-    private val actionModeCallback = ActionModeCallback()
-    private var actionMode: ActionMode? = null
-    private var selection: List<Int>? = null
-    private var actionModeCollectionItems = ArrayList<CollectionItem>()
-    private lateinit var adapter: OverviewRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,15 +52,13 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         if (tabletMain != null) onTablet = true
 
         setTheme(prefs.theme)
-
         setContentView(R.layout.activity_main)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = OverviewFragment.newInstance("", "")
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val fragment = OverviewFragment()
         fragmentTransaction.add(R.id.frame_container, fragment as Fragment)
         fragmentTransaction.commit()
 
@@ -228,107 +220,55 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Main view fragment callbacks
-    override fun onMainItemClick(position: Int) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun openCollectionView(position: Int, id: String) {
         startActivityForResult(
                 intentFor<CollectionActivity>(
                         EXTRA_ITEM_INDEX to position,
-                        EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
+                        EXTRA_COLLECTIONID to id),
                 COLLECTION_ACTIVITY_REQUEST_CODE)
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer
     override fun onDrawerItemClicked(position: Int) {
-        if (actionMode != null) {
-            toggleSelection(position)
-        } else {
-            //if (!onTablet) drawerLayoutMain.closeDrawers()
-            //startActivityForResult(
-            //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-            //        COLLECTION_ACTIVITY_REQUEST_CODE)
-        }
+        //if (actionMode != null) {
+            //toggleSelection(position)
+        //} else {
+            if (!onTablet) drawerLayoutMain.closeDrawers()
+            startActivityForResult(
+                    intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
+                    COLLECTION_ACTIVITY_REQUEST_CODE)
+        //}
     }
 
     override fun onDrawerItemLongClicked(position: Int): Boolean {
         return false
     }
 
-    // Toggle the selection state of an item.
-    // If the item was the last one in the selection and is unselected, the selection is stopped.
-    // Note that the selection must already be started (actionMode must not be null).
-    private fun toggleSelection(position: Int) {
-        adapter.toggleSelection(position)
-        val total = adapter.itemCount
-        val count = adapter.selectedItemCount
 
-        if (count == 0) {
-            actionMode?.finish()
-        } else {
-            actionMode?.title = (resources.getString(
-                    R.string.collectionSelection)
-                    + " "
-                    + total.toString()
-                    + " / "
-                    + count.toString())
-            actionMode?.invalidate()
-        }
-    }
 
-    private inner class ActionModeCallback : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            mode.menuInflater.inflate(R.menu.menu_main_overviewselected, menu)
-            return true
-        }
 
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            selection = adapter.getSelectedItems()
-            when (item.itemId) {
-                R.id.overviewselection_menu_hidegroup -> {
-                    mode.finish()
-                    return true
-                }
-                R.id.overviewselection_menu_colorizegroup -> {
-                    colorize()
-                    mode.finish()
-                    return true
-                }
-                else -> {
-                    actionModeCollectionItems.clear()
-                    selection = null
-                    return false
-                }
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode) {
-            adapter.clearSelection()
-            actionMode = null
-        }
-    }
 
     // Functionality
 
-    private fun colorize() {
-        ColorizeDialogFragment().show(this.fragmentManager, "colorizedialog")
+    // Callbacks
+
+    override fun colorOk(color: Int) {
+        print("foo")
+        //viewModel.colorize(selection ?: ArrayList<Int>(), color)
+        //adapter.notifyDataSetChanged()
+        //selection = null
+        //actionModeCollectionItems.clear()
     }
+
+    override fun colorCancel() {}
 
     private fun hide() {
         // TODO
     }
 
-    // Callbacks
 
-    override fun colorOk(color: Int) {
-        viewModel.colorize(selection ?: ArrayList<Int>(), color)
-        adapter.notifyDataSetChanged()
-        selection = null
-        actionModeCollectionItems.clear()
-    }
-
-    override fun colorCancel() {}
 
     // Permissions
 
@@ -370,5 +310,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             }
         }
     }
+
+
 
 }
