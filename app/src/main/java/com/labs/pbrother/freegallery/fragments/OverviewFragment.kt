@@ -34,7 +34,7 @@ private lateinit var adapter: OverviewRecyclerViewAdapter
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [OverviewFragment.OnFragmentInteractionListener] interface
+ * [OverviewFragment.OnMainFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [OverviewFragment.newInstance] factory method to
  * create an instance of this fragment.
@@ -45,7 +45,7 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: OnMainFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,15 +77,15 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
 
     // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+        //listener?.onFragmentInteraction(uri)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is OnMainFragmentInteractionListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
         }
     }
 
@@ -140,6 +140,7 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
         //                    EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
         //            COLLECTION_ACTIVITY_REQUEST_CODE)
         //}
+        listener?.onMainItemClick(position)
     }
 
     override fun onItemLongClicked(position: Int): Boolean {
@@ -162,9 +163,8 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    interface OnMainFragmentInteractionListener {
+        fun onMainItemClick(position: Int)
     }
 
     companion object {

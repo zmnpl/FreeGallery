@@ -24,13 +24,11 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
 import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
@@ -38,7 +36,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
 
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OnFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
 
     private lateinit var viewModel: MainActivityViewModel
@@ -68,7 +66,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnFragmentInteraction
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = OverviewFragment.newInstance("","")
+        val fragment = OverviewFragment.newInstance("", "")
         fragmentTransaction.add(R.id.frame_container, fragment as Fragment)
         fragmentTransaction.commit()
 
@@ -229,8 +227,13 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnFragmentInteraction
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onFragmentInteraction(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    // Main view fragment callbacks
+    override fun onMainItemClick(position: Int) {
+        startActivityForResult(
+                intentFor<CollectionActivity>(
+                        EXTRA_ITEM_INDEX to position,
+                        EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
+                COLLECTION_ACTIVITY_REQUEST_CODE)
     }
 
     // clicks on item in navigation drawer
