@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
@@ -27,6 +28,7 @@ import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
+import com.labs.pbrother.freegallery.fragments.OverviewFragment
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
@@ -36,7 +38,8 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
 
 
-class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OnFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -63,22 +66,13 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         setSupportActionBar(main_toolbar)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
-        overviewRecycler.apply {
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@MainActivity, prefs.mainColumnsInPortrait)
-            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
-        }
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = OverviewFragment.newInstance("","")
+        fragmentTransaction.add(R.id.frame_container, fragment as Fragment)
+        fragmentTransaction.commit()
 
         bindViewModel()
-        swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
-    }
-
-    private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
-        if (null != overviewItems) {
-            adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, Provider(application))
-            adapter.setHasStableIds(true)
-            overviewRecycler.adapter = adapter
-        }
     }
 
     private fun makeDrawer() {
@@ -136,11 +130,6 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     private fun bindViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
-
-        viewModel.overviewItems.observe(this, Observer { overviewItems ->
-            populateAdapter(overviewItems)
-        })
-
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
             makeDrawer()
             if (null != drawerItems) addDrawerItems(drawerItems)
@@ -161,11 +150,11 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     private fun refresh() {
-        swipeRefreshMain.isRefreshing = true
+        //swipeRefreshMain.isRefreshing = true
         doAsync {
             viewModel.refresh()
             uiThread {
-                swipeRefreshMain.isRefreshing = false
+                //swipeRefreshMain.isRefreshing = false
             }
         }
     }
@@ -240,26 +229,8 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // clicks on item in main view
-    override fun onItemClicked(position: Int) {
-        if (actionMode != null) {
-            toggleSelection(position)
-        } else {
-            startActivityForResult(
-                    intentFor<CollectionActivity>(
-                            EXTRA_ITEM_INDEX to position,
-                            EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
-                    COLLECTION_ACTIVITY_REQUEST_CODE)
-        }
-    }
-
-    override fun onItemLongClicked(position: Int): Boolean {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback)
-        }
-        toggleSelection(position)
-
-        return true
+    override fun onFragmentInteraction(uri: Uri) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     // clicks on item in navigation drawer
