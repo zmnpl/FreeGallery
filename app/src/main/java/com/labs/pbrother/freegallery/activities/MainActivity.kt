@@ -9,10 +9,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -22,7 +20,6 @@ import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
-import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
@@ -36,7 +33,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
 
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
 
 
     private lateinit var viewModel: MainActivityViewModel
@@ -53,13 +50,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
-        //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
+        //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+        val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = OverviewFragment()
-        fragmentTransaction.add(R.id.frame_container, fragment as Fragment)
+        fragmentTransaction.add(R.id.frame_container, fragment)
         fragmentTransaction.commit()
 
         bindViewModel()
@@ -235,10 +233,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         //if (actionMode != null) {
             //toggleSelection(position)
         //} else {
-            if (!onTablet) drawerLayoutMain.closeDrawers()
-            startActivityForResult(
-                    intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-                    COLLECTION_ACTIVITY_REQUEST_CODE)
+            //if (!onTablet) drawerLayoutMain.closeDrawers()
+            //startActivityForResult(
+            //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
+            //        COLLECTION_ACTIVITY_REQUEST_CODE)
         //}
     }
 
@@ -246,28 +244,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         return false
     }
 
-
-
-
-
-    // Functionality
-
-    // Callbacks
-
-    override fun colorOk(color: Int) {
-        print("foo")
-        //viewModel.colorize(selection ?: ArrayList<Int>(), color)
-        //adapter.notifyDataSetChanged()
-        //selection = null
-        //actionModeCollectionItems.clear()
-    }
-
-    override fun colorCancel() {}
-
     private fun hide() {
         // TODO
     }
-
 
 
     // Permissions

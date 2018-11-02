@@ -1,5 +1,6 @@
 package com.labs.pbrother.freegallery.fragments
 
+import android.app.Fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -18,12 +19,12 @@ import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
-import kotlinx.android.synthetic.main.fragment_overview.*
-import kotlinx.android.synthetic.main.fragment_overview.view.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener {
+class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener,  ColorizeDialogFragment.ColorDialogListener {
 
     private lateinit var viewModel: MainActivityViewModel
     private var listener: OnMainFragmentInteractionListener? = null
@@ -130,9 +131,17 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    private fun colorize() {
-        ColorizeDialogFragment().show(activity?.fragmentManager, "colorizedialog")
+
+    // Functionality
+    // Callbacks
+    override fun colorOk(color: Int) {
+        viewModel.colorize(selection ?: ArrayList<Int>(), color)
+        adapter.notifyDataSetChanged()
+        selection = null
+        actionModeCollectionItems.clear()
     }
+
+    override fun colorCancel() {}
 
 
     /**
@@ -169,7 +178,7 @@ class OverviewFragment : android.support.v4.app.Fragment(), OverviewRecyclerView
                     return true
                 }
                 R.id.overviewselection_menu_colorizegroup -> {
-                    colorize()
+                    ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
                     mode.finish()
                     return true
                 }

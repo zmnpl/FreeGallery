@@ -1,10 +1,17 @@
 package com.labs.pbrother.freegallery.dialogs
 
+
+
+
+
+
+import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+
+
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.CollectionActivity
@@ -56,14 +63,12 @@ class ColorizeDialogFragment() : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         // Verify that the host activity implements the callback interface
         listener = try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            activity as ColorDialogListener
+            parentFragment as ColorDialogListener
         } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(activity.toString() + " must implement ColorDialogListener")
+            // The parent doesn't implement the interface, throw exception
+            throw ClassCastException(parentFragment.toString() + " must implement ColorDialogListener")
         }
     }
 
