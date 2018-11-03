@@ -5,11 +5,12 @@ package com.labs.pbrother.freegallery.dialogs
 
 
 
-import android.app.AlertDialog
+
 import android.app.Dialog
-import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 
 
 import android.view.WindowManager
@@ -32,8 +33,9 @@ class ColorizeDialogFragment() : DialogFragment() {
     private lateinit var listener: ColorDialogListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity, prefs.dialogTheme)
-        val inflater = activity.layoutInflater
+        val actvty = activity
+        val builder = AlertDialog.Builder(actvty as Context, prefs.dialogTheme)
+        val inflater = actvty.layoutInflater
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         val mainView = inflater.inflate(R.layout.dialog_colorize, null)
@@ -41,7 +43,7 @@ class ColorizeDialogFragment() : DialogFragment() {
         val shadeSlider = mainView.colorDialogShadeslider
         //val opacitySlider = mainView.colorDialogOpacityslider
 
-        lobsterPicker.color = activity.getColor(R.color.accent)
+        lobsterPicker.color = actvty.getColor(R.color.accent)
         if (activity is CollectionActivity) {
             val actualColor = (activity as CollectionActivity).collectionColor
             if (null != actualColor) {

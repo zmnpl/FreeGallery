@@ -1,10 +1,10 @@
 package com.labs.pbrother.freegallery.fragments
 
-import android.app.Fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
@@ -14,29 +14,46 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.activities.MainActivityViewModel
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
+import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.fragment_overview.*
+import kotlinx.android.synthetic.main.fragment_overview.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener,  ColorizeDialogFragment.ColorDialogListener {
+class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+
+    // interaction interface
+    private var listener: OnMainFragmentInteractionListener? = null
+    interface OnMainFragmentInteractionListener {
+        fun openCollectionView(position: Int, id: String)
+    }
 
     private lateinit var viewModel: MainActivityViewModel
-    private var listener: OnMainFragmentInteractionListener? = null
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private var actionMode: ActionMode? = null
     private val actionModeCallback = ActionModeCallback()
-    private var selection: List<Int>? = null
     private var actionModeCollectionItems = ArrayList<CollectionItem>()
+    private var selection: List<Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindViewModel()
+        setHasOptionsMenu(true)
+
+        // bind to viewmodel
+        viewModel = ViewModelProviders.of(activity as MainActivity).get(MainActivityViewModel::class.java!!)
+        viewModel.overviewItems.observe(activity as MainActivity, Observer { overviewItems ->
+            if (overviewItems != null) {
+                val fract = activity as FragmentActivity
+                adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(app))
+                adapter.setHasStableIds(true)
+                overviewRecycler.adapter = adapter
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,6 +66,11 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         }
         rootView.swipeRefreshMain.setOnRefreshListener { refresh() }
         return rootView
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_overview, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onAttach(context: Context) {
@@ -65,31 +87,24 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         listener = null
     }
 
-    private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(activity as MainActivity).get(MainActivityViewModel::class.java!!)
-
-        viewModel.overviewItems.observe(activity as MainActivity, Observer { overviewItems ->
-            populateAdapter(overviewItems)
-        })
-    }
-
-    private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
-        if (null != overviewItems) {
-            val fract = activity as FragmentActivity
-            adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(fract.application))
-            adapter.setHasStableIds(true)
-            overviewRecycler.adapter = adapter
-        }
-    }
-
-    private fun refresh() {
-        swipeRefreshMain.isRefreshing = true
-        doAsync {
-            viewModel.refresh()
-            uiThread {
-                swipeRefreshMain.isRefreshing = false
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_refresh -> {
+                swipeRefreshMain.isRefreshing = true
+                refresh()
+                return true
             }
+            R.id.menu_collectionZoomViewIn -> {
+                applyZoom(-1)
+                return true
+            }
+            R.id.menu_collectionZoomViewOut -> {
+                applyZoom(+1)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
+        return super.onOptionsItemSelected(item)
     }
 
     // clicks on item in main view
@@ -144,19 +159,24 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     override fun colorCancel() {}
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnMainFragmentInteractionListener {
-        fun openCollectionView(position: Int, id: String)
+    // trigger refresh of data
+    private fun refresh() {
+        swipeRefreshMain.isRefreshing = true
+        doAsync {
+            viewModel.refresh()
+            uiThread {
+                swipeRefreshMain.isRefreshing = false
+            }
+        }
+    }
+
+    // zoom in or out
+    private fun applyZoom(zoom: Int) {
+        var cols = prefs.mainColumnsInPortrait
+        cols += zoom
+        if (cols < 1) cols = 1
+        prefs.mainColumnsInPortrait = cols
+        overviewRecycler.layoutManager = GridLayoutManager(activity, cols)
     }
 
     private inner class ActionModeCallback : ActionMode.Callback {
@@ -194,6 +214,5 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             adapter.clearSelection()
             actionMode = null
         }
-
     }
 }

@@ -491,7 +491,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     private fun colorize() {
         val foo = ColorizeDialogFragment()
-        foo.show(this.fragmentManager, "colorizedialog")
+        //foo.show(this.fragmentManager, "colorizedialog")
     }
 
     val collectionColor: Int?

@@ -24,6 +24,7 @@ import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
+import com.labs.pbrother.freegallery.fragments.CollectionFragment
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
 import com.labs.pbrother.freegallery.prefs
 import com.mikepenz.materialdrawer.Drawer
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         val fragment = OverviewFragment()
         fragmentTransaction.add(R.id.frame_container, fragment)
         fragmentTransaction.commit()
@@ -147,13 +148,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
-    private fun applyZoom(zoom: Int) {
-        var cols = prefs.mainColumnsInPortrait
-        cols += zoom
-        if (cols < 1) cols = 1
-        prefs.mainColumnsInPortrait = cols
-        overviewRecycler.layoutManager = GridLayoutManager(this@MainActivity, cols)
-    }
 
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,26 +178,12 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_refresh -> {
-                swipeRefreshMain.isRefreshing = true
-                buildUiSafe()
-                //openSAFTreeSelection()
-                return true
-            }
             R.id.menu_settings -> {
                 startActivity<SettingsActivity>()
                 return true
             }
             R.id.menu_license -> {
                 startActivity<AboutActivity>()
-                return true
-            }
-            R.id.menu_collectionZoomViewIn -> {
-                applyZoom(-1)
-                return true
-            }
-            R.id.menu_collectionZoomViewOut -> {
-                applyZoom(+1)
                 return true
             }
             R.id.menu_takeSdCardPermission -> {
@@ -220,11 +200,16 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     // Main view fragment callbacks
     ////////////////////////////////////////////////////////////////////////////////////////////////
     override fun openCollectionView(position: Int, id: String) {
-        startActivityForResult(
+        /*startActivityForResult(
                 intentFor<CollectionActivity>(
                         EXTRA_ITEM_INDEX to position,
                         EXTRA_COLLECTIONID to id),
-                COLLECTION_ACTIVITY_REQUEST_CODE)
+                COLLECTION_ACTIVITY_REQUEST_CODE)*/
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val fragment = CollectionFragment.newInstance(id)
+        fragmentTransaction.replace(R.id.frame_container, fragment)
+        fragmentTransaction.commit()
+
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
