@@ -34,8 +34,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.*
 
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
-
+class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -101,6 +100,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
+    private fun bindViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
+            makeDrawer()
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+    }
+
     private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
         drawerItems.forEach {
             this@MainActivity
@@ -115,14 +122,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                                 false
                             })
         }
-    }
-
-    private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
-        viewModel.drawerItems.observe(this, Observer { drawerItems ->
-            makeDrawer()
-            if (null != drawerItems) addDrawerItems(drawerItems)
-        })
     }
 
     // User Interface Building
@@ -210,6 +209,13 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         fragmentTransaction.replace(R.id.frame_container, fragment)
         fragmentTransaction.commit()
 
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Collection view fragment callbacks
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun onFragmentInteraction(uri: Uri) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

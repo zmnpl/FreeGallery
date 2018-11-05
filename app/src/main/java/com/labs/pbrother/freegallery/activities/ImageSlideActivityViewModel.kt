@@ -27,7 +27,7 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
         if (full) {
             items.postValue(foo.itemsFor(collection))
         } else {
-            items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
+            items.postValue(foo.itemsFor(collection, Item.SORT_ORDER))
         }
     }
 

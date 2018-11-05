@@ -252,7 +252,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private fun tag() {
         val std = TagDialogFragment()
         std.setTags(viewModel.tags)
-        std.show(this.fragmentManager, "snaketagdialog")
+        //std.show(this.fragmentManager, "snaketagdialog")
     }
 
     // Callback, receives result from tag dialog

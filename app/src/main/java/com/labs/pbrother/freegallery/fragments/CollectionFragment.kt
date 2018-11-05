@@ -1,20 +1,28 @@
 package com.labs.pbrother.freegallery.fragments
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.NavUtils
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
+import android.widget.Toast
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.CollectionActivityViewModel
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
+import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
 import com.labs.pbrother.freegallery.extension.PORTRAIT
 import com.labs.pbrother.freegallery.extension.REVERSE_PORTRAIT
@@ -33,7 +41,7 @@ private const val CID = "collectionId"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [CollectionFragment.OnFragmentInteractionListener] interface
+ * [CollectionFragment.OnCollectionFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [CollectionFragment.newInstance] factory method to
  * create an instance of this fragment.
@@ -46,10 +54,13 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     // other
     private lateinit var viewModel: CollectionActivityViewModel
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: OnCollectionFragmentInteractionListener? = null
+    private var dataChanged = false
 
     // ui
     private lateinit var adapter: CollectionRecyclerViewAdapter
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = ActionModeCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,16 +87,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         viewModel.liveColor.observe(this, Observer { color ->
             //if (null != color) changeColor(color)
         })
-    }
-
-    private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
-        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
-        doAsync {
-            viewModel.refresh(collection, drawer, items, cid, cached)
-            uiThread {
-                swipeRefreshCollection.isRefreshing = false
-            }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -120,6 +121,20 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         refresh(true, true, true,true)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnCollectionFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         if (cid == getString(R.string.trashName)) {
             inflater?.inflate(R.menu.menu_collection_trash, menu)
@@ -135,7 +150,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                NavUtils.navigateUpFromSameTask(this)
+                NavUtils.navigateUpFromSameTask(activity as Activity) // TODO - does that work?
                 return true
             }
             R.id.menu_deleteTag -> {
@@ -186,23 +201,166 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+    private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
+        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+        doAsync {
+            viewModel.refresh(collection, drawer, items, cid, cached)
+            uiThread {
+                swipeRefreshCollection.isRefreshing = false
+            }
+        }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-       /* if (context is OnFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }*/
+    // TODO - solve differently from fragment
+    private fun informCallerOfChange() {
+        //resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
+
+    private fun emptyTrash() {
+        dataChanged = true
+        informCallerOfChange()
+        val builder = AlertDialog.Builder(activity as Context)
+        builder.setMessage(R.string.EmtyTrashQuestion)
+        builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
+            doAsync {
+                viewModel.emptyTrash()
+                uiThread {
+                    dataChanged = true
+                    informCallerOfChange()
+                    //finish()
+                }
+            }
+        }
+        builder.setNegativeButton(R.string.EmptyTrashCancel) { dialog, id ->
+            // user cancel
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
+    }
+
+    private fun applyZoom(zoom: Int) {
+        var colCount = columns
+        colCount += zoom
+        if (colCount < 1) colCount = 1
+        prefs.columnsInPortrait = colCount
+        collection_rclPictureCollection.layoutManager = GridLayoutManager(activity, colCount)
+    }
+
+    private fun colorize() {
+        val foo = ColorizeDialogFragment()
+        //foo.show(this.fragmentManager, "colorizedialog")
+    }
+
+    private fun deleteTag() {
+        if (viewModel.deleteTag()) {
+            dataChanged = true
+            informCallerOfChange()
+            //finish()
+        }
+    }
+
+    private fun selectAll() {
+        if (null == actionMode) {
+            actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
+        }
+        adapter.clearSelection()
+        var i = 0;
+        while (i < adapter.itemCount) {
+            adapter.toggleSelection(i)
+            i++
+        }
+    }
+
+    private fun share() {
+        val uris = viewModel.urisToShare(viewModel.selectedItems(adapter.getSelectedItems()))
+
+        val intent = Intent()
+        intent.type = "image/jpg"
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+        // some apps cannot react to ACTION_SEND_MULTIPLE
+        // therefore, if only one is selected for sharing, use ACTION_SEND instead
+        when (uris.size) {
+            0 -> {
+                actionMode?.finish()
+                return
+            }
+            1 -> {
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_STREAM, uris[0])
+            }
+            else -> {
+                intent.action = Intent.ACTION_SEND_MULTIPLE
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            }
+        }
+
+        startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
+        actionMode?.finish()
+    }
+
+    private fun untag() {
+        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+        doAsync {
+            viewModel.untag(viewModel.selectedItems(adapter.getSelectedItems()))
+            uiThread {
+                adapter.removeMultiple(adapter.getSelectedItems())
+                actionMode?.finish()
+                swipeRefreshCollection.isRefreshing = false
+            }
+        }
+    }
+
+    private fun restore() {
+        informCallerOfChange()
+        swipeRefreshCollection.isRefreshing = true
+        doAsync {
+            viewModel.restoreItems(viewModel.selectedItems(adapter.getSelectedItems()))
+
+            uiThread {
+                actionMode?.finish()
+                dataChanged = true
+                informCallerOfChange()
+                refresh(true, false, true, false)
+            }
+        }
+    }
+
+    // Starts dialog which asks for confirmation
+    // Callback method deleteOk() does the actual deletion job
+    private fun delete() {
+        dataChanged = true
+        informCallerOfChange()
+
+        val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
+        if (deletionItems.count() > 25) {
+            Toast.makeText(activity, getString(R.string.TrashingStarted), Toast.LENGTH_SHORT).show()
+        }
+
+        // remove items from ui
+        adapter.removeMultiple(adapter.getSelectedItems())
+
+        doAsync {
+            val id = viewModel.trashItems(deletionItems)
+            uiThread {
+                val mySnackbar = Snackbar.make(collectionParentCoordinator, R.string.DeleteSnackbarSingleInfo, Snackbar.LENGTH_LONG)
+                mySnackbar.setAction(R.string.DeleteSnackbarUndo) {
+                    swipeRefreshCollection.isRefreshing = true
+                    doAsync {
+                        viewModel.undoTrashing(id)
+                        uiThread {
+                            refresh(true, true, true, false)
+                        }
+                    }
+                }
+                mySnackbar.show()
+            }
+        }
+
+        actionMode?.finish()
     }
 
     // functionality
@@ -243,7 +401,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
      * (http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnFragmentInteractionListener {
+    interface OnCollectionFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
     }
@@ -265,4 +423,53 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                     }
                 }
     }
+
+    private inner class ActionModeCallback : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            if (this@CollectionFragment.cid == getString(R.string.trashName)) {
+                mode.menuInflater.inflate(R.menu.menu_multiimageselected_trash, menu) // TODO create menu for selction mode
+                return true
+            }
+            mode.menuInflater.inflate(R.menu.menu_multiimageselected, menu) // TODO create menu for selction mode
+            if (viewModel.collectionType == TYPE_TAG && viewModel.collectionId != getString(R.string.timelineName)) {
+                menu.findItem(R.id.multiimageselection_menu_untag)?.isVisible = true
+            }
+            collection_shareFloatingActionButton.visibility = View.VISIBLE // TODO - better way to make it visible? A little animated?
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
+
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            when (item.itemId) {
+                R.id.multiimageselection_menu_share -> {
+                    share()
+                    return true
+                }
+                R.id.multiimageselection_menu_untag -> {
+                    untag()
+                    return true
+                }
+                R.id.multiimageselection_menu_delete -> {
+                    delete()
+                    return true
+                }
+                R.id.trash_multiimageselection_menuRestore -> {
+                    restore()
+                    return true
+                }
+
+                else -> return false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode) {
+            adapter.clearSelection()
+            collection_shareFloatingActionButton.visibility = View.INVISIBLE // TODO - better way to make it invisible? A little animated?
+            actionMode = null
+        }
+    }
+
+
 }

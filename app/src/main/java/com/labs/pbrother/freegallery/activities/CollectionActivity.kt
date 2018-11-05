@@ -452,7 +452,7 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
     private fun tag() {
         val std = TagDialogFragment()
         std.setTags(viewModel.tags)
-        std.show(this.fragmentManager, "tagdialog")
+        //std.show(this.fragmentManager, "tagdialog")
     }
 
     // Starts dialog which asks for confirmation
