@@ -17,7 +17,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.CollectionActivityViewModel
+import com.labs.pbrother.freegallery.activities.*
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.Provider
@@ -34,6 +34,8 @@ import kotlinx.android.synthetic.main.fragment_collection.*
 import kotlinx.android.synthetic.main.fragment_collection.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.image
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.uiThread
 
 private const val CID = "collectionId"
@@ -374,11 +376,34 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     }
 
     override fun onItemClicked(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (actionMode != null) {
+            toggleSelection(position)
+        } else {
+            startActivityForResult(intentFor<ImageSlideActivity>(
+                    EXTRA_COLLECTIONID to cid,
+                    EXTRA_ITEM_INDEX to position,
+                    EXTRA_STARTING_POINT to STARTED_FROM_ACTIVITY), IMAGE_SLIDE_ACTIVITY_REQUEST_CODE)
+        }
     }
 
     override fun onItemLongClicked(position: Int): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
+        }
+        toggleSelection(position)
+        return true
+    }
+
+    private fun toggleSelection(position: Int) {
+        adapter.toggleSelection(position)
+        val count = adapter.selectedItemCount
+
+        if (count == 0) {
+            actionMode?.finish()
+        } else {
+            actionMode?.title = resources.getString(R.string.collectionSelection) + " " + count.toString() + " / " + adapter.itemCount.toString()
+            actionMode?.invalidate()
+        }
     }
 
     // helper
