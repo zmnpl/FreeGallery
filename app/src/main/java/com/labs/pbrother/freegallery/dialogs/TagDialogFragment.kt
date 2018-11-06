@@ -65,10 +65,10 @@ class TagDialogFragment : DialogFragment() {
         // Verify that the host activity implements the callback interface
         listener = try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            activity as TagDialogListener
+            parentFragment as TagDialogListener
         } catch (e: ClassCastException) {
             // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(activity.toString() + " must implement ColorDialogListener")
+            throw ClassCastException(parentFragment.toString() + " must implement ColorDialogListener")
         }
 
     }

@@ -21,6 +21,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         drawerItems.postValue(foo.drawerItems)
     }
 
+    fun post() {
+        overviewItems.postValue(overviewItems.value)
+        drawerItems.postValue(overviewItems.value)
+    }
+
     private fun selectedItems(selection: List<Int>): List<CollectionItem> {
         val result = ArrayList<CollectionItem>()
         selection.forEach() {

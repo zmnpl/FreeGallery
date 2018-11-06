@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -21,7 +20,6 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
@@ -61,6 +59,11 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         fragmentTransaction.commit()
 
         bindViewModel()
+    }
+
+    override fun onBackPressed() {
+        print("foo")
+        super.onBackPressed()
     }
 
     private fun makeDrawer() {
@@ -114,11 +117,11 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                     .drawerResult
                     .addItem(primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                             .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                startActivityForResult(
-                                        intentFor<CollectionActivity>(
-                                                EXTRA_COLLECTION_INDEX to position,
-                                                EXTRA_COLLECTIONID to it.id),
-                                        COLLECTION_ACTIVITY_REQUEST_CODE)
+                                supportFragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.frame_container, CollectionFragment.newInstance(it.id))
+                                        .addToBackStack(null)
+                                        .commit()
                                 false
                             })
         }
@@ -193,22 +196,26 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
+    /*override fun onBackPressed() {
+        if (supportFragmentManager.findFragmentByTag("FragmentC") != null) {
+            // I'm viewing Fragment C
+            supportFragmentManager.pop
+        } else {
+            super.onBackPressed()
+        }
+    }*/
+
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Main view fragment callbacks
     ////////////////////////////////////////////////////////////////////////////////////////////////
     override fun openCollectionView(position: Int, id: String) {
-        /*startActivityForResult(
-                intentFor<CollectionActivity>(
-                        EXTRA_ITEM_INDEX to position,
-                        EXTRA_COLLECTIONID to id),
-                COLLECTION_ACTIVITY_REQUEST_CODE)*/
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val fragment = CollectionFragment.newInstance(id)
-        fragmentTransaction.replace(R.id.frame_container, fragment)
-        fragmentTransaction.commit()
-
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_container, CollectionFragment.newInstance(id))
+                .addToBackStack(null)
+                .commit()
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,12 +229,12 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     // clicks on item in navigation drawer
     override fun onDrawerItemClicked(position: Int) {
         //if (actionMode != null) {
-            //toggleSelection(position)
+        //toggleSelection(position)
         //} else {
-            //if (!onTablet) drawerLayoutMain.closeDrawers()
-            //startActivityForResult(
-            //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-            //        COLLECTION_ACTIVITY_REQUEST_CODE)
+        //if (!onTablet) drawerLayoutMain.closeDrawers()
+        //startActivityForResult(
+        //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
+        //        COLLECTION_ACTIVITY_REQUEST_CODE)
         //}
     }
 
@@ -280,7 +287,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             }
         }
     }
-
 
 
 }

@@ -39,6 +39,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     private val actionModeCallback = ActionModeCallback()
     private var actionModeCollectionItems = ArrayList<CollectionItem>()
     private var selection: List<Int>? = null
+    private var rv: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,15 +58,20 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_overview, container, false)
-        rootView.overviewRecycler.apply {
-            setHasFixedSize(true)
-            val ctx = activity as Context
-            layoutManager = GridLayoutManager(ctx, prefs.mainColumnsInPortrait)
-            addItemDecoration(ItemOffsetDecoration(ctx, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
+        if(rv == null) {
+            rv = inflater.inflate(R.layout.fragment_overview, container, false)
+            rv?.overviewRecycler?.apply {
+                setHasFixedSize(true)
+                val ctx = activity as Context
+                layoutManager = GridLayoutManager(ctx, prefs.mainColumnsInPortrait)
+                addItemDecoration(ItemOffsetDecoration(ctx, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
+            }
+            rv?.swipeRefreshMain?.setOnRefreshListener { refresh() }
         }
-        rootView.swipeRefreshMain.setOnRefreshListener { refresh() }
-        return rootView
+
+
+
+        return rv
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

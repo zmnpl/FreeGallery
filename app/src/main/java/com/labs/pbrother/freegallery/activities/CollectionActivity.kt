@@ -610,7 +610,6 @@ class CollectionActivity : AppCompatActivity(), CollectionRecyclerViewAdapter.Vi
 
     // Callbacks
     override fun tagCancel() {}
-
     override fun tagOk(tag: String) {
         doAsync {
             viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)

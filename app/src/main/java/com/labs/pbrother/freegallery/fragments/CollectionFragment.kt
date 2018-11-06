@@ -49,7 +49,7 @@ private const val CID = "collectionId"
  * create an instance of this fragment.
  *
  */
-class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener {
+class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener, TagDialogFragment.TagDialogListener {
 
     // parameters
     private lateinit var cid: String
@@ -164,7 +164,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                 return true
             }
             R.id.menu_colorize -> {
-                colorize()
+                ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
                 return true
             }
             R.id.menu_resetColor -> {
@@ -249,11 +249,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         if (colCount < 1) colCount = 1
         prefs.columnsInPortrait = colCount
         collection_rclPictureCollection.layoutManager = GridLayoutManager(activity, colCount)
-    }
-
-    private fun colorize() {
-        val foo = ColorizeDialogFragment()
-        //foo.show(this.fragmentManager, "colorizedialog")
     }
 
     private fun deleteTag() {
@@ -371,8 +366,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     // Callback method colorOk does the actual work
     private fun tag() {
         val std = TagDialogFragment()
-        //std.setTags(viewModel.tags)
-        //std.show(this.fragmentManager, "tagdialog")
+        std.setTags(viewModel.tags)
+        std.show(childFragmentManager, "tagdialog")
     }
 
     override fun onItemClicked(position: Int) {
@@ -404,6 +399,29 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             actionMode?.title = resources.getString(R.string.collectionSelection) + " " + count.toString() + " / " + adapter.itemCount.toString()
             actionMode?.invalidate()
         }
+    }
+
+
+    // Dialog Callbacks
+    override fun colorCancel() {}
+    override fun colorOk(color: Int) {
+        doAsync {
+            viewModel.colorizeCollection(color)
+            uiThread {
+                val toast = Toast.makeText(activity, "Set color to " + color.toString(), Toast.LENGTH_LONG)
+                toast.show()
+            }
+        }
+    }
+
+    override fun tagCancel() {}
+    override fun tagOk(tag: String) {
+        doAsync {
+            viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
+        }
+        dataChanged = true
+        informCallerOfChange()
+        actionMode?.finish()
     }
 
     // helper
