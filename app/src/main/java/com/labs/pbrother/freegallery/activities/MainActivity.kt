@@ -1,6 +1,7 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -192,6 +193,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                 openSAFTreeSelection()
                 return true
             }
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -210,13 +215,18 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     // Main view fragment callbacks
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressLint("RestrictedApi") // TODO - try to remove every now and then
     override fun openCollectionView(position: Int, id: String) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.frame_container, CollectionFragment.newInstance(id))
                 .addToBackStack(null)
                 .commit()
+        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Collection view fragment callbacks

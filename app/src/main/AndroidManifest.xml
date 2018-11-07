@@ -23,13 +23,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.CollectionActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
-        <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <meta-data
