@@ -34,7 +34,6 @@ import kotlinx.android.synthetic.main.fragment_collection.*
 import kotlinx.android.synthetic.main.fragment_collection.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.image
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.uiThread
 
@@ -66,29 +65,15 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         setHasOptionsMenu(true)
 
         arguments?.let {
-            cid = it.getString(CID)
+            cid = it.getString(CID) ?: ""
         }
 
         // bind to viewmodel
         viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
-
-        viewModel.items.observe(this, Observer { items ->
-            if (null != items) {
-                adapter = CollectionRecyclerViewAdapter(this@CollectionFragment, activity as Context, items, Provider(app))
-                collection_rclPictureCollection.adapter = adapter
-            }
-        })
-
-        viewModel.collectionItem.observe(this, Observer { collectionItem ->
-            //if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
-        })
-
-        viewModel.liveColor.observe(this, Observer { color ->
-            //if (null != color) changeColor(color)
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -106,10 +91,30 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
 
         rootView.swipeRefreshCollection.setOnRefreshListener {
-            refresh(true, true, true,true)
+            refresh(true, true, true, true)
         }
 
         return rootView
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.items.observe(this, Observer { items ->
+            if (null != items) {
+                adapter = CollectionRecyclerViewAdapter(this@CollectionFragment, activity as Context, items, Provider(app))
+                collection_rclPictureCollection.adapter = adapter
+            }
+        })
+
+        viewModel.collectionItem.observe(this, Observer { collectionItem ->
+            //if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
+        })
+
+        viewModel.liveColor.observe(this, Observer { color ->
+            //if (null != color) changeColor(color)
+        })
+
+        refresh(true, true, true, true)
     }
 
     override fun onStart() {
@@ -120,7 +125,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         collection_shareFloatingActionButton.image = activity?.tagSymbol()
 
         // trigger loading of data
-        refresh(true, true, true,true)
+        //refresh(true, true, true,true)
     }
 
     override fun onAttach(context: Context) {
@@ -404,6 +409,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     // Dialog Callbacks
     override fun colorCancel() {}
+
     override fun colorOk(color: Int) {
         doAsync {
             viewModel.colorizeCollection(color)

@@ -11,7 +11,6 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.activities.MainActivityViewModel
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.app
@@ -29,6 +28,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     // interaction interface
     private var listener: OnMainFragmentInteractionListener? = null
+
     interface OnMainFragmentInteractionListener {
         fun openCollectionView(position: Int, id: String)
     }
@@ -43,11 +43,19 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         setHasOptionsMenu(true)
 
-        // bind to viewmodel
-        viewModel = ViewModelProviders.of(activity as MainActivity).get(MainActivityViewModel::class.java!!)
-        viewModel.overviewItems.observe(activity as MainActivity, Observer { overviewItems ->
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        doAsync {
+            viewModel.refresh()
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
                 val fract = activity as FragmentActivity
                 adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(app))
@@ -58,7 +66,8 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if(rv == null) {
+        // dont rebuild if still existing, to keep scrolling position
+        if (rv == null) {
             rv = inflater.inflate(R.layout.fragment_overview, container, false)
             rv?.overviewRecycler?.apply {
                 setHasFixedSize(true)
@@ -68,15 +77,12 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             }
             rv?.swipeRefreshMain?.setOnRefreshListener { refresh() }
         }
-
-
-
         return rv
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_overview, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.menu_overview, menu)
     }
 
     override fun onAttach(context: Context) {
@@ -110,16 +116,15 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             }
             else -> return super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     // clicks on item in main view
     override fun onItemClicked(position: Int) {
         if (actionMode != null) {
             toggleSelection(position)
-        } else {
-            listener?.openCollectionView(position, adapter.getItemStringId(position))
+            return
         }
+        listener?.openCollectionView(position, adapter.getItemStringId(position))
     }
 
     override fun onItemLongClicked(position: Int): Boolean {
@@ -155,15 +160,13 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     // Functionality
     // Callbacks
+    override fun colorCancel() {}
     override fun colorOk(color: Int) {
         viewModel.colorize(selection ?: ArrayList<Int>(), color)
         adapter.notifyDataSetChanged()
         selection = null
         actionModeCollectionItems.clear()
     }
-
-    override fun colorCancel() {}
-
 
     // trigger refresh of data
     private fun refresh() {
@@ -186,15 +189,12 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     }
 
     private inner class ActionModeCallback : ActionMode.Callback {
-
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             mode.menuInflater.inflate(R.menu.menu_main_overviewselected, menu)
             return true
         }
 
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false
-        }
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             selection = adapter.getSelectedItems()

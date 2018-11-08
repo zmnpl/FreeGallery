@@ -161,8 +161,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         if (reloadPlz) buildUiSafe()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data?.getBooleanExtra(SHOULD_RELOAD, false) ?: false) buildUiSafe()
 
         // SD card uri selected
         if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
