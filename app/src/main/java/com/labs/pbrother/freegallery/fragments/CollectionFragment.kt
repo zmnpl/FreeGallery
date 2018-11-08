@@ -111,21 +111,13 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         })
 
         viewModel.liveColor.observe(this, Observer { color ->
-            if (null != color) fun onCollectionColorChange(color)
+            if (null != color) listener?.onCollectionColorChange(color)
         })
 
         refresh(true, true, true, true)
-    }
 
-    override fun onStart() {
-        super.onStart()
-
-        // floating action button
         collection_shareFloatingActionButton.setOnClickListener { tag() }
         collection_shareFloatingActionButton.image = activity?.tagSymbol()
-
-        // trigger loading of data
-        //refresh(true, true, true,true)
     }
 
     override fun onAttach(context: Context) {

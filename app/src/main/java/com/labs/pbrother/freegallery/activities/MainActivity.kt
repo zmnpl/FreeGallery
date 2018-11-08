@@ -232,7 +232,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     override fun onCollectionColorChange(color: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (prefs.colorizeTitlebar) {
+            main_toolbar.setBackgroundColor(color)
+            if (color != prefs.defaultCollectionColor) {
+                window.statusBarColor = adjustColorAlpha(color, 0.8f)
+                return
+            }
+            window.statusBarColor = prefs.colorPrimaryDark
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
