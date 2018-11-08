@@ -231,6 +231,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         supportActionBar?.setHomeButtonEnabled(true)
     }
 
+    override fun onCollectionColorChange(color: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Collection view fragment callbacks

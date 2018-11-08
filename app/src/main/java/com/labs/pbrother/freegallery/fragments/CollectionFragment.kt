@@ -111,7 +111,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         })
 
         viewModel.liveColor.observe(this, Observer { color ->
-            //if (null != color) changeColor(color)
+            if (null != color) fun onCollectionColorChange(color)
         })
 
         refresh(true, true, true, true)
@@ -453,6 +453,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     interface OnCollectionFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
+        fun onCollectionColorChange(color: Int)
     }
 
     companion object {
