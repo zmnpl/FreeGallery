@@ -134,7 +134,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         if (requestCode == EDIT_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data?.getBooleanExtra(CROP_SAVED, false) ?: false) {
             doAsync {
                 resultIntent.putExtra(CROP_SAVED, true)
-                if(null != data) {
+                if (null != data) {
                     val from = data.getStringExtra(ORIGINAL_PATH)
                     val to = data.getStringExtra(NEW_VERSION_PATH)
                     viewModel.copyTags(from, to)

@@ -32,7 +32,6 @@ import com.labs.pbrother.freegallery.BuildConfig
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.TYPE_IMAGE
-import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.fragment_singlepicture_slide_page.view.*
 import org.jetbrains.anko.doAsync

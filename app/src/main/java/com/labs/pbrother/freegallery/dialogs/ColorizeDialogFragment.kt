@@ -1,11 +1,6 @@
 package com.labs.pbrother.freegallery.dialogs
 
 
-
-
-
-
-
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle

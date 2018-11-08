@@ -30,7 +30,10 @@ import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.uiThread
 
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {

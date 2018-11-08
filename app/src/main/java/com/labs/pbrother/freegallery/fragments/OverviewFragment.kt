@@ -89,9 +89,9 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         super.onAttach(context)
         if (context is OnMainFragmentInteractionListener) {
             listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
+            return
         }
+        throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
     }
 
     override fun onDetach() {
@@ -161,6 +161,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     // Functionality
     // Callbacks
     override fun colorCancel() {}
+
     override fun colorOk(color: Int) {
         viewModel.colorize(selection ?: ArrayList<Int>(), color)
         adapter.notifyDataSetChanged()
