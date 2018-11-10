@@ -58,7 +58,9 @@ interface MetaUpdatorizer {
     // for collections
     fun loveCollection(collection: CollectionItem, loved: Boolean)
 
-    fun colorizeCollection(collection: CollectionItem, colorid: Int?)
+    fun colorizeCollection(collection: CollectionItem, colorid: Int?): Int
+
+    fun uncolorCollection(collection: CollectionItem): Int
 
     // for items
     fun tagItem(item: Item, tag: String)

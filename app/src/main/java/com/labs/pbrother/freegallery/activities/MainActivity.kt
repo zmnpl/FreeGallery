@@ -226,29 +226,38 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                 .replace(R.id.frame_container, CollectionFragment.newInstance(id))
                 .addToBackStack(null)
                 .commit()
-        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
+        //supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setHomeButtonEnabled(true)
     }
 
     override fun onCollectionColorChange(color: Int) {
         if (prefs.colorizeTitlebar) {
-            main_toolbar.setBackgroundColor(color)
             if (color != prefs.defaultCollectionColor) {
+                main_toolbar.backgroundColor = color
                 window.statusBarColor = adjustColorAlpha(color, 0.8f)
                 return
             }
+            main_toolbar.backgroundColor = prefs.colorPrimary
             window.statusBarColor = prefs.colorPrimaryDark
         }
+    }
+
+    override fun setToolbarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    override fun setToolbarDefaultColor() {
+        onCollectionColorChange(prefs.defaultCollectionColor)
+    }
+
+    override fun setToolbarDefaultName() {
+        supportActionBar?.title = getString(R.string.app_name)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Collection view fragment callbacks
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    override fun onFragmentInteraction(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer

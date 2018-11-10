@@ -165,11 +165,7 @@ class SettingsHelper(val context: Context) {
             }
         }
 
-    val defaultCollectionColor: Int
-        get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-            return ContextCompat.getColor(context, R.color.colorHighlightDefault)
-        }
+    val defaultCollectionColor: Int = ContextCompat.getColor(context, R.color.colorHighlightDefault)
 
     val primaryColor: Int
         get() {
@@ -179,6 +175,9 @@ class SettingsHelper(val context: Context) {
                 else -> ContextCompat.getColor(context, R.color.nerd_primary)
             }
         }
+
+    val colorPrimary: Int
+        get() = ContextCompat.getColor(context, R.color.primary)
 
     val colorPrimaryDark: Int
         get() = ContextCompat.getColor(context, R.color.primary_dark)

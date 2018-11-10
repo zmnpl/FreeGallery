@@ -78,11 +78,6 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         refresh(false, false, true, collectionID)
     }
 
-    fun removeColor() {
-        provider.colorizeCollection(collection, null)
-        liveColor.postValue(collection.color)
-    }
-
     fun deleteTag() = provider.deleteTag(collectionItem.value?.id ?: "")
 
     fun emptyTrash() = provider.emptyTrash()
@@ -106,10 +101,10 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     }
 
     fun colorizeCollection(color: Int) {
-        val col = collectionItem.value
-        if (null != col) {
-            provider.colorizeCollection(col, color)
-            liveColor.postValue(color)
-        }
+        liveColor.postValue(provider.colorizeCollection(collection, color))
+    }
+
+    fun removeColor() {
+        liveColor.postValue(provider.uncolorCollection(collection))
     }
 }

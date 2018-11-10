@@ -31,6 +31,8 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     interface OnMainFragmentInteractionListener {
         fun openCollectionView(position: Int, id: String)
+        fun setToolbarDefaultColor()
+        fun setToolbarDefaultName()
     }
 
     private lateinit var viewModel: MainActivityViewModel
@@ -54,7 +56,8 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        listener?.setToolbarDefaultColor()
+        listener?.setToolbarDefaultName()
         viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
                 val fract = activity as FragmentActivity

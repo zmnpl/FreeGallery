@@ -75,7 +75,7 @@ data class CollectionItem constructor(val id: String = "",
         this.love(meta.loved)
     }
 
-    override operator fun compareTo(ccitem: CollectionItem): Int = sortRegular(ccitem)
+    override operator fun compareTo(other: CollectionItem): Int = sortRegular(other)
 
     private fun sortRegular(ccitem: CollectionItem): Int = when {
         isLoved && !ccitem.isLoved -> -1

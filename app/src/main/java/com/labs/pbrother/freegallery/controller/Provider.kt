@@ -290,13 +290,18 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         db.insertUpdateCollectionMeta(collection.id, loved, collection.color)
     }
 
-    override fun colorizeCollection(collection: CollectionItem, c: Int?) {
+    override fun colorizeCollection(collection: CollectionItem, c: Int?): Int {
         var color = c
         if (null == color) color = prefs.defaultCollectionColor
         val db = MyDb(applicationContext)
         collection.colorize(color)
+        overviewCache[collection.id]?.colorize(color)
+        drawerCache[collection.id]?.colorize(color)
         db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
+        return color
     }
+
+    override fun uncolorCollection(collection: CollectionItem) = colorizeCollection(collection, null)
 
     fun tagItems(items: List<Item>, tag: String) {
         tagCache.add(tag)

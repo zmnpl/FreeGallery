@@ -50,6 +50,11 @@ private const val CID = "collectionId"
  */
 class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener, TagDialogFragment.TagDialogListener {
 
+    interface OnCollectionFragmentInteractionListener {
+        fun onCollectionColorChange(color: Int)
+        fun setToolbarTitle(title: String)
+    }
+
     // parameters
     private lateinit var cid: String
 
@@ -107,7 +112,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         })
 
         viewModel.collectionItem.observe(this, Observer { collectionItem ->
-            //if (null != collectionItem) supportActionBar?.title = collectionItem.displayNameDetail
+            if (null != collectionItem) listener?.setToolbarTitle(collectionItem.displayNameDetail)
         })
 
         viewModel.liveColor.observe(this, Observer { color ->
@@ -430,23 +435,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         } else {
             (prefs.columnsInPortrait * 1.5).toInt()
         }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnCollectionFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-        fun onCollectionColorChange(color: Int)
-    }
 
     companion object {
         /**
