@@ -1,6 +1,7 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -11,8 +12,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -21,34 +20,29 @@ import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
-import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
-import com.labs.pbrother.freegallery.controller.Provider
-import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
+import com.labs.pbrother.freegallery.fragments.CollectionFragment
+import com.labs.pbrother.freegallery.fragments.OverviewFragment
 import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.uiThread
 
 
-class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, DrawerTagListAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
 
     private var onTablet = false
     private var reloadPlz = false
     private var permissionsGood = false
-
-    private val actionModeCallback = ActionModeCallback()
-    private var actionMode: ActionMode? = null
-    private var selection: List<Int>? = null
-    private var actionModeCollectionItems = ArrayList<CollectionItem>()
-    private lateinit var adapter: OverviewRecyclerViewAdapter
     private lateinit var drawerResult: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,28 +51,23 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         if (tabletMain != null) onTablet = true
 
         setTheme(prefs.theme)
-
         setContentView(R.layout.activity_main)
-        //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         setSupportActionBar(main_toolbar)
+        //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
-        overviewRecycler.apply {
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@MainActivity, prefs.mainColumnsInPortrait)
-            addItemDecoration(ItemOffsetDecoration(this@MainActivity, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
-        }
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val fragment = OverviewFragment()
+        fragmentTransaction.add(R.id.frame_container, fragment)
+        fragmentTransaction.commit()
 
         bindViewModel()
-        swipeRefreshMain.setOnRefreshListener { buildUiSafe() }
     }
 
-    private fun populateAdapter(overviewItems: ArrayList<CollectionItem>?) {
-        if (null != overviewItems) {
-            adapter = OverviewRecyclerViewAdapter(this@MainActivity, this@MainActivity, overviewItems, Provider(application))
-            adapter.setHasStableIds(true)
-            overviewRecycler.adapter = adapter
-        }
+    override fun onBackPressed() {
+        print("foo")
+        super.onBackPressed()
     }
 
     private fun makeDrawer() {
@@ -118,33 +107,28 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         }
     }
 
+    private fun bindViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+        viewModel.drawerItems.observe(this, Observer { drawerItems ->
+            makeDrawer()
+            if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+    }
+
     private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
         drawerItems.forEach {
             this@MainActivity
                     .drawerResult
                     .addItem(primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                             .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                startActivityForResult(
-                                        intentFor<CollectionActivity>(
-                                                EXTRA_COLLECTION_INDEX to position,
-                                                EXTRA_COLLECTIONID to it.id),
-                                        COLLECTION_ACTIVITY_REQUEST_CODE)
+                                supportFragmentManager
+                                        .beginTransaction()
+                                        .replace(R.id.frame_container, CollectionFragment.newInstance(it.id))
+                                        .addToBackStack(null)
+                                        .commit()
                                 false
                             })
         }
-    }
-
-    private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
-
-        viewModel.overviewItems.observe(this, Observer { overviewItems ->
-            populateAdapter(overviewItems)
-        })
-
-        viewModel.drawerItems.observe(this, Observer { drawerItems ->
-            makeDrawer()
-            if (null != drawerItems) addDrawerItems(drawerItems)
-        })
     }
 
     // User Interface Building
@@ -161,22 +145,15 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
     }
 
     private fun refresh() {
-        swipeRefreshMain.isRefreshing = true
+        //swipeRefreshMain.isRefreshing = true
         doAsync {
             viewModel.refresh()
             uiThread {
-                swipeRefreshMain.isRefreshing = false
+                //swipeRefreshMain.isRefreshing = false
             }
         }
     }
 
-    private fun applyZoom(zoom: Int) {
-        var cols = prefs.mainColumnsInPortrait
-        cols += zoom
-        if (cols < 1) cols = 1
-        prefs.mainColumnsInPortrait = cols
-        overviewRecycler.layoutManager = GridLayoutManager(this@MainActivity, cols)
-    }
 
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +164,9 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
         if (reloadPlz) buildUiSafe()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        //super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data?.getBooleanExtra(SHOULD_RELOAD, false) ?: false) buildUiSafe()
 
         // SD card uri selected
         if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
@@ -207,12 +185,6 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_refresh -> {
-                swipeRefreshMain.isRefreshing = true
-                buildUiSafe()
-                //openSAFTreeSelection()
-                return true
-            }
             R.id.menu_settings -> {
                 startActivity<SettingsActivity>()
                 return true
@@ -221,140 +193,84 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
                 startActivity<AboutActivity>()
                 return true
             }
-            R.id.menu_collectionZoomViewIn -> {
-                applyZoom(-1)
-                return true
-            }
-            R.id.menu_collectionZoomViewOut -> {
-                applyZoom(+1)
-                return true
-            }
             R.id.menu_takeSdCardPermission -> {
                 openSAFTreeSelection()
+                return true
+            }
+            android.R.id.home -> {
+                onBackPressed()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
+    /*override fun onBackPressed() {
+        if (supportFragmentManager.findFragmentByTag("FragmentC") != null) {
+            // I'm viewing Fragment C
+            supportFragmentManager.pop
+        } else {
+            super.onBackPressed()
+        }
+    }*/
+
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // clicks on item in main view
-    override fun onItemClicked(position: Int) {
-        if (actionMode != null) {
-            toggleSelection(position)
-        } else {
-            startActivityForResult(
-                    intentFor<CollectionActivity>(
-                            EXTRA_ITEM_INDEX to position,
-                            EXTRA_COLLECTIONID to adapter.getItemStringId(position)),
-                    COLLECTION_ACTIVITY_REQUEST_CODE)
+    // Main view fragment callbacks
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressLint("RestrictedApi") // TODO - try to remove every now and then
+    override fun openCollectionView(position: Int, id: String) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_container, CollectionFragment.newInstance(id))
+                .addToBackStack(null)
+                .commit()
+        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+    }
+
+    override fun onCollectionColorChange(color: Int) {
+        if (prefs.colorizeTitlebar) {
+            main_toolbar.setBackgroundColor(color)
+            if (color != prefs.defaultCollectionColor) {
+                window.statusBarColor = adjustColorAlpha(color, 0.8f)
+                return
+            }
+            window.statusBarColor = prefs.colorPrimaryDark
         }
     }
 
-    override fun onItemLongClicked(position: Int): Boolean {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback)
-        }
-        toggleSelection(position)
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-        return true
+    // Collection view fragment callbacks
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    override fun onFragmentInteraction(uri: Uri) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer
     override fun onDrawerItemClicked(position: Int) {
-        if (actionMode != null) {
-            toggleSelection(position)
-        } else {
-            //if (!onTablet) drawerLayoutMain.closeDrawers()
-            //startActivityForResult(
-            //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-            //        COLLECTION_ACTIVITY_REQUEST_CODE)
-        }
+        //if (actionMode != null) {
+        //toggleSelection(position)
+        //} else {
+        //if (!onTablet) drawerLayoutMain.closeDrawers()
+        //startActivityForResult(
+        //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
+        //        COLLECTION_ACTIVITY_REQUEST_CODE)
+        //}
     }
 
     override fun onDrawerItemLongClicked(position: Int): Boolean {
         return false
     }
 
-    // Toggle the selection state of an item.
-    // If the item was the last one in the selection and is unselected, the selection is stopped.
-    // Note that the selection must already be started (actionMode must not be null).
-    private fun toggleSelection(position: Int) {
-        adapter.toggleSelection(position)
-        val total = adapter.itemCount
-        val count = adapter.selectedItemCount
-
-        if (count == 0) {
-            actionMode?.finish()
-        } else {
-            actionMode?.title = (resources.getString(
-                    R.string.collectionSelection)
-                    + " "
-                    + total.toString()
-                    + " / "
-                    + count.toString())
-            actionMode?.invalidate()
-        }
-    }
-
-    private inner class ActionModeCallback : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            mode.menuInflater.inflate(R.menu.menu_main_overviewselected, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            selection = adapter.getSelectedItems()
-            when (item.itemId) {
-                R.id.overviewselection_menu_hidegroup -> {
-                    mode.finish()
-                    return true
-                }
-                R.id.overviewselection_menu_colorizegroup -> {
-                    colorize()
-                    mode.finish()
-                    return true
-                }
-                else -> {
-                    actionModeCollectionItems.clear()
-                    selection = null
-                    return false
-                }
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode) {
-            adapter.clearSelection()
-            actionMode = null
-        }
-    }
-
-    // Functionality
-
-    private fun colorize() {
-        ColorizeDialogFragment().show(this.fragmentManager, "colorizedialog")
-    }
-
     private fun hide() {
         // TODO
     }
 
-    // Callbacks
-
-    override fun colorOk(color: Int) {
-        viewModel.colorize(selection ?: ArrayList<Int>(), color)
-        adapter.notifyDataSetChanged()
-        selection = null
-        actionModeCollectionItems.clear()
-    }
-
-    override fun colorCancel() {}
 
     // Permissions
 
@@ -396,5 +312,6 @@ class MainActivity : AppCompatActivity(), OverviewRecyclerViewAdapter.ViewHolder
             }
         }
     }
+
 
 }

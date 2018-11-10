@@ -18,8 +18,7 @@ class ItemOffsetDecoration(private val itemOffset: Int = 1, private val colCount
 
     constructor(context: Context, @DimenRes itemOffsetId: Int, colCount: Int) : this(context.resources.getDimensionPixelSize(itemOffsetId), colCount)
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
-                                state: RecyclerView.State?) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
         outRect.left = 0
         outRect.right = 0

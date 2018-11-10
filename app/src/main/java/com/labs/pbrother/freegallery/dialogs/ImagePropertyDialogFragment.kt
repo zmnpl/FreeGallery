@@ -14,8 +14,6 @@ import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_itemroperties.*
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by simon on 07.11.16.

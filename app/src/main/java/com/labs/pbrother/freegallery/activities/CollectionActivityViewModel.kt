@@ -18,6 +18,19 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     private var provider = Provider(getApplication())
     private var collectionID = ""
     private lateinit var collection: CollectionItem
+    var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
+    var collectionItem = MutableLiveData<CollectionItem>()
+    var items = MutableLiveData<ArrayList<Item>>()
+    var liveColor = MutableLiveData<Int>()
+
+
+    fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, collectionID: String, cached: Boolean = false) {
+        this.collectionID = collectionID
+        if (collection) refreshCollection(collectionID)
+        if (drawer) refreshDrawerItems()
+        if (items) refreshItems(collection)
+    }
+
 
     val collectionType
         get() = collectionItem.value?.type
@@ -28,17 +41,6 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     val tags
         get() = provider.tags()
 
-    var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
-    var collectionItem = MutableLiveData<CollectionItem>()
-    var items = MutableLiveData<ArrayList<Item>>()
-    var liveColor = MutableLiveData<Int>()
-
-    fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, collectionID: String, cached: Boolean = false) {
-        this.collectionID = collectionID
-        if (collection) refreshCollection(collectionID)
-        if (drawer) refreshDrawerItems()
-        if (items) refreshItems(cached)
-    }
 
     private fun refreshCollection(collectionId: String) {
         collection = provider.collectionItem(collectionId)
@@ -51,11 +53,7 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     }
 
     private fun refreshItems(cached: Boolean = false) {
-        if (cached) {
-            items.postValue(provider.cachedItemsFor(collection, Item.SORT_ORDER))
-        } else {
-            items.postValue(provider.itemsFor(collection))
-        }
+        items.postValue(provider.itemsFor(collection))
     }
 
 

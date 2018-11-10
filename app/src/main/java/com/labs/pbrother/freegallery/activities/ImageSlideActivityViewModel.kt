@@ -23,12 +23,7 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
 
     fun refresh(collectionId: String, full: Boolean = false) {
         val collection = foo.collectionItem(collectionId)
-
-        if (full) {
-            items.postValue(foo.itemsFor(collection))
-        } else {
-            items.postValue(foo.cachedItemsFor(collection, Item.SORT_ORDER))
-        }
+        items.postValue(foo.itemsFor(collection))
     }
 
     fun trashItems(items: List<Item>): Int = foo.trashItems(items)

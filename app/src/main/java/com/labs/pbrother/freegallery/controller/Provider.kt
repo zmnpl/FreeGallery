@@ -69,10 +69,10 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
             return ArrayList(items.values)
         }
 
-    fun cachedItemsFor(ci: CollectionItem, sortOrder: Int): ArrayList<Item> = itemCache[ci.id]
-            ?: itemsFor(ci)
-
-    fun itemsFor(ci: CollectionItem): ArrayList<Item> {
+    fun itemsFor(ci: CollectionItem, cached: Boolean = false): ArrayList<Item> {
+        if (cached) {
+            return itemCache[ci.id] ?: itemsFor(ci, false)
+        }
         val items = resolver.itemsForCollection(ci)
         val itemsList = ArrayList(items)
         itemCache.put(ci.id, itemsList)

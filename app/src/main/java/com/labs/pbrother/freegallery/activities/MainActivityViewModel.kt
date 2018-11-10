@@ -17,8 +17,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
 
     fun refresh() {
-        overviewItems?.postValue(foo.overviewItems)
-        drawerItems?.postValue(foo.drawerItems)
+        overviewItems.postValue(foo.overviewItems)
+        drawerItems.postValue(foo.drawerItems)
+    }
+
+    fun post() {
+        overviewItems.postValue(overviewItems.value)
+        drawerItems.postValue(overviewItems.value)
     }
 
     private fun selectedItems(selection: List<Int>): List<CollectionItem> {
