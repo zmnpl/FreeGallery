@@ -5,6 +5,7 @@
     <string name="title_activity_license_text">License</string>
     <string name="collectionSelection"></string>
     <string name="timelineName">Timeline</string>
+    <string name="drawerHome">Home</string>
     <string name="trashName">Trash</string>
     <string name="tagLetter">#</string>
     <string name="tagLetterMenu">   #   </string>

@@ -130,6 +130,17 @@ fun Context.primaryDrawerItemFromItem(item: CollectionItem, tagLetter: String): 
             .withSelectedTextColor(Color.WHITE)
 }
 
+fun Context.drawerHomeItem(): PrimaryDrawerItem {
+    val color = getColor(R.color.accent)
+    return PrimaryDrawerItem()
+            .withName(getString(R.string.drawerHome))
+            .withIcon(Ionicons.Icon.ion_home)
+            .withSelectedIconColor(color)
+            .withSelectedColor(adjustColorAlpha(color, 0.9F)) // Set some transparancy for selection to make badge and tag shine through
+            .withSelectedIconColor(color)
+            .withSelectedTextColor(Color.WHITE)
+}
+
 fun Context.tagSymbol(): IconicsDrawable {
     return IconicsDrawable(this)
             .icon(Ionicons.Icon.ion_pound)

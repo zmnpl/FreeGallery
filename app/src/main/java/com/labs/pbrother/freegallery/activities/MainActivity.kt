@@ -21,6 +21,7 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
+import com.labs.pbrother.freegallery.extension.drawerHomeItem
 import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
@@ -37,6 +38,8 @@ import org.jetbrains.anko.uiThread
 
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
+
+    private val TAG_HOME = "*HOME*"
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -56,13 +59,22 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
 
-
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val fragment = OverviewFragment()
-        fragmentTransaction.add(R.id.frame_container, fragment)
-        fragmentTransaction.commit()
-
+        goHome()
+        makeDrawer()
         bindViewModel()
+    }
+
+    private fun goHome() {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
+        if (home != null) {
+            fragmentTransaction.replace(R.id.frame_container, home, TAG_HOME)
+        } else {
+            fragmentTransaction.replace(R.id.frame_container, OverviewFragment(), TAG_HOME)
+        }
+
+        fragmentTransaction.commit()
     }
 
     override fun onBackPressed() {
@@ -100,6 +112,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                 }
             }
         }
+
+        addDrawerHomeItem()
+
         if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
 
         if (onTablet) {
@@ -110,9 +125,16 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     private fun bindViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
-            makeDrawer()
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
+    }
+
+    private fun addDrawerHomeItem() {
+        drawerResult.addItem(drawerHomeItem()
+                .withOnDrawerItemClickListener({ view, position, drawerItem ->
+                    goHome()
+                    false
+                }))
     }
 
     private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
@@ -205,15 +227,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
-    /*override fun onBackPressed() {
-        if (supportFragmentManager.findFragmentByTag("FragmentC") != null) {
-            // I'm viewing Fragment C
-            supportFragmentManager.pop
-        } else {
-            super.onBackPressed()
-        }
-    }*/
-
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -262,22 +275,16 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     // clicks on item in navigation drawer
     override fun onDrawerItemClicked(position: Int) {
-        //if (actionMode != null) {
-        //toggleSelection(position)
-        //} else {
-        //if (!onTablet) drawerLayoutMain.closeDrawers()
-        //startActivityForResult(
-        //        intentFor<CollectionActivity>("collectionIndex" to position, "collectionId" to drawerAdapter!!.getItemStringId(position)),
-        //        COLLECTION_ACTIVITY_REQUEST_CODE)
-        //}
+        TODO()
     }
 
     override fun onDrawerItemLongClicked(position: Int): Boolean {
+        TODO()
         return false
     }
 
     private fun hide() {
-        // TODO
+        TODO()
     }
 
 
@@ -291,7 +298,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                             Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // TODO
+                TODO()
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
