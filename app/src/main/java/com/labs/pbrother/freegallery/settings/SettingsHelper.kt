@@ -19,6 +19,8 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         val ORDER_BY_DATE_ADDED = 1
         @JvmStatic
+        private val KEY_PREF_STYLE_STYLE_BLACK = "pref_key_style_black"
+        @JvmStatic
         private val KEY_PREF_STYLE_MAIN_COLUMNS = "pref_key_style_main_portrait_columns"
         @JvmStatic
         private val KEY_PREF_STYLE_COLUMNS = "pref_key_style_portrait_columns"
@@ -148,56 +150,36 @@ class SettingsHelper(val context: Context) {
 
     val theme: Int
         get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
+            val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
+            if(black) return R.style.NerdAppBase
             return R.style.DarkAppBase
-            return when (color) {
-                colorClassic -> R.style.DarkAppBase
-                else -> R.style.NerdAppBase
-            }
         }
 
     val dialogTheme: Int
         get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-            return when (color) {
-                colorClassic -> R.style.DarkDialogBase
-                else -> R.style.NerdDialogBase
-            }
+            val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
+            if(black) return R.style.NerdDialogBase
+            return R.style.DarkDialogBase
         }
 
     val defaultCollectionColor: Int = ContextCompat.getColor(context, R.color.colorHighlightDefault)
 
-    val primaryColor: Int
+    val colorPrimary: Int
         get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-            return when (color) {
-                colorClassic -> ContextCompat.getColor(context, R.color.colorPrimaryBlueGrey)
-                else -> ContextCompat.getColor(context, R.color.nerd_primary)
-            }
+            val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
+            if(black) return ContextCompat.getColor(context, R.color.nerd_primary)
+            return ContextCompat.getColor(context, R.color.primary)
         }
 
-    val colorPrimary: Int
-        get() = ContextCompat.getColor(context, R.color.primary)
-
     val colorPrimaryDark: Int
-        get() = ContextCompat.getColor(context, R.color.primary_dark)
-
-    val secondaryColor: Int
         get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-            return when (color) {
-                colorClassic -> ContextCompat.getColor(context, R.color.colorSecondaryBlueGrey)
-                else -> ContextCompat.getColor(context, R.color.primary_light)
-            }
+            val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
+            if(black) return ContextCompat.getColor(context, R.color.nerd_primary_dark)
+            return ContextCompat.getColor(context, R.color.primary_dark)
         }
 
     val highlightColorAccent: Int
-        // TODO - Accent from custom choice...
         get() {
-            val color = sharedPref.getString(KEY_PREF_STYLE_COLOR, "")
-            return when (color) {
-                colorClassic -> ContextCompat.getColor(context, R.color.accent)
-                else -> ContextCompat.getColor(context, R.color.nerd_accent)
-            }
+            return ContextCompat.getColor(context, R.color.accent)
         }
 }

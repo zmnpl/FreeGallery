@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                 }
             }
         }
-        if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.primaryColor
+        if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
 
         if (onTablet) {
             nav_tablet.addView(drawerResult.slider)

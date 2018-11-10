@@ -5,7 +5,7 @@
     <color name="primary">#212121</color>
     <color name="primary_dark">#212121</color>
     <color name="primary_light">#616161</color>
-    <color name="accent">#FF8F00</color>
+    <color name="accent">#e91e63</color>
     <color name="windowBackground">#212121</color>
     <color name="primary_text">#FFFFFFFF</color>
     <color name="secondary_text">#B3FFFFFF</color>
