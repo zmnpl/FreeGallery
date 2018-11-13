@@ -1,4 +1,4 @@
-package com.labs.pbrother.freegallery.activities
+package com.labs.pbrother.freegallery.viewModels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -14,7 +14,7 @@ import java.io.File
 /**
  * Created by simon on 21.11.17.
  */
-class CollectionActivityViewModel(application: Application) : AndroidViewModel(application) {
+class CollectionViewModel(application: Application) : AndroidViewModel(application) {
     private var provider = Provider(getApplication())
     private var collectionID = ""
     private lateinit var collection: CollectionItem
@@ -22,15 +22,6 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     var collectionItem = MutableLiveData<CollectionItem>()
     var items = MutableLiveData<ArrayList<Item>>()
     var liveColor = MutableLiveData<Int>()
-
-
-    fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, collectionID: String, cached: Boolean = false) {
-        this.collectionID = collectionID
-        if (collection) refreshCollection(collectionID)
-        if (drawer) refreshDrawerItems()
-        if (items) refreshItems(collection)
-    }
-
 
     val collectionType
         get() = collectionItem.value?.type
@@ -42,7 +33,8 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         get() = provider.tags()
 
 
-    private fun refreshCollection(collectionId: String) {
+    fun refreshCollection(collectionId: String) {
+        this.collectionID = collectionId
         collection = provider.collectionItem(collectionId)
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
@@ -52,8 +44,8 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
         drawerItems.postValue(provider.drawerItems)
     }
 
-    private fun refreshItems(cached: Boolean = false) {
-        items.postValue(provider.itemsFor(collection))
+    fun refreshItems(cached: Boolean = false) {
+        items.postValue(provider.itemsFor(collection, cached))
     }
 
 
@@ -69,13 +61,13 @@ class CollectionActivityViewModel(application: Application) : AndroidViewModel(a
     fun setSortAsc() {
         if (Item.SORT_ORDER == Item.SORT_ASC) return
         Item.SORT_ORDER = Item.SORT_ASC
-        refresh(false, false, true, collectionID)
+        refreshItems()
     }
 
     fun setSortDesc() {
         if (Item.SORT_ORDER == Item.SORT_DESC) return
         Item.SORT_ORDER = SORT_DESC
-        refresh(false, false, true, collectionID)
+        refreshItems()
     }
 
     fun deleteTag() = provider.deleteTag(collectionItem.value?.id ?: "")

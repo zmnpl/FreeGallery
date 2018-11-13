@@ -11,7 +11,7 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.MainActivityViewModel
+import com.labs.pbrother.freegallery.viewModels.MainViewModel
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
@@ -35,7 +35,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         fun setToolbarDefaultName()
     }
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainViewModel
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private var actionMode: ActionMode? = null
     private val actionModeCallback = ActionModeCallback()
@@ -48,7 +48,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         retainInstance = true
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         doAsync {
             viewModel.refresh()
         }

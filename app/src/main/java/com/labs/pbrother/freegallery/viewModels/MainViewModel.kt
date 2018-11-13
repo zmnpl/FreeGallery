@@ -1,4 +1,4 @@
-package com.labs.pbrother.freegallery.activities
+package com.labs.pbrother.freegallery.viewModels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -10,7 +10,7 @@ import com.labs.pbrother.freegallery.controller.Provider
 /**
  * Created by simon on 30.11.17.
  */
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var foo = Provider(getApplication())
 
     var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()

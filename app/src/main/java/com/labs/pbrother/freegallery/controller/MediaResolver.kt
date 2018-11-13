@@ -41,7 +41,7 @@ internal class MediaResolver(private val context: Context) {
             val collectionItems = TreeSet<CollectionItem>()
             val PROJECTION = arrayOf("DISTINCT " + MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
             val SELECTION = MediaStore.Images.Media.BUCKET_DISPLAY_NAME + " NOT IN (?)"
-            val SELECTION_ARGS = arrayOf("foobarfoo, barfoobar") // TODO - get from seetigns
+            val SELECTION_ARGS = arrayOf("foobarfoo, barfoobar") // TODO - get from settigns
             val SORT_ORDER = MediaStore.Images.Media.BUCKET_DISPLAY_NAME + " ASC"
 
             val collectionMeta = db.collectionMeta()

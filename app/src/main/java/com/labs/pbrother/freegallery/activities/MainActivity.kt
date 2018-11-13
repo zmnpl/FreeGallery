@@ -27,6 +27,7 @@ import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
 import com.labs.pbrother.freegallery.prefs
+import com.labs.pbrother.freegallery.viewModels.MainViewModel
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     private val TAG_HOME = "*HOME*"
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainViewModel
 
     private var onTablet = false
     private var reloadPlz = false
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java!!)
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
@@ -143,11 +144,15 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                     .drawerResult
                     .addItem(primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                             .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                supportFragmentManager
-                                        .beginTransaction()
-                                        .replace(R.id.frame_container, CollectionFragment.newInstance(it.id))
-                                        .addToBackStack(null)
-                                        .commit()
+                                val fragmentTransaction = supportFragmentManager.beginTransaction()
+                                val tag = it.id
+                                val target = supportFragmentManager.findFragmentByTag(tag)
+                                if (target != null) {
+                                    fragmentTransaction.replace(R.id.frame_container, target, tag)
+                                } else {
+                                    fragmentTransaction.replace(R.id.frame_container, CollectionFragment.newInstance(it.id), tag)
+                                }
+                                fragmentTransaction.addToBackStack(null).commit()
                                 false
                             })
         }

@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -30,6 +29,7 @@ import com.labs.pbrother.freegallery.extension.getRotation
 import com.labs.pbrother.freegallery.extension.tagSymbol
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
+import com.labs.pbrother.freegallery.viewModels.CollectionViewModel
 import kotlinx.android.synthetic.main.fragment_collection.*
 import kotlinx.android.synthetic.main.fragment_collection.view.*
 import org.jetbrains.anko.doAsync
@@ -59,7 +59,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     private lateinit var cid: String
 
     // other
-    private lateinit var viewModel: CollectionActivityViewModel
+    private lateinit var viewModel: CollectionViewModel
     private var listener: OnCollectionFragmentInteractionListener? = null
     private var dataChanged = false
 
@@ -78,7 +78,9 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
 
         // bind to viewmodel
-        viewModel = ViewModelProviders.of(this).get(CollectionActivityViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
+        viewModel.refreshCollection(cid)
+        viewModel.refreshItems()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +98,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
 
         rootView.swipeRefreshCollection.setOnRefreshListener {
-            refresh(true, true, true, true)
+            refresh()
         }
 
         return rootView
@@ -104,10 +106,13 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        swipeRefreshCollection.isRefreshing = true
         viewModel.items.observe(this, Observer { items ->
             if (null != items) {
                 adapter = CollectionRecyclerViewAdapter(this@CollectionFragment, activity as Context, items, Provider(app))
                 collection_rclPictureCollection.adapter = adapter
+                if (swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = false
             }
         })
 
@@ -118,8 +123,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         viewModel.liveColor.observe(this, Observer { color ->
             if (null != color) listener?.onCollectionColorChange(color)
         })
-
-        refresh(true, true, true, true)
 
         collection_shareFloatingActionButton.setOnClickListener { tag() }
         collection_shareFloatingActionButton.image = activity?.tagSymbol()
@@ -162,7 +165,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                 return true
             }
             R.id.menu_refresh -> {
-                refresh(true, true, true, true)
+                refresh()
                 return true
             }
             R.id.menu_colorize -> {
@@ -205,12 +208,14 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
     }
 
-    private fun refresh(collection: Boolean, drawer: Boolean, items: Boolean, cached: Boolean = false) {
-        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+    private fun refresh() {
+        if (!(swipeRefreshCollection?.isRefreshing ?: true)) swipeRefreshCollection.isRefreshing = true
         doAsync {
-            viewModel.refresh(collection, drawer, items, cid, cached)
+            viewModel.refreshCollection(cid)
+            viewModel.refreshItems()
+            viewModel.refreshDrawerItems()
             uiThread {
-                swipeRefreshCollection.isRefreshing = false
+                swipeRefreshCollection?.isRefreshing = false
             }
         }
     }
@@ -323,7 +328,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                 actionMode?.finish()
                 dataChanged = true
                 informCallerOfChange()
-                refresh(true, false, true, false)
+                viewModel.refreshItems()
             }
         }
     }
@@ -351,7 +356,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                     doAsync {
                         viewModel.undoTrashing(id)
                         uiThread {
-                            refresh(true, true, true, false)
+                            viewModel.refreshItems()
                         }
                     }
                 }
