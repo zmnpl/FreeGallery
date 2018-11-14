@@ -54,20 +54,6 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        listener?.setToolbarDefaultColor()
-        listener?.setToolbarDefaultName()
-        viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
-            if (overviewItems != null) {
-                val fract = activity as FragmentActivity
-                adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(app))
-                adapter.setHasStableIds(true)
-                overviewRecycler.adapter = adapter
-            }
-        })
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // dont rebuild if still existing, to keep scrolling position
         if (rv == null) {
@@ -81,6 +67,24 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             rv?.swipeRefreshMain?.setOnRefreshListener { refresh() }
         }
         return rv
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if(!swipeRefreshMain.isRefreshing) swipeRefreshMain.isRefreshing = true
+
+        listener?.setToolbarDefaultColor()
+        listener?.setToolbarDefaultName()
+
+        viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
+            if (overviewItems != null) {
+                val fract = activity as FragmentActivity
+                adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(app))
+                adapter.setHasStableIds(true)
+                overviewRecycler.adapter = adapter
+                swipeRefreshMain.isRefreshing = false
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

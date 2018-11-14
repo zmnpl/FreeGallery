@@ -64,6 +64,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     private var dataChanged = false
 
     // ui
+    private var rv: View? = null
     private lateinit var adapter: CollectionRecyclerViewAdapter
     private var actionMode: ActionMode? = null
     private val actionModeCallback = ActionModeCallback()
@@ -86,22 +87,22 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val rootView = inflater.inflate(R.layout.fragment_collection, container, false)
+        if (rv == null) {
+            rv = inflater.inflate(R.layout.fragment_collection, container, false)
+            // recycler list
+            val colCount = columns
+            rv?.collection_rclPictureCollection?.apply {
+                addItemDecoration(ItemOffsetDecoration(activity as Context, R.dimen.collection_picture_padding, colCount))
+                setHasFixedSize(true)
+                layoutManager = GridLayoutManager(activity as Context, colCount)
+                isSaveEnabled = true
+            }
 
-        // recycler list
-        val colCount = columns
-        rootView.collection_rclPictureCollection.apply {
-            addItemDecoration(ItemOffsetDecoration(activity as Context, R.dimen.collection_picture_padding, colCount))
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(activity as Context, colCount)
-            isSaveEnabled = true
+            rv?.swipeRefreshCollection?.setOnRefreshListener {
+                refresh()
+            }
         }
-
-        rootView.swipeRefreshCollection.setOnRefreshListener {
-            refresh()
-        }
-
-        return rootView
+        return rv
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -209,7 +210,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     }
 
     private fun refresh() {
-        if (!(swipeRefreshCollection?.isRefreshing ?: true)) swipeRefreshCollection.isRefreshing = true
+        if (!(swipeRefreshCollection?.isRefreshing
+                        ?: true)) swipeRefreshCollection.isRefreshing = true
         doAsync {
             viewModel.refreshCollection(cid)
             viewModel.refreshItems()
@@ -318,6 +320,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
     }
 
+    // Callable from trash to restore items
     private fun restore() {
         informCallerOfChange()
         swipeRefreshCollection.isRefreshing = true
