@@ -15,7 +15,7 @@ import java.io.File
  * Created by simon on 21.11.17.
  */
 class CollectionViewModel(application: Application) : AndroidViewModel(application) {
-    private var provider = Provider(getApplication())
+    private var provider = Provider()
     private var collectionID = ""
     private lateinit var collection: CollectionItem
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()

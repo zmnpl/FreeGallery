@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.backgroundColor
 
 /**
  * Created by simon on 03.12.16.
@@ -20,6 +21,7 @@ class SettingsActivity : AppCompatActivity() {
         setTheme(prefs.theme)
 
         setContentView(R.layout.activity_settings)
+        main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)
         //supportActionBar!!.setDisplayHomeAsUpEnabled(true) // TODO - lead home dynamically to caller activity?
     }

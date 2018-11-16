@@ -79,7 +79,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
                 val fract = activity as FragmentActivity
-                adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider(app))
+                adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider())
                 adapter.setHasStableIds(true)
                 overviewRecycler.adapter = adapter
                 swipeRefreshMain.isRefreshing = false

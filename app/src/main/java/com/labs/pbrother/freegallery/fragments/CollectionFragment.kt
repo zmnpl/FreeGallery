@@ -107,11 +107,11 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if(!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
 
-        swipeRefreshCollection.isRefreshing = true
         viewModel.items.observe(this, Observer { items ->
             if (null != items) {
-                adapter = CollectionRecyclerViewAdapter(this@CollectionFragment, activity as Context, items, Provider(app))
+                adapter = CollectionRecyclerViewAdapter(this@CollectionFragment, activity as Context, items, Provider())
                 collection_rclPictureCollection.adapter = adapter
                 if (swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = false
             }
@@ -427,8 +427,9 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun tagCancel() {}
     override fun tagOk(tag: String) {
+        val selection = viewModel.selectedItems(adapter.getSelectedItems())
         doAsync {
-            viewModel.tagItems(viewModel.selectedItems(adapter.getSelectedItems()), tag)
+            viewModel.tagItems(selection, tag)
         }
         dataChanged = true
         informCallerOfChange()

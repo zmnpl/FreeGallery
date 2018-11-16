@@ -175,5 +175,7 @@ fun Context.getImageContentUri(imageFile: File): Uri? {
 // first element is primary, so second (probably -.-) is sd
 fun Context.discoverSDPath() {
     val stores = getExternalFilesDirs(Environment.DIRECTORY_PICTURES)
-    prefs.sdCardRootPath = stores[1].absolutePath.split("/Android")[0]
+    if(stores.size > 1) {
+        prefs.sdCardRootPath = stores[1].absolutePath.split("/Android")[0]
+    }
 }

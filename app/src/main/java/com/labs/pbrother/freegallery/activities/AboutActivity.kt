@@ -9,6 +9,7 @@ import android.view.View
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.backgroundColor
 
 /**
  * Created by simon on 15.12.16.
@@ -22,6 +23,7 @@ class AboutActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_about)
 
+        main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)
     }
 

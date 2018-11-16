@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider
 import android.support.v4.provider.DocumentFile
 import android.util.SparseArray
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.Cache.drawerCache
 import com.labs.pbrother.freegallery.controller.Cache.itemCache
 import com.labs.pbrother.freegallery.controller.Cache.overviewCache
@@ -18,15 +19,16 @@ import com.labs.pbrother.freegallery.extension.getRealPathFromURI
 import com.labs.pbrother.freegallery.prefs
 import java.io.File
 import java.util.*
+import kotlin.collections.LinkedHashMap
 
 
 /**
  * Created by simon on 22.02.17.
  */
 
-class Provider(var applicationContext: Application) : MetaUpdatorizer {
+class Provider() : MetaUpdatorizer {
 
-    private var resolver: MediaResolver = MediaResolver(applicationContext)
+    private var resolver: MediaResolver = MediaResolver(app)
     private val deletions = SparseArray<ArrayList<TrashLog>>()
 
     // Data Access for bound Activities
@@ -38,24 +40,26 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     val overviewItems: ArrayList<CollectionItem>
         get() {
+            val items = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            overviewCache.put(timeline.id, timeline)
+            items.put(timeline.id, timeline)
 
             resolver.overviewCollections.forEach {
-                overviewCache.put(it.id, it)
+                items.put(it.id, it)
             }
 
             val trash = trash
-            if (trash.count > 0) overviewCache.put(trash.id, trash)
+            if (trash.count > 0) items.put(trash.id, trash)
 
-            return ArrayList(overviewCache.values)
+            overviewCache.putAll(items)
+            return ArrayList(items.values)
         }
 
     val drawerItems: ArrayList<CollectionItem>
         get() {
             val items = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            items.put(applicationContext.getString(R.string.timelineName), timeline)
+            items.put(app.getString(R.string.timelineName), timeline)
 
             resolver.tagCollections.forEach {
                 tagCache.add(it.id)
@@ -86,7 +90,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     }
 
     fun itemForUri(uri: Uri): Item {
-        var path = applicationContext.getRealPathFromURI(uri)
+        var path = app.getRealPathFromURI(uri)
 
         if ("" != path && null != path) {
             return resolver.makeSingleItemFromPath(path)
@@ -100,7 +104,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     fun collectionItemForImageUri(imageUri: Uri): CollectionItem {
         var cursor: Cursor? = null
         try {
-            cursor = applicationContext.contentResolver.query(imageUri, IMAGE_PROJECTION, null, null, null)
+            cursor = app.contentResolver.query(imageUri, IMAGE_PROJECTION, null, null, null)
             if (cursor!!.moveToFirst()) {
                 val index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
                 val mPath = cursor.getString(index)
@@ -115,9 +119,9 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     fun tags(): List<String> = tagCache.toList()
 
     fun deleteTag(tag: String): Boolean {
-        if (tag == applicationContext.getString(R.string.timelineName) || tag == applicationContext.getString(R.string.trashName)) return false
+        if (tag == app.getString(R.string.timelineName) || tag == app.getString(R.string.trashName)) return false
 
-        if (MyDb(applicationContext).deleteTag(tag) > 0) {
+        if (MyDb(app).deleteTag(tag) > 0) {
             drawerCache.remove(tag)
             return true
         }
@@ -134,16 +138,16 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     fun trashForSDItems() {
 //        // sdcard
 //        items.forEach() {
-//            //val uri = getImageContentUri(applicationContext, File(it.path))
+//            //val uri = getImageContentUri(app, File(it.path))
 //            val uri = Uri.parse(findSDUri(it.path))
-//            DocumentsContract.deleteDocument(applicationContext.getContentResolver(), uri)
+//            DocumentsContract.deleteDocument(app.getContentResolver(), uri)
 //            print(uri.toString())
 //        }
     }
 
     fun findSDUri(path: String): String {
         //First we get `DocumentFile` from the `TreeUri` which in our case is `sdCardUri`.
-        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(applicationContext, Uri.parse(prefs.sdCardUri))
+        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(app, Uri.parse(prefs.sdCardUri))
 
         val parts = path.split("/")
 
@@ -177,7 +181,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
                 // ImageView if you are getting your URLs from MediaStore.
                 //
                 //val mediaContentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, longMediaId)
-                //applicationContext.contentResolver.delete(mediaContentUri, null, null)
+                //app.contentResolver.delete(mediaContentUri, null, null)
             }
 
 
@@ -199,8 +203,8 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
             val foo = trashed.map { it.originalPath }
             val work = foo.toTypedArray<String>()
-            MediaScannerConnection.scanFile(applicationContext, work, null, null)
-            val db = MyDb(applicationContext)
+            MediaScannerConnection.scanFile(app, work, null, null)
+            val db = MyDb(app)
             db.deleteTrashEntries(trashed.map { it.trashPath })
         }
 
@@ -210,7 +214,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     fun sendToTrash(items: List<Item>): ArrayList<TrashLog> {
         // log: original path , trash path
         val log = ArrayList<TrashLog>()
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
 
         items.forEach {
             val currentFile = File(it.path)
@@ -228,24 +232,24 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
                 db.insertUpdateTrashedItem(trashFile.path, if ("" != it.path) it.type else -1)
             }
             log.add(TrashLog(originalPath = currentFile.path, trashPath = trashFile.path))
-            val uri = FileProvider.getUriForFile(applicationContext, applicationContext.packageName + ".provider", currentFile)
-            val d = applicationContext.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
+            val uri = FileProvider.getUriForFile(app, app.packageName + ".provider", currentFile)
+            val d = app.contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", arrayOf<String>(currentFile.path))
 
             // TODO - update cache (?)
         }
 
         // scan old paths
         val work = log.map { it.originalPath }.toTypedArray<String>()
-        MediaScannerConnection.scanFile(applicationContext, work, null, null)
+        MediaScannerConnection.scanFile(app, work, null, null)
 
         return log
     }
 
     fun emptyTrash() {
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         db.emtpyTrash()
 
-        val items = itemCache[applicationContext.getString(R.string.trashName)]
+        val items = itemCache[app.getString(R.string.trashName)]
         val scanThese = arrayOfNulls<String>(items?.size ?: 0)
         var i = 0
         items?.forEach {
@@ -255,13 +259,13 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
             i++
         }
 
-        drawerCache.remove(applicationContext.getString(R.string.trashName))
-        overviewCache.remove(applicationContext.getString(R.string.trashName))
-        MediaScannerConnection.scanFile(applicationContext, scanThese, null, null)
+        drawerCache.remove(app.getString(R.string.trashName))
+        overviewCache.remove(app.getString(R.string.trashName))
+        MediaScannerConnection.scanFile(app, scanThese, null, null)
     }
 
     fun restore(items: List<Item>) {
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         val untrash = ArrayList<String>()
         val scan = ArrayList<String>()
 
@@ -279,13 +283,13 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
         db.deleteTrashEntries(untrash)
 
         val work = scan.toTypedArray<String>()
-        MediaScannerConnection.scanFile(applicationContext, work, null, null)
+        MediaScannerConnection.scanFile(app, work, null, null)
     }
 
     // MetaUpdate Methods
 
     override fun loveCollection(collection: CollectionItem, loved: Boolean) {
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         collection.love(loved)
         db.insertUpdateCollectionMeta(collection.id, loved, collection.color)
     }
@@ -293,7 +297,7 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     override fun colorizeCollection(collection: CollectionItem, c: Int?): Int {
         var color = c
         if (null == color) color = prefs.defaultCollectionColor
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         collection.colorize(color)
         overviewCache[collection.id]?.colorize(color)
         drawerCache[collection.id]?.colorize(color)
@@ -305,13 +309,13 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
 
     fun tagItems(items: List<Item>, tag: String) {
         tagCache.add(tag)
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         items.forEach { tagIt(it, tag, db) }
     }
 
     override fun tagItem(item: Item, tag: String) {
         tagCache.add(tag)
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         tagIt(item, tag, db)
     }
 
@@ -321,11 +325,11 @@ class Provider(var applicationContext: Application) : MetaUpdatorizer {
     }
 
     fun copyTags(fromID: String, toID: String) {
-        MyDb(applicationContext).copyTags(fromID, toID)
+        MyDb(app).copyTags(fromID, toID)
     }
 
     override fun untagItem(item: Item, tag: String) {
-        val db = MyDb(applicationContext)
+        val db = MyDb(app)
         item.untag(tag)
         db.deleteTagForItem(item.id, tag)
     }

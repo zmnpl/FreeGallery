@@ -22,7 +22,6 @@ import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.extension.drawerHomeItem
-import com.labs.pbrother.freegallery.extension.openSAFTreeSelection
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         setSupportActionBar(main_toolbar)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
         //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
-
+        frame_container.backgroundColor = prefs.colorPrimary
         goHome()
         makeDrawer()
         bindViewModel()
@@ -79,8 +78,15 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     override fun onBackPressed() {
-        print("foo")
         super.onBackPressed()
+        drawerResult?.deselect()
+//        val ft = supportFragmentManager.beginTransaction()
+//        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
+//        if (home != null && home.isAdded) {
+//            finish() // TODO start finish counter (press back one more time)
+//        } else {
+//            goHome()
+//        }
     }
 
     private fun makeDrawer() {
@@ -181,7 +187,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
-
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -212,18 +217,18 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_settings -> {
-                startActivity<SettingsActivity>()
-                return true
-            }
+//            R.id.menu_settings -> {
+//                startActivity<SettingsActivity>()
+//                return true
+//            }
             R.id.menu_license -> {
                 startActivity<AboutActivity>()
                 return true
             }
-            R.id.menu_takeSdCardPermission -> {
-                openSAFTreeSelection()
-                return true
-            }
+//            R.id.menu_takeSdCardPermission -> {
+//                openSAFTreeSelection()
+//                return true
+//            }
             android.R.id.home -> {
                 onBackPressed()
                 return true
@@ -292,7 +297,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         TODO()
     }
 
-
     // Permissions
 
     //@TargetApi(Build.VERSION_CODES.M)
@@ -333,6 +337,5 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             }
         }
     }
-
 
 }

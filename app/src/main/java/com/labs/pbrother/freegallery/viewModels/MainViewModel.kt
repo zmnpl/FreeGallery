@@ -11,7 +11,7 @@ import com.labs.pbrother.freegallery.controller.Provider
  * Created by simon on 30.11.17.
  */
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private var provider = Provider(getApplication())
+    private var provider = Provider()
 
     var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
@@ -20,8 +20,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         overviewItems.postValue(provider.overviewItems)
         drawerItems.postValue(provider.drawerItems)
     }
-
-
 
     private fun selectedItems(selection: List<Int>): List<CollectionItem> {
         val result = ArrayList<CollectionItem>()
@@ -33,7 +31,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun hide(itemIndexes: List<Int>) {
-        // TODO
+        TODO()
     }
 
     fun colorize(itemIndexes: List<Int>, color: Int) {

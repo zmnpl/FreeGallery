@@ -14,7 +14,7 @@ import java.io.File
  * Created by simon on 21.11.17.
  */
 class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private var foo = Provider(getApplication())
+    private var foo = Provider()
 
     val tags
         get() = foo.tags()
