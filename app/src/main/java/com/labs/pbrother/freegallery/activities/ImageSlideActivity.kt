@@ -244,18 +244,18 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         val which = viewModel.itemAt(image_pager.currentItem)
         if (null != which) {
             diag.setItem(which)
-            diag.show(this.fragmentManager, "imagepropertydialog")
+            diag.show(this.supportFragmentManager, "imagepropertydialog")
         }
     }
 
     // Callback when image property dialog gets closed via button
     override fun imgPropertyOk() {}
 
-    // Starts dialog for snaketagging
+    // Starts dialog for tagging
     private fun tag() {
         val std = TagDialogFragment()
         std.setTags(viewModel.tags)
-        //std.show(this.fragmentManager, "snaketagdialog")
+        std.show(this.supportFragmentManager, "tagdialog")
     }
 
     // Callback, receives result from tag dialog

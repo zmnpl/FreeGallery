@@ -18,7 +18,6 @@ import android.widget.Toast
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.activities.*
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
-import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
@@ -107,7 +106,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if(!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
+        if (!swipeRefreshCollection.isRefreshing) swipeRefreshCollection.isRefreshing = true
 
         viewModel.items.observe(this, Observer { items ->
             if (null != items) {
@@ -278,6 +277,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             adapter.toggleSelection(i)
             i++
         }
+        showSelectionCountInActionMode(i)
     }
 
     private fun share() {
@@ -343,13 +343,12 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         informCallerOfChange()
 
         val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
+        // if it might take some time, inform the user
         if (deletionItems.count() > 25) {
             Toast.makeText(activity, getString(R.string.TrashingStarted), Toast.LENGTH_SHORT).show()
         }
 
-        // remove items from ui
         adapter.removeMultiple(adapter.getSelectedItems())
-
         doAsync {
             val id = viewModel.trashItems(deletionItems)
             uiThread {
@@ -366,7 +365,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                 mySnackbar.show()
             }
         }
-
         actionMode?.finish()
     }
 
@@ -406,9 +404,13 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         if (count == 0) {
             actionMode?.finish()
         } else {
-            actionMode?.title = resources.getString(R.string.collectionSelection) + " " + count.toString() + " / " + adapter.itemCount.toString()
+            showSelectionCountInActionMode(count)
             actionMode?.invalidate()
         }
+    }
+
+    private fun showSelectionCountInActionMode(count: Int) {
+        actionMode?.title = resources.getString(R.string.collectionSelection) + " " + count.toString() + " / " + adapter.itemCount.toString()
     }
 
 

@@ -1,9 +1,10 @@
 package com.labs.pbrother.freegallery.dialogs
 
 import android.app.Dialog
-import android.app.DialogFragment
+
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
@@ -30,12 +31,12 @@ class ImagePropertyDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity, prefs.dialogTheme)
-        val inflater = activity.layoutInflater
+        val builder = AlertDialog.Builder(activity as Context, prefs.dialogTheme)
+        val inflater = activity?.layoutInflater
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_itemroperties, null))
+        builder.setView(inflater?.inflate(R.layout.dialog_itemroperties, null))
                 .setNeutralButton(R.string.ImgPropertyDone) { dialog, id -> listener.imgPropertyOk() }
 
         // Create the AlertDialog object and return it

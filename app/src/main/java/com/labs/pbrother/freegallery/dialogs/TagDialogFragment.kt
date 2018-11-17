@@ -62,15 +62,24 @@ class TagDialogFragment : DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        // Verify that the host activity implements the callback interface
-        listener = try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            parentFragment as TagDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(parentFragment.toString() + " must implement ColorDialogListener")
+        // try to use parent fragment first
+        if (parentFragment != null) {
+            listener = try {
+                // Instantiate the NoticeDialogListener so we can send events to the host
+                parentFragment as TagDialogListener
+            } catch (e: ClassCastException) {
+                // The parent Fragment doesn't implement the interface, throw exception
+                throw ClassCastException(parentFragment.toString() + " must implement TagDialogListener")
+            }
+            return
         }
 
+        // if that didn't work, use given context
+        listener = try {
+            context as TagDialogListener
+        } catch (e: java.lang.ClassCastException) {
+            throw ClassCastException(context.toString() + " must implement TagDialogListener")
+        }
     }
 
     override fun onStart() {
