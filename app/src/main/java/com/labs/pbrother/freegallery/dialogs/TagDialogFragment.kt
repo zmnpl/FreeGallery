@@ -103,5 +103,4 @@ class TagDialogFragment : DialogFragment() {
         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
 }
