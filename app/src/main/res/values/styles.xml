@@ -26,6 +26,10 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
     </style>
 
+    <style name="DarkPopup" parent="MaterialBaseBaseTheme">
+        <item name="android:colorBackground">@color/primary</item>
+    </style>
+
     <!-- Dark -->
     <style name="NerdAppBase" parent="MaterialDrawerTheme">
         <item name="android:windowActionModeOverlay">true</item>
@@ -67,6 +71,10 @@
         <item name="android:windowBackground">@color/nerd_windowBackground</item>
         <item name="android:textColorPrimary">@color/nerd_primary_text</item>
         <item name="android:textColorSecondary">@color/nerd_secondary_text</item>
+    </style>
+
+    <style name="NerdPopup" parent="MaterialBaseBaseTheme">
+        <item name="android:colorBackground">@color/nerd_primary</item>
     </style>
 
     <style name="MaterialDrawerTheme.NerdAppBase" parent="MaterialDrawerTheme" />

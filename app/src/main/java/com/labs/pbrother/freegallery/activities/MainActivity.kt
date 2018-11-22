@@ -194,6 +194,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         super.onResume()
         requestPermissions()
         if (reloadPlz) buildUiSafe()
+        main_toolbar.popupTheme=prefs.popupTheme
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -162,6 +162,13 @@ class SettingsHelper(val context: Context) {
             return R.style.DarkDialogBase
         }
 
+    val popupTheme: Int
+        get() {
+            val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
+            if(black) return R.style.NerdPopup
+            return R.style.DarkPopup
+        }
+
     val defaultCollectionColor: Int = ContextCompat.getColor(context, R.color.colorHighlightDefault)
 
     val colorPrimary: Int

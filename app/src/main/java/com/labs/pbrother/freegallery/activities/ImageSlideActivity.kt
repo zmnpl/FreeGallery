@@ -84,12 +84,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         setContentView(R.layout.activity_image_slide)
 
         // transparent statusbar
-        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        //window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+        //        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 
         // toolbar
         setSupportActionBar(singlepicture_Toolbar)
-        singlepicture_Toolbar.popupTheme = prefs.theme
         singlepicture_tag.background = tagSymbol()
 
         if (collectionId == getString(R.string.trashName)) {
@@ -128,6 +127,11 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
 
     // Lifecycle
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onResume() {
+        super.onResume()
+        doThemeStuff()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -206,6 +210,10 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         image_pager.adapter = ScreenSlidePagerAdapter(items, supportFragmentManager)
         image_pager.currentItem = itemIndex
         image_pager.setPageTransformer(true, DepthPageTransformer())
+    }
+
+    private fun doThemeStuff() {
+        singlepicture_Toolbar.popupTheme = prefs.popupTheme
     }
 
     // Actions, Dialogs and actions on those
@@ -420,7 +428,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onStart() {
         super.onStart()
     }
-
 
     // Sends message to handler for hiding system bars with specified delay
     // delay in milli seconds

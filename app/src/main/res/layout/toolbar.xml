@@ -8,4 +8,5 @@
     android:elevation="4dp"
     android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
-    app:layout_scrollFlags="scroll|enterAlways|snap" />
+    app:layout_scrollFlags="scroll|enterAlways|snap"
+    />
