@@ -23,12 +23,11 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)
-        //supportActionBar!!.setDisplayHomeAsUpEnabled(true) // TODO - lead home dynamically to caller activity?
     }
 
     public override fun onStart() {
         super.onStart()
-        supportActionBar!!.setTitle(R.string.title_activity_settings)
+        supportActionBar?.setTitle(R.string.title_activity_settings)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
