@@ -14,11 +14,12 @@ import java.io.File
 /**
  * Created by simon on 21.11.17.
  */
-class CollectionViewModel(application: Application) : AndroidViewModel(application) {
+class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     private var provider = Provider()
     private var collectionID = ""
     private lateinit var collection: CollectionItem
     var drawerItems = MutableLiveData<ArrayList<CollectionItem>>()
+    var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
     var collectionItem = MutableLiveData<CollectionItem>()
     var items = MutableLiveData<ArrayList<Item>>()
     var liveColor = MutableLiveData<Int>()
@@ -44,6 +45,10 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         drawerItems.postValue(provider.drawerItems)
     }
 
+    fun refreshOverviewItems() {
+        overviewItems.postValue(provider.overviewItems)
+    }
+
     fun refreshItems(cached: Boolean = false) {
         items.postValue(provider.itemsFor(collection, cached))
     }
@@ -56,6 +61,25 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             if (null != ci) result.add(ci)
         }
         return result
+    }
+
+    private fun selectedOverviewItems(selection: List<Int>): List<CollectionItem> {
+        val result = ArrayList<CollectionItem>()
+        selection.forEach() {
+            val ci = overviewItems.value?.get(it)
+            if (null != ci) result.add(ci)
+        }
+        return result
+    }
+
+    fun hideOverviewItem(itemIndexes: List<Int>) {
+        TODO()
+    }
+
+    fun colorizeMultiple(itemIndexes: List<Int>, color: Int) {
+        for (item in selectedOverviewItems(itemIndexes)) {
+            provider.colorizeCollection(item, color)
+        }
     }
 
     fun setSortAsc() {

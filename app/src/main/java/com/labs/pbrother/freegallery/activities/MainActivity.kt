@@ -18,15 +18,14 @@ import android.widget.Toast
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.*
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.extension.drawerHomeItem
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
-import com.labs.pbrother.freegallery.prefs
-import com.labs.pbrother.freegallery.viewModels.MainViewModel
+import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     private val TAG_HOME = "*HOME*"
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainActivityViewModel
 
     private var onTablet = false
     private var reloadPlz = false
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java!!)
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
@@ -180,7 +179,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     private fun refresh() {
         //swipeRefreshMain.isRefreshing = true
         doAsync {
-            viewModel.refresh()
+            viewModel.refreshDrawerItems()
+            viewModel.refreshOverviewItems()
             uiThread {
                 //swipeRefreshMain.isRefreshing = false
             }

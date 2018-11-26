@@ -17,9 +17,7 @@ class SettingsActivity : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setTheme(prefs.theme)
-
         setContentView(R.layout.activity_settings)
         main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)

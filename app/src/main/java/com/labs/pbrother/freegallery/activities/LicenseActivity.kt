@@ -20,7 +20,6 @@ class LicenseActivity : AppCompatActivity() {
         } catch (e1: XmlPullParserException) {
         } catch (e1: IOException) {
         }
-
     }
 
 }

@@ -11,14 +11,13 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.viewModels.MainViewModel
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
-import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
+import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
 import kotlinx.android.synthetic.main.fragment_overview.*
 import kotlinx.android.synthetic.main.fragment_overview.view.*
 import org.jetbrains.anko.doAsync
@@ -35,7 +34,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         fun setToolbarDefaultName()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainActivityViewModel
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private var actionMode: ActionMode? = null
     private val actionModeCallback = ActionModeCallback()
@@ -48,9 +47,10 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         retainInstance = true
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         doAsync {
-            viewModel.refresh()
+            viewModel.refreshDrawerItems()
+            viewModel.refreshOverviewItems()
         }
     }
 
@@ -170,7 +170,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     override fun colorCancel() {}
 
     override fun colorOk(color: Int) {
-        viewModel.colorize(selection ?: ArrayList<Int>(), color)
+        viewModel.colorizeMultiple(selection ?: ArrayList<Int>(), color)
         adapter.notifyDataSetChanged()
         selection = null
         actionModeCollectionItems.clear()
@@ -180,7 +180,8 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
     private fun refresh() {
         swipeRefreshMain.isRefreshing = true
         doAsync {
-            viewModel.refresh()
+            viewModel.refreshDrawerItems()
+            viewModel.refreshOverviewItems()
             uiThread {
                 swipeRefreshMain.isRefreshing = false
             }

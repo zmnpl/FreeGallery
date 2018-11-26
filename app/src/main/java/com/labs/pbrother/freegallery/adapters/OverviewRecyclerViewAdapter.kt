@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ToggleButton
 import com.bumptech.glide.Glide
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.adjustColorAlpha
+import com.labs.pbrother.freegallery.adjustColorAlpha
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.MetaUpdatorizer
 import kotlinx.android.synthetic.main.overview_item.view.*

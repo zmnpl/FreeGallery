@@ -18,11 +18,8 @@ import org.jetbrains.anko.backgroundColor
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setTheme(prefs.theme)
-
         setContentView(R.layout.activity_about)
-
         main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)
     }
@@ -34,7 +31,6 @@ class AboutActivity : AppCompatActivity() {
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 

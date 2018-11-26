@@ -1,4 +1,4 @@
-package com.labs.pbrother.freegallery.activities
+package com.labs.pbrother.freegallery.viewModels
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel

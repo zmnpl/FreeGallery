@@ -1,4 +1,4 @@
-package com.labs.pbrother.freegallery.activities
+package com.labs.pbrother.freegallery
 
 import android.graphics.Color
 import java.text.SimpleDateFormat

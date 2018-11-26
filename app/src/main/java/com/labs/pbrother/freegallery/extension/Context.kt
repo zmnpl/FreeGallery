@@ -12,7 +12,7 @@ import android.provider.MediaStore
 import android.view.Surface
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.adjustColorAlpha
+import com.labs.pbrother.freegallery.adjustColorAlpha
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.prefs
 import com.mikepenz.iconics.IconicsDrawable

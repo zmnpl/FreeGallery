@@ -15,7 +15,7 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
-import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.*
 import com.labs.pbrother.freegallery.activities.*
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.Provider
@@ -26,9 +26,8 @@ import com.labs.pbrother.freegallery.extension.PORTRAIT
 import com.labs.pbrother.freegallery.extension.REVERSE_PORTRAIT
 import com.labs.pbrother.freegallery.extension.getRotation
 import com.labs.pbrother.freegallery.extension.tagSymbol
-import com.labs.pbrother.freegallery.prefs
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
-import com.labs.pbrother.freegallery.viewModels.CollectionViewModel
+import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
 import kotlinx.android.synthetic.main.fragment_collection.*
 import kotlinx.android.synthetic.main.fragment_collection.view.*
 import org.jetbrains.anko.doAsync
@@ -58,7 +57,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     private lateinit var cid: String
 
     // other
-    private lateinit var viewModel: CollectionViewModel
+    private lateinit var viewModel: MainActivityViewModel
     private var listener: OnCollectionFragmentInteractionListener? = null
     private var dataChanged = false
 
@@ -78,7 +77,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
 
         // bind to viewmodel
-        viewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         viewModel.refreshCollection(cid)
         viewModel.refreshItems()
     }

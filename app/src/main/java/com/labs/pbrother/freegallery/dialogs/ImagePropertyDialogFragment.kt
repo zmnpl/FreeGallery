@@ -9,8 +9,8 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
-import com.labs.pbrother.freegallery.activities.byteSizeToNiceString
-import com.labs.pbrother.freegallery.activities.unixToReadableDate
+import com.labs.pbrother.freegallery.byteSizeToNiceString
+import com.labs.pbrother.freegallery.unixToReadableDate
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_itemroperties.*

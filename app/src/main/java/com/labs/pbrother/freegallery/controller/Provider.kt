@@ -1,6 +1,5 @@
 package com.labs.pbrother.freegallery.controller
 
-import android.app.Application
 import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -28,10 +27,9 @@ import kotlin.collections.LinkedHashMap
 
 class Provider() : MetaUpdatorizer {
 
-    private var resolver: MediaResolver = MediaResolver(app)
+    private val resolver: MediaResolver = MediaResolver(app)
     private val deletions = SparseArray<ArrayList<TrashLog>>()
 
-    // Data Access for bound Activities
     val timeline: CollectionItem
         get() = resolver.timeline
 
@@ -40,38 +38,40 @@ class Provider() : MetaUpdatorizer {
 
     val overviewItems: ArrayList<CollectionItem>
         get() {
-            val items = LinkedHashMap<String, CollectionItem>()
+            val collectionItems = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            items.put(timeline.id, timeline)
+            collectionItems.put(timeline.id, timeline)
 
             resolver.overviewCollections.forEach {
-                items.put(it.id, it)
+                collectionItems.put(it.id, it)
             }
 
             val trash = trash
-            if (trash.count > 0) items.put(trash.id, trash)
+            if (trash.count > 0) collectionItems.put(trash.id, trash)
 
-            overviewCache.putAll(items)
-            return ArrayList(items.values)
+            overviewCache.putAll(collectionItems)
+            return ArrayList(collectionItems.values)
         }
 
     val drawerItems: ArrayList<CollectionItem>
         get() {
-            val items = LinkedHashMap<String, CollectionItem>()
+            val collectionItems = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            items.put(app.getString(R.string.timelineName), timeline)
+            collectionItems.put(app.getString(R.string.timelineName), timeline)
 
             resolver.tagCollections.forEach {
                 tagCache.add(it.id)
-                items.put(it.id, it)
+                collectionItems.put(it.id, it)
             }
 
             val trash = trash
-            if (trash.count > 0) items.put(trash.id, trash)
-            drawerCache.putAll(items)
+            if (trash.count > 0) collectionItems.put(trash.id, trash)
 
-            return ArrayList(items.values)
+            drawerCache.putAll(collectionItems)
+            return ArrayList(collectionItems.values)
         }
+
+    fun tags(): List<String> = tagCache.toList()
 
     fun itemsFor(ci: CollectionItem, cached: Boolean = false): ArrayList<Item> {
         if (cached) {
@@ -91,7 +91,6 @@ class Provider() : MetaUpdatorizer {
 
     fun itemForUri(uri: Uri): Item {
         var path = app.getRealPathFromURI(uri)
-
         if ("" != path && null != path) {
             return resolver.makeSingleItemFromPath(path)
         }
@@ -115,8 +114,6 @@ class Provider() : MetaUpdatorizer {
         }
         return CollectionItem(id = DUMMY_ID)
     }
-
-    fun tags(): List<String> = tagCache.toList()
 
     fun deleteTag(tag: String): Boolean {
         if (tag == app.getString(R.string.timelineName) || tag == app.getString(R.string.trashName)) return false

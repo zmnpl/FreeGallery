@@ -11,6 +11,7 @@ import android.os.Environment.getExternalStoragePublicDirectory
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.labs.pbrother.freegallery.CROP_SAVED
 import com.labs.pbrother.freegallery.R
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_edit.*
@@ -62,7 +63,6 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         cropper.setImageUriAsync(itemUri);
     }
 
-    //region menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_edit, menu)
         return super.onCreateOptionsMenu(menu)
@@ -89,7 +89,6 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         }
         return super.onOptionsItemSelected(item)
     }
-    // endregion
 
     private fun save() {
         val croppedBmp = cropper.croppedImage
@@ -109,7 +108,6 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         finish()
     }
 
-    // Returns file name for result in subfolder of general Pictures directory on main storage
     private fun versionedOutputFileName(originalPath: String): String {
         var originalFile = File(originalPath)
         var version = 0;
