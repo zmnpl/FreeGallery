@@ -133,7 +133,7 @@ internal class MediaResolver(private val context: Context) {
         ci.id == context.getString(R.string.trashName) -> trashItems(Item.SORT_ORDER)
         ci.id == context.getString(R.string.timelineName) -> allItems()
         ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, Item.SORT_ORDER)
-        ci.type == TYPE_TAG -> tagItems(ci.id, Item.SORT_ORDER)
+        ci.type == TYPE_TAG -> tagItems(ci.id)
         else -> TreeSet<Item>()
     }
 
@@ -191,8 +191,8 @@ internal class MediaResolver(private val context: Context) {
         return vids
     }
 
-    private fun tagItems(tag: String, sortOrder: Int): TreeSet<Item> {
-        val items = orderedItemsTreeSet(sortOrder)
+    private fun tagItems(tag: String): TreeSet<Item> {
+        val items = orderedItemsTreeSet(Item.SORT_ORDER)
         val paths = db.getPathsForTag(tag)
         if (paths.count() < 1) return items // don't do the rest of the operations, when not necessary
         val tags = db.itemTags()
