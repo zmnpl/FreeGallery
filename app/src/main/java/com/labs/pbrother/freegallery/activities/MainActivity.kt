@@ -39,9 +39,7 @@ import org.jetbrains.anko.uiThread
 class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
 
     private val TAG_HOME = "*HOME*"
-
     private lateinit var viewModel: MainActivityViewModel
-
     private var onTablet = false
     private var reloadPlz = false
     private var permissionsGood = false
@@ -77,15 +75,17 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+
         drawerResult?.deselect()
-//        val ft = supportFragmentManager.beginTransaction()
-//        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
-//        if (home != null && home.isAdded) {
-//            finish() // TODO start finish counter (press back one more time)
-//        } else {
-//            goHome()
-//        }
+        val ft = supportFragmentManager.beginTransaction()
+        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
+        if (home != null && home.isAdded) {
+            finish() // TODO start finish counter (press back one more time)
+        } else {
+            goHome()
+        }
+
+        super.onBackPressed()
     }
 
     private fun makeDrawer() {
@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             drawerLayoutRes = R.layout.material_drawer
 
             if (!prefs.hideDrawerHeader) headerViewRes = R.layout.drawer_header
-
             if (onTablet) {
                 //sectionHeader(getString(R.string.drawer_tagsection)) { }
             }
@@ -120,9 +119,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
 
         addDrawerHomeItem()
-
         if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
-
         if (onTablet) {
             nav_tablet.addView(drawerResult.slider)
         }
@@ -132,6 +129,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
             if (null != drawerItems) addDrawerItems(drawerItems)
+        })
+
+        viewModel.liveColor.observe(this, Observer { color ->
+            if(null != color) colorizeToolbar(color)
+        })
+
+        viewModel.toolbarText.observe(this, Observer { toolbarText ->
+            if(null != toolbarText) setToolbarTitle(toolbarText)
         })
     }
 
@@ -144,6 +149,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
     }
 
     private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
+        drawerResult.removeAllItems()
+        addDrawerHomeItem()
         drawerItems.forEach {
             this@MainActivity
                     .drawerResult
@@ -163,7 +170,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
-    // User Interface Building
+    // User Interface BuildingOnCollectionFragmentInteractionListener
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // checks for permissions, service boundary and data status
@@ -218,10 +225,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.menu_settings -> {
-//                startActivity<SettingsActivity>()
-//                return true
-//            }
             R.id.menu_license -> {
                 startActivity<AboutActivity>()
                 return true
@@ -255,7 +258,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         //supportActionBar?.setHomeButtonEnabled(true)
     }
 
-    override fun onCollectionColorChange(color: Int) {
+    fun colorizeToolbar(color: Int) {
         if (prefs.colorizeTitlebar) {
             if (color != prefs.defaultCollectionColor) {
                 main_toolbar.backgroundColor = color
@@ -267,12 +270,16 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         }
     }
 
-    override fun setToolbarTitle(title: String) {
+    fun setToolbarTitle(title: String) {
         supportActionBar?.title = title
     }
 
+    override fun killMe() {
+        goHome()
+    }
+
     override fun setToolbarDefaultColor() {
-        onCollectionColorChange(prefs.defaultCollectionColor)
+        colorizeToolbar(prefs.defaultCollectionColor)
     }
 
     override fun setToolbarDefaultName() {

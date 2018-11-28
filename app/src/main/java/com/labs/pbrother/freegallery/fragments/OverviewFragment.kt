@@ -47,7 +47,10 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         retainInstance = true
         setHasOptionsMenu(true)
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        activity?.run {
+            viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        }
+
         doAsync {
             viewModel.refreshDrawerItems()
             viewModel.refreshOverviewItems()

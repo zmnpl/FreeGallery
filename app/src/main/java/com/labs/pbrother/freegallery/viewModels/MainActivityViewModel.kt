@@ -23,6 +23,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var collectionItem = MutableLiveData<CollectionItem>()
     var items = MutableLiveData<ArrayList<Item>>()
     var liveColor = MutableLiveData<Int>()
+    var toolbarText = MutableLiveData<String>()
 
     val collectionType
         get() = collectionItem.value?.type
@@ -33,12 +34,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val tags
         get() = provider.tags()
 
-
     fun refreshCollection(collectionId: String) {
         this.collectionID = collectionId
         collection = provider.collectionItem(collectionId)
         collectionItem.postValue(collection)
         liveColor.postValue(collection.color)
+        toolbarText.postValue(collection.displayName)
     }
 
     fun refreshDrawerItems() {
@@ -52,7 +53,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     fun refreshItems(cached: Boolean = false) {
         items.postValue(provider.itemsFor(collection, cached))
     }
-
 
     fun selectedItems(selection: List<Int>): List<Item> {
         val result = ArrayList<Item>()

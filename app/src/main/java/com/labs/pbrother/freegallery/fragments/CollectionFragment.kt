@@ -16,7 +16,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.*
-import com.labs.pbrother.freegallery.activities.*
+import com.labs.pbrother.freegallery.activities.ImageSlideActivity
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
@@ -37,29 +37,17 @@ import org.jetbrains.anko.uiThread
 
 private const val CID = "collectionId"
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [CollectionFragment.OnCollectionFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [CollectionFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
 class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener, TagDialogFragment.TagDialogListener {
-
     interface OnCollectionFragmentInteractionListener {
-        fun onCollectionColorChange(color: Int)
-        fun setToolbarTitle(title: String)
+        fun killMe()
     }
 
+    // interaction interface
+    private var listener: OnCollectionFragmentInteractionListener? = null
     // parameters
     private lateinit var cid: String
-
     // other
     private lateinit var viewModel: MainActivityViewModel
-    private var listener: OnCollectionFragmentInteractionListener? = null
-    private var dataChanged = false
 
     // ui
     private var rv: View? = null
@@ -76,8 +64,10 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             cid = it.getString(CID) ?: ""
         }
 
-        // bind to viewmodel
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        activity?.run {
+            viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        }
+
         viewModel.refreshCollection(cid)
         viewModel.refreshItems()
     }
@@ -115,14 +105,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             }
         })
 
-        viewModel.collectionItem.observe(this, Observer { collectionItem ->
-            if (null != collectionItem) listener?.setToolbarTitle(collectionItem.displayNameDetail)
-        })
-
-        viewModel.liveColor.observe(this, Observer { color ->
-            if (null != color) listener?.onCollectionColorChange(color)
-        })
-
         collection_shareFloatingActionButton.setOnClickListener { tag() }
         collection_shareFloatingActionButton.image = activity?.tagSymbol()
     }
@@ -131,9 +113,9 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         super.onAttach(context)
         if (context is OnCollectionFragmentInteractionListener) {
             listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
+            return
         }
+        throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
     }
 
     override fun onDetach() {
@@ -160,7 +142,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
                 return true
             }
             R.id.menu_deleteTag -> {
-                deleteTag()
+                viewModel.deleteTag()
+                listener?.killMe()
                 return true
             }
             R.id.menu_refresh -> {
@@ -173,8 +156,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             }
             R.id.menu_resetColor -> {
                 doAsync {
-                    dataChanged = true
-                    informCallerOfChange()
                     viewModel.removeColor()
                 }
                 return true
@@ -220,24 +201,14 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
     }
 
-    // TODO - solve differently from fragment
-    private fun informCallerOfChange() {
-        //resultIntent.putExtra(SHOULD_RELOAD, dataChanged)
-    }
-
-
     private fun emptyTrash() {
-        dataChanged = true
-        informCallerOfChange()
         val builder = AlertDialog.Builder(activity as Context)
         builder.setMessage(R.string.EmtyTrashQuestion)
         builder.setPositiveButton(R.string.EmtpyTrashOk) { dialog, id ->
             doAsync {
                 viewModel.emptyTrash()
                 uiThread {
-                    dataChanged = true
-                    informCallerOfChange()
-                    //finish()
+                    listener?.killMe()
                 }
             }
         }
@@ -256,14 +227,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         if (colCount < 1) colCount = 1
         prefs.columnsInPortrait = colCount
         collection_rclPictureCollection.layoutManager = GridLayoutManager(activity, colCount)
-    }
-
-    private fun deleteTag() {
-        if (viewModel.deleteTag()) {
-            dataChanged = true
-            informCallerOfChange()
-            //finish()
-        }
     }
 
     private fun selectAll() {
@@ -321,15 +284,12 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     // Callable from trash to restore items
     private fun restore() {
-        informCallerOfChange()
         swipeRefreshCollection.isRefreshing = true
         doAsync {
             viewModel.restoreItems(viewModel.selectedItems(adapter.getSelectedItems()))
 
             uiThread {
                 actionMode?.finish()
-                dataChanged = true
-                informCallerOfChange()
                 viewModel.refreshItems()
             }
         }
@@ -338,9 +298,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     // Starts dialog which asks for confirmation
     // Callback method deleteOk() does the actual deletion job
     private fun delete() {
-        dataChanged = true
-        informCallerOfChange()
-
         val deletionItems = viewModel.selectedItems(adapter.getSelectedItems())
         // if it might take some time, inform the user
         if (deletionItems.count() > 25) {
@@ -432,8 +389,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         doAsync {
             viewModel.tagItems(selection, tag)
         }
-        dataChanged = true
-        informCallerOfChange()
         actionMode?.finish()
     }
 
