@@ -24,8 +24,8 @@ android {
         applicationId "com.labs.pbrother.freegallery"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 12
-        versionName "1.47"
+        versionCode 13
+        versionName "1.48"
 
     }
     buildTypes {

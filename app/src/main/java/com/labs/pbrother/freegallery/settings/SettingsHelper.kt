@@ -151,21 +151,21 @@ class SettingsHelper(val context: Context) {
     val theme: Int
         get() {
             val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
-            if(black) return R.style.NerdAppBase
+            if (black) return R.style.NerdAppBase
             return R.style.DarkAppBase
         }
 
     val dialogTheme: Int
         get() {
             val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
-            if(black) return R.style.NerdDialogBase
+            if (black) return R.style.NerdDialogBase
             return R.style.DarkDialogBase
         }
 
     val popupTheme: Int
         get() {
             val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
-            if(black) return R.style.NerdPopup
+            if (black) return R.style.NerdPopup
             return R.style.DarkPopup
         }
 
@@ -174,14 +174,14 @@ class SettingsHelper(val context: Context) {
     val colorPrimary: Int
         get() {
             val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
-            if(black) return ContextCompat.getColor(context, R.color.nerd_primary)
+            if (black) return ContextCompat.getColor(context, R.color.nerd_primary)
             return ContextCompat.getColor(context, R.color.primary)
         }
 
     val colorPrimaryDark: Int
         get() {
             val black = sharedPref.getBoolean(KEY_PREF_STYLE_STYLE_BLACK, false)
-            if(black) return ContextCompat.getColor(context, R.color.nerd_primary_dark)
+            if (black) return ContextCompat.getColor(context, R.color.nerd_primary_dark)
             return ContextCompat.getColor(context, R.color.primary_dark)
         }
 

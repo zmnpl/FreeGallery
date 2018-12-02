@@ -10,9 +10,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -100,7 +102,14 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         addDrawerHomeItem()
         if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
 
-        nav_tablet?.addView(drawerResult.slider)
+        nav_tablet?.let {
+            val slider = drawerResult.slider
+            (slider.parent as ViewGroup).removeView(slider)
+            it.addView(slider)
+
+            supportActionBar?.setDisplayHomeAsUpEnabled(false);
+            drawerResult.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+        }
     }
 
     private fun bindViewModel() {

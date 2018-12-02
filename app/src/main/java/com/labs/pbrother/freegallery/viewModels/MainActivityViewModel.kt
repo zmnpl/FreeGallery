@@ -12,6 +12,7 @@ import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_DESC
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.prefs
+import org.jetbrains.anko.doAsync
 import java.io.File
 
 /**
@@ -36,6 +37,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     val tags
         get() = provider.tags()
+
+    init {
+        doAsync {
+            refreshDrawerItems()
+            refreshOverviewItems()
+        }
+    }
 
     fun refreshCollection(collectionId: String) {
         this.collectionID = collectionId

@@ -47,11 +47,6 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         activity?.run {
             viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         }
-
-        doAsync {
-            viewModel.refreshDrawerItems()
-            viewModel.refreshOverviewItems()
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,9 +126,6 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         return true
     }
 
-    // Toggle the selection state of an item.
-    // If the item was the last one in the selection and is unselected, the selection is stopped.
-    // Note that the selection must already be started (actionMode must not be null).
     private fun toggleSelection(position: Int) {
         adapter.toggleSelection(position)
         val total = adapter.itemCount
@@ -156,8 +148,8 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     // Functionality
     // Callbacks
-    override fun colorCancel() {}
 
+    override fun colorCancel() {}
     override fun colorOk(color: Int) {
         viewModel.colorizeMultiple(selection ?: ArrayList<Int>(), color)
         adapter.notifyDataSetChanged()
@@ -171,6 +163,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         doAsync {
             viewModel.refreshDrawerItems()
             viewModel.refreshOverviewItems()
+
             uiThread {
                 swipeRefreshMain.isRefreshing = false
             }

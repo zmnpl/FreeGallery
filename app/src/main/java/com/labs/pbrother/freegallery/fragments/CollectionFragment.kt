@@ -18,15 +18,12 @@ import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.*
 import com.labs.pbrother.freegallery.activities.ImageSlideActivity
-import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
 import com.labs.pbrother.freegallery.dialogs.TagDialogFragment
-import com.labs.pbrother.freegallery.extension.PORTRAIT
-import com.labs.pbrother.freegallery.extension.REVERSE_PORTRAIT
-import com.labs.pbrother.freegallery.extension.getRotation
+import com.labs.pbrother.freegallery.extension.columns
 import com.labs.pbrother.freegallery.extension.tagSymbol
 import com.labs.pbrother.freegallery.uiother.ItemOffsetDecoration
 import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
@@ -65,13 +62,14 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         }
 
-        viewModel.refreshCollection(cid)
-        viewModel.refreshItems()
+        doAsync {
+            viewModel.refreshCollection(cid)
+            viewModel.refreshItems()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         if (rv == null) {
             rv = inflater.inflate(R.layout.fragment_collection, container, false)
             // recycler list
@@ -131,7 +129,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
-
 
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -217,7 +214,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
         val dialog = builder.create()
         dialog.show()
-
     }
 
     private fun applyZoom(zoom: Int) {
@@ -243,13 +239,10 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     private fun share() {
         val uris = viewModel.urisToShare(viewModel.selectedItems(adapter.getSelectedItems()))
-
         val intent = Intent()
         intent.type = "image/jpg"
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-        // some apps cannot react to ACTION_SEND_MULTIPLE
-        // therefore, if only one is selected for sharing, use ACTION_SEND instead
         when (uris.size) {
             0 -> {
                 actionMode?.finish()
@@ -333,8 +326,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         std.show(childFragmentManager, "tagdialog")
     }
 
-
-
     override fun onItemClicked(position: Int) {
         if (actionMode != null) {
             toggleSelection(position)
@@ -370,10 +361,9 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         actionMode?.title = resources.getString(R.string.collectionSelection) + " " + count.toString() + " / " + adapter.itemCount.toString()
     }
 
-
     // Dialog Callbacks
-    override fun colorCancel() {}
 
+    override fun colorCancel() {}
     override fun colorOk(color: Int) {
         doAsync {
             viewModel.colorizeCollection(color)
@@ -391,33 +381,6 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             viewModel.tagItems(selection, tag)
         }
         actionMode?.finish()
-    }
-
-    // helper
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    private val columns: Int
-        get() = if (activity?.getRotation() === PORTRAIT || activity?.getRotation() === REVERSE_PORTRAIT) {
-            prefs.columnsInPortrait
-        } else {
-            (prefs.columnsInPortrait * 1.5).toInt()
-        }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CollectionFragment.
-         */
-        @JvmStatic
-        fun newInstance(cid: String) =
-                CollectionFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(CID, cid)
-                    }
-                }
     }
 
     private inner class ActionModeCallback : ActionMode.Callback {
@@ -467,5 +430,20 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         }
     }
 
-
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param cid Id for collection to laod.
+         * @return A new instance of fragment CollectionFragment.
+         */
+        @JvmStatic
+        fun newInstance(cid: String) =
+                CollectionFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(CID, cid)
+                    }
+                }
+    }
 }

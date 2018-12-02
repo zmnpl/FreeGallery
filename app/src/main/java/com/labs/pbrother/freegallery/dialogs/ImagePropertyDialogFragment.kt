@@ -1,7 +1,6 @@
 package com.labs.pbrother.freegallery.dialogs
 
 import android.app.Dialog
-
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -10,9 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.byteSizeToNiceString
-import com.labs.pbrother.freegallery.unixToReadableDate
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.prefs
+import com.labs.pbrother.freegallery.unixToReadableDate
 import kotlinx.android.synthetic.main.dialog_itemroperties.*
 import java.io.File
 
