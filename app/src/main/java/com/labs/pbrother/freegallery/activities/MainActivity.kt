@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reloadPlz = true
-        if (tabletMain != null) onTablet = true
+        onTablet = tabletMain != null
 
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
@@ -84,9 +84,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
             drawerLayoutRes = R.layout.material_drawer
 
             if (!prefs.hideDrawerHeader) headerViewRes = R.layout.drawer_header
-            if (onTablet) {
-                //sectionHeader(getString(R.string.drawer_tagsection)) { }
-            }
 
             footer {
                 primaryItem(getString(R.string.menu_settings)) {
@@ -103,12 +100,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
 
         nav_tablet?.let {
+            //sectionHeader(getString(R.string.drawer_tagsection)) { }
             val slider = drawerResult.slider
             (slider.parent as ViewGroup).removeView(slider)
             it.addView(slider)
 
-            supportActionBar?.setDisplayHomeAsUpEnabled(false);
-            drawerResult.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            drawerResult.actionBarDrawerToggle.isDrawerIndicatorEnabled = false
         }
     }
 
