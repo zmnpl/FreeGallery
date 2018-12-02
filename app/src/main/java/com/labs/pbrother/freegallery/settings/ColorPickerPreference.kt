@@ -109,7 +109,7 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPrefe
         super.onRestoreInstanceState(myState!!.superState)
 
         // Set this Preference's widget to reflect the restored state
-        //colorPicker.liveColor = myState.value
+        //colorPicker.toolbarColor = myState.value
     }
 
     private class SavedState : Preference.BaseSavedState {

@@ -1,7 +1,6 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -15,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.navigation.fragment.NavHostFragment
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
@@ -24,7 +24,9 @@ import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.extension.drawerHomeItem
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.CollectionFragment
+import com.labs.pbrother.freegallery.fragments.CollectionFragmentDirections
 import com.labs.pbrother.freegallery.fragments.OverviewFragment
+import com.labs.pbrother.freegallery.fragments.OverviewFragmentDirections
 import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,7 +38,7 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
 
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInteractionListener, CollectionFragment.OnCollectionFragmentInteractionListener, DrawerTagListAdapter.ViewHolder.ClickListener {
+class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickListener {
 
     private val TAG_HOME = "*HOME*"
     private lateinit var viewModel: MainActivityViewModel
@@ -54,37 +56,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
-        //main_toolbar.backgroundColor = getColor(R.color.nerd_primary)
-        frame_container.backgroundColor = prefs.colorPrimary
-        goHome()
+        main_layout?.backgroundColor = prefs.colorPrimary
+
         makeDrawer()
         bindViewModel()
     }
 
-    private fun goHome() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-
-        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
-        if (home != null) {
-            fragmentTransaction.replace(R.id.frame_container, home, TAG_HOME)
-        } else {
-            fragmentTransaction.replace(R.id.frame_container, OverviewFragment(), TAG_HOME)
-        }
-
-        fragmentTransaction.commit()
-    }
-
     override fun onBackPressed() {
-
         drawerResult?.deselect()
-        val ft = supportFragmentManager.beginTransaction()
-        val home = supportFragmentManager.findFragmentByTag(TAG_HOME)
-        if (home != null && home.isAdded) {
-            finish() // TODO start finish counter (press back one more time)
-        } else {
-            goHome()
-        }
-
         super.onBackPressed()
     }
 
@@ -120,9 +99,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
         addDrawerHomeItem()
         if (!prefs.hideDrawerHeader) drawerResult.header?.drawerTopArea?.backgroundColor = prefs.colorPrimary
-        if (onTablet) {
-            nav_tablet.addView(drawerResult.slider)
-        }
+
+        nav_tablet?.addView(drawerResult.slider)
     }
 
     private fun bindViewModel() {
@@ -131,19 +109,19 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
 
-        viewModel.liveColor.observe(this, Observer { color ->
-            if(null != color) colorizeToolbar(color)
+        viewModel.toolbarColor.observe(this, Observer { color ->
+            if (null != color) colorizeToolbar(color)
         })
 
         viewModel.toolbarText.observe(this, Observer { toolbarText ->
-            if(null != toolbarText) setToolbarTitle(toolbarText)
+            if (null != toolbarText) setToolbarTitle(toolbarText)
         })
     }
 
     private fun addDrawerHomeItem() {
         drawerResult.addItem(drawerHomeItem()
                 .withOnDrawerItemClickListener({ view, position, drawerItem ->
-                    goHome()
+                    navigateHome()
                     false
                 }))
     }
@@ -156,18 +134,40 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
                     .drawerResult
                     .addItem(primaryDrawerItemFromItem(it, getString(R.string.tagLetter))
                             .withOnDrawerItemClickListener { view, position, drawerItem ->
-                                val fragmentTransaction = supportFragmentManager.beginTransaction()
-                                val tag = it.id
-                                val target = supportFragmentManager.findFragmentByTag(tag)
-                                if (target != null) {
-                                    fragmentTransaction.replace(R.id.frame_container, target, tag)
-                                } else {
-                                    fragmentTransaction.replace(R.id.frame_container, CollectionFragment.newInstance(it.id), tag)
-                                }
-                                fragmentTransaction.addToBackStack(null).commit()
+                                navigateToCollection(it.id)
                                 false
                             })
         }
+    }
+
+    private fun navigateHome() {
+        val currentFragment = nav_host_fragment.childFragmentManager.fragments.get(0)
+        val navController = NavHostFragment.findNavController(nav_host_fragment)
+        when {
+            currentFragment is CollectionFragment -> {
+                navController.navigate(CollectionFragmentDirections.action_go_to_overview())
+            }
+            currentFragment is OverviewFragment -> {
+                // Nothing to do here ... already there.
+            }
+        }
+    }
+
+    private fun navigateToCollection(collectionId: String) {
+        val currentFragment = nav_host_fragment.childFragmentManager.fragments.get(0)
+        val navController = NavHostFragment.findNavController(nav_host_fragment)
+        when {
+            currentFragment is CollectionFragment -> {
+                val action = CollectionFragmentDirections.action_collectionFragment_self(collectionId)
+                navController.navigate(action)
+            }
+            currentFragment is OverviewFragment -> {
+                val action = OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId)
+                navController.navigate(action)
+            }
+        }
+        //val args = Bundle()
+        //args.putString("collectionId", collectionId)
     }
 
     // User Interface BuildingOnCollectionFragmentInteractionListener
@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
         super.onResume()
         requestPermissions()
         if (reloadPlz) buildUiSafe()
-        main_toolbar.popupTheme=prefs.popupTheme
+        main_toolbar.popupTheme = prefs.popupTheme
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -246,17 +246,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     // Main view fragment callbacks
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    @SuppressLint("RestrictedApi") // TODO - try to remove every now and then
-    override fun openCollectionView(position: Int, id: String) {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.frame_container, CollectionFragment.newInstance(id))
-                .addToBackStack(null)
-                .commit()
-        //supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //supportActionBar?.setHomeButtonEnabled(true)
-    }
 
     fun colorizeToolbar(color: Int) {
         if (prefs.colorizeTitlebar) {
@@ -272,18 +261,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OnMainFragmentInterac
 
     fun setToolbarTitle(title: String) {
         supportActionBar?.title = title
-    }
-
-    override fun killMe() {
-        goHome()
-    }
-
-    override fun setToolbarDefaultColor() {
-        colorizeToolbar(prefs.defaultCollectionColor)
-    }
-
-    override fun setToolbarDefaultName() {
-        supportActionBar?.title = getString(R.string.app_name)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

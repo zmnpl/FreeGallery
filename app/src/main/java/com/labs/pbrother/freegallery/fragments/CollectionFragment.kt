@@ -15,8 +15,10 @@ import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
+import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.*
 import com.labs.pbrother.freegallery.activities.ImageSlideActivity
+import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.adapters.CollectionRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.controller.TYPE_TAG
@@ -38,17 +40,11 @@ import org.jetbrains.anko.uiThread
 private const val CID = "collectionId"
 
 class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener, TagDialogFragment.TagDialogListener {
-    interface OnCollectionFragmentInteractionListener {
-        fun killMe()
-    }
 
-    // interaction interface
-    private var listener: OnCollectionFragmentInteractionListener? = null
     // parameters
     private lateinit var cid: String
     // other
     private lateinit var viewModel: MainActivityViewModel
-
     // ui
     private var rv: View? = null
     private lateinit var adapter: CollectionRecyclerViewAdapter
@@ -61,7 +57,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         setHasOptionsMenu(true)
 
         arguments?.let {
-            cid = it.getString(CID) ?: ""
+            val safeArgs = CollectionFragmentArgs.fromBundle(it)
+            cid = safeArgs.collectionId
         }
 
         activity?.run {
@@ -111,16 +108,16 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnCollectionFragmentInteractionListener) {
-            listener = context
-            return
-        }
-        throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
+//        if (context is OnCollectionFragmentInteractionListener) {
+//            listener = context
+//            return
+//        }
+//        throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
+//        listener = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -135,6 +132,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
@@ -143,7 +142,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             }
             R.id.menu_deleteTag -> {
                 viewModel.deleteTag()
-                listener?.killMe()
+                NavHostFragment.findNavController(this).navigate(CollectionFragmentDirections.action_go_to_overview())
                 return true
             }
             R.id.menu_refresh -> {
@@ -208,7 +207,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             doAsync {
                 viewModel.emptyTrash()
                 uiThread {
-                    listener?.killMe()
+                    TODO()
                 }
             }
         }
@@ -333,6 +332,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         std.setTags(viewModel.tags)
         std.show(childFragmentManager, "tagdialog")
     }
+
+
 
     override fun onItemClicked(position: Int) {
         if (actionMode != null) {

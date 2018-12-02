@@ -5,10 +5,13 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import android.support.v4.content.FileProvider
+import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_DESC
 import com.labs.pbrother.freegallery.controller.Provider
+import com.labs.pbrother.freegallery.prefs
 import java.io.File
 
 /**
@@ -22,7 +25,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var overviewItems = MutableLiveData<ArrayList<CollectionItem>>()
     var collectionItem = MutableLiveData<CollectionItem>()
     var items = MutableLiveData<ArrayList<Item>>()
-    var liveColor = MutableLiveData<Int>()
+    var toolbarColor = MutableLiveData<Int>()
     var toolbarText = MutableLiveData<String>()
 
     val collectionType
@@ -38,7 +41,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         this.collectionID = collectionId
         collection = provider.collectionItem(collectionId)
         collectionItem.postValue(collection)
-        liveColor.postValue(collection.color)
+        toolbarColor.postValue(collection.color)
         toolbarText.postValue(collection.displayName)
     }
 
@@ -48,6 +51,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun refreshOverviewItems() {
         overviewItems.postValue(provider.overviewItems)
+    }
+
+    fun setToolbarDefaults() {
+        toolbarColor.postValue(prefs.defaultCollectionColor)
+        toolbarText.postValue(app.getString(R.string.app_name))
     }
 
     fun refreshItems(cached: Boolean = false) {
@@ -117,10 +125,10 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun colorizeCollection(color: Int) {
-        liveColor.postValue(provider.colorizeCollection(collection, color))
+        toolbarColor.postValue(provider.colorizeCollection(collection, color))
     }
 
     fun removeColor() {
-        liveColor.postValue(provider.uncolorCollection(collection))
+        toolbarColor.postValue(provider.uncolorCollection(collection))
     }
 }
