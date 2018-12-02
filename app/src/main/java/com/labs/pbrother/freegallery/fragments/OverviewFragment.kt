@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.GridLayoutManager
 import android.view.*
+import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
@@ -25,11 +26,7 @@ import org.jetbrains.anko.uiThread
 
 class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
-    // interaction interface
-    private var listener: OnMainFragmentInteractionListener? = null
-
     interface OnMainFragmentInteractionListener {
-        fun openCollectionView(position: Int, id: String)
         fun setToolbarDefaultColor()
         fun setToolbarDefaultName()
     }
@@ -74,10 +71,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if(!swipeRefreshMain.isRefreshing) swipeRefreshMain.isRefreshing = true
-
-        listener?.setToolbarDefaultColor()
-        listener?.setToolbarDefaultName()
+        if (!swipeRefreshMain.isRefreshing) swipeRefreshMain.isRefreshing = true
 
         viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
@@ -88,25 +82,15 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
                 swipeRefreshMain.isRefreshing = false
             }
         })
+
+        doAsync {
+            viewModel.setToolbarDefaults()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.menu_overview, menu)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnMainFragmentInteractionListener) {
-            listener = context
-            return
-        }
-        throw RuntimeException(context.toString() + " must implement OnMainFragmentInteractionListener")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -134,7 +118,9 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             toggleSelection(position)
             return
         }
-        listener?.openCollectionView(position, adapter.getItemStringId(position))
+
+        val action = OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(adapter.getItemStringId(position))
+        NavHostFragment.findNavController(this).navigate(action)
     }
 
     override fun onItemLongClicked(position: Int): Boolean {

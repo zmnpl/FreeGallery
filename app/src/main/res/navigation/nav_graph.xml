@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/destinationOverview">
 
+    <fragment
+        android:id="@+id/destinationOverview"
+        android:name="com.labs.pbrother.freegallery.fragments.OverviewFragment"
+        android:label="fragment_overview"
+        tools:layout="@layout/fragment_overview">
+        <action
+            android:id="@+id/action_overviewFragment_to_collectionFragment"
+            app:destination="@+id/destinationCollection"
+            app:popUpTo="@+id/destinationOverview" />
+    </fragment>
+    <fragment
+        android:id="@+id/destinationCollection"
+        android:name="com.labs.pbrother.freegallery.fragments.CollectionFragment"
+        android:label="fragment_collection"
+        tools:layout="@layout/fragment_collection">
+        <action
+            android:id="@+id/action_collectionFragment_self"
+            app:destination="@id/destinationCollection"
+            app:popUpTo="@id/destinationOverview" />
+        <argument
+            android:name="collectionId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_go_to_overview"
+            app:destination="@id/destinationOverview"
+            app:popUpTo="@+id/nav_graph" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.labs.pbrother.freegallery.activities.MainActivity"
+        android:label="MainActivity" />
 </navigation>
