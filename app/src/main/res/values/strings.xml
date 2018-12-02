@@ -98,7 +98,7 @@
     <string name="prefCategoryBehave">Behaviour</string>
     <string name="prefLicense">About</string>
     <string name="prefAccentColor">Accent Color</string>
-    <string name="prefUseBlack">Darker pls</string>
+    <string name="prefUseBlack">Too dark for me</string>
     <string name="prefStyleTitlebarcolorTitle">Colored title bars</string>
     <string name="prefStyleHideDrawerHeader">Hide the bird</string>
     <string name="prefStyleImageBackgroundColor">Colored image backgrounds</string>

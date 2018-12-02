@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -52,13 +51,15 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reloadPlz = true
-        onTablet = tabletMain != null
+        onTablet = main_layout_tablet != null
 
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
         //main_toolbar.setPadding(0, getStatusBarHeight(this), 0, 0)
+
         main_layout?.backgroundColor = prefs.colorPrimary
+        main_layout_tablet?.backgroundColor = prefs.colorPrimary
 
         makeDrawer()
         bindViewModel()
@@ -180,9 +181,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     // User Interface BuildingOnCollectionFragmentInteractionListener
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // checks for permissions, service boundary and data status
-    // if all good -> populate ui
-    // if not, service probably needs to be connected
     private fun buildUiSafe() {
         if (permissionsGood) {
             refresh()
@@ -276,10 +274,8 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer
-    override fun onDrawerItemClicked(position: Int) {
-        TODO()
-    }
 
+    override fun onDrawerItemClicked(position: Int) {    TODO()   }
     override fun onDrawerItemLongClicked(position: Int): Boolean {
         TODO()
         return false
