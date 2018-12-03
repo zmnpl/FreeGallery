@@ -24,10 +24,7 @@ import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.extension.drawerHomeItem
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
-import com.labs.pbrother.freegallery.fragments.CollectionFragment
-import com.labs.pbrother.freegallery.fragments.CollectionFragmentDirections
-import com.labs.pbrother.freegallery.fragments.OverviewFragment
-import com.labs.pbrother.freegallery.fragments.OverviewFragmentDirections
+import com.labs.pbrother.freegallery.fragments.*
 import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
@@ -158,6 +155,9 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
             currentFragment is OverviewFragment -> {
                 // Nothing to do here ... already there.
             }
+            currentFragment is AboutFragment -> {
+                navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationOverview())
+            }
         }
     }
 
@@ -171,6 +171,10 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
             }
             currentFragment is OverviewFragment -> {
                 val action = OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId)
+                navController.navigate(action)
+            }
+            currentFragment is AboutFragment -> {
+                val action = AboutFragmentDirections.action_destinationAbout_to_destinationCollection(collectionId)
                 navController.navigate(action)
             }
         }
@@ -222,29 +226,30 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_license -> {
-                startActivity<AboutActivity>()
-                return true
-            }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.menu_main, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.menu_license -> {
+//                //startActivity<AboutActivity>()
+//                navigateToAbout()
+//                return true
+//            }
 //            R.id.menu_takeSdCardPermission -> {
 //                openSAFTreeSelection()
 //                return true
 //            }
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
+//            android.R.id.home -> {
+//                onBackPressed()
+//                return true
+//            }
+//            else -> return super.onOptionsItemSelected(item)
+//        }
+//    }
 
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////

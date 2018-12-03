@@ -8,13 +8,25 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="destinationAbout">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="538" />
+                            <option name="y" value="288" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="destinationCollection">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-443" />
-                            <option name="y" value="-126" />
+                            <option name="x" value="32" />
+                            <option name="y" value="313" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -39,12 +51,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-792" />
-                            <option name="y" value="-123" />
+                            <option name="x" value="288" />
+                            <option name="y" value="277" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_destinationOverview_to_aboutFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_overviewFragment_to_collectionFragment">
                               <value>
                                 <LayoutPositions />
@@ -60,8 +77,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-944" />
-                            <option name="y" value="-415" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>

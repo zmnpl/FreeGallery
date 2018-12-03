@@ -30,4 +30,10 @@
         </menu>
     </item>
 
+    <item
+        android:id="@+id/menu_license"
+        android:orderInCategory="130"
+        android:title="@string/prefLicense"
+        app:showAsAction="never" />
+
 </menu>

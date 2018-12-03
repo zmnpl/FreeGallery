@@ -103,6 +103,11 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
                 applyZoom(+1)
                 return true
             }
+            R.id.menu_license -> {
+                val action = OverviewFragmentDirections.action_destinationOverview_to_aboutFragment()
+                NavHostFragment.findNavController(this).navigate(action)
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
     }

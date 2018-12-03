@@ -8,16 +8,16 @@
         android:title="@string/menu_settings"
         app:showAsAction="never" />-->
 
-    <item
-        android:id="@+id/menu_license"
-        android:orderInCategory="130"
-        android:title="@string/prefLicense"
-        app:showAsAction="never" />
+    <!-- <item
+         android:id="@+id/menu_license"
+         android:orderInCategory="130"
+         android:title="@string/prefLicense"
+         app:showAsAction="never" /> -->
 
-    <!--<item
-        android:id="@+id/menu_takeSdCardPermission"
-        android:orderInCategory="140"
-        android:title="SD Card Permission"
-        app:showAsAction="never" />-->
+     <!--<item
+         android:id="@+id/menu_takeSdCardPermission"
+         android:orderInCategory="140"
+         android:title="SD Card Permission"
+         app:showAsAction="never" />-->
 
 </menu>

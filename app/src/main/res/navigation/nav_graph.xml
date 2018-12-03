@@ -14,6 +14,9 @@
             android:id="@+id/action_overviewFragment_to_collectionFragment"
             app:destination="@+id/destinationCollection"
             app:popUpTo="@+id/destinationOverview" />
+        <action
+            android:id="@+id/action_destinationOverview_to_aboutFragment"
+            app:destination="@id/destinationAbout" />
     </fragment>
     <fragment
         android:id="@+id/destinationCollection"
@@ -36,4 +39,17 @@
         android:id="@+id/mainActivity"
         android:name="com.labs.pbrother.freegallery.activities.MainActivity"
         android:label="MainActivity" />
+    <fragment
+        android:id="@+id/destinationAbout"
+        android:name="com.labs.pbrother.freegallery.fragments.AboutFragment"
+        android:label="AboutFragment" >
+        <action
+            android:id="@+id/action_destinationAbout_to_destinationCollection"
+            app:destination="@id/destinationCollection"
+            app:popUpTo="@+id/destinationOverview" />
+        <action
+            android:id="@+id/action_destinationAbout_to_destinationOverview"
+            app:destination="@id/destinationOverview"
+            app:popUpTo="@+id/destinationOverview" />
+    </fragment>
 </navigation>

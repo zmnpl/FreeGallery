@@ -103,13 +103,13 @@
         android:id="@+id/OverviewItem_selectedOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryIndigoTransparent"
+        android:background="@color/itemPreview"
         android:visibility="invisible">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimaryIndigoTransparent" />
+            android:background="@color/itemPreview" />
 
         <ImageView
             android:layout_width="48dp"
