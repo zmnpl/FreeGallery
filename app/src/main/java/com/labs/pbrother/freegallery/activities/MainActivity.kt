@@ -166,16 +166,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         val navController = NavHostFragment.findNavController(nav_host_fragment)
         when {
             currentFragment is CollectionFragment -> {
-                val action = CollectionFragmentDirections.action_collectionFragment_self(collectionId)
-                navController.navigate(action)
+                navController.navigate(CollectionFragmentDirections.action_collectionFragment_self(collectionId))
             }
             currentFragment is OverviewFragment -> {
-                val action = OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId)
-                navController.navigate(action)
+                navController.navigate(OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId))
             }
             currentFragment is AboutFragment -> {
-                val action = AboutFragmentDirections.action_destinationAbout_to_destinationCollection(collectionId)
-                navController.navigate(action)
+                navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationCollection(collectionId))
             }
         }
         //val args = Bundle()
@@ -225,31 +222,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
             prefs.sdCardUri = uri.toString()
         }
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.menu_main, menu)
-//        return super.onCreateOptionsMenu(menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menu_license -> {
-//                //startActivity<AboutActivity>()
-//                navigateToAbout()
-//                return true
-//            }
-//            R.id.menu_takeSdCardPermission -> {
-//                openSAFTreeSelection()
-//                return true
-//            }
-//            android.R.id.home -> {
-//                onBackPressed()
-//                return true
-//            }
-//            else -> return super.onOptionsItemSelected(item)
-//        }
-//    }
 
     // Click handler and action mode for multi selection
     ////////////////////////////////////////////////////////////////////////////////////////////////
