@@ -21,8 +21,8 @@
                         -->
 
         <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_key_style_lessblack"
+            android:defaultValue="true"
+            android:key="pref_key_style_black"
             android:title="@string/prefUseBlack" />
 
         <CheckBoxPreference

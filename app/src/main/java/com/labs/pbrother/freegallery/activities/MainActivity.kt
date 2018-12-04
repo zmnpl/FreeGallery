@@ -11,8 +11,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
@@ -245,14 +243,15 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         supportActionBar?.title = title
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
     // Collection view fragment callbacks
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer
 
-    override fun onDrawerItemClicked(position: Int) {    TODO()   }
+    override fun onDrawerItemClicked(position: Int) {
+        TODO()
+    }
+
     override fun onDrawerItemLongClicked(position: Int): Boolean {
         TODO()
         return false
