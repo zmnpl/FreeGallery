@@ -1,18 +1,18 @@
 package com.labs.pbrother.freegallery.fragments
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.core.app.NavUtils
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
@@ -77,7 +77,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             rv?.collection_rclPictureCollection?.apply {
                 addItemDecoration(ItemOffsetDecoration(activity as Context, R.dimen.collection_picture_padding, colCount))
                 setHasFixedSize(true)
-                layoutManager = GridLayoutManager(activity as Context, colCount)
+                layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity as Context, colCount)
                 isSaveEnabled = true
             }
 
@@ -118,7 +118,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 //        listener = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (cid == getString(R.string.trashName)) {
             inflater?.inflate(R.menu.menu_collection_trash, menu)
         } else {
@@ -131,8 +131,8 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(activity as Activity) // TODO - does that work?
                 return true
@@ -221,7 +221,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
         colCount += zoom
         if (colCount < 1) colCount = 1
         prefs.columnsInPortrait = colCount
-        collection_rclPictureCollection.layoutManager = GridLayoutManager(activity, colCount)
+        collection_rclPictureCollection.layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, colCount)
     }
 
     private fun selectAll() {

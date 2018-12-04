@@ -37,6 +37,17 @@ allprojects {
             name 'Google'
         }
     }
+
+    ext {
+        myBuildToolsVersion="20.0.0" //String
+        myMinSdkVersion=24 //Integer
+        myTargetSdkVersion=28
+        myCompileSdkVersion=28
+        androidX = "1.1.0-alpha01"
+        constraintLayout = "2.0.0-alpha2"
+        annotation = "1.0.1"
+        anko_version= "0.10.7"
+    }
 }
 
 task clean(type: Delete) {

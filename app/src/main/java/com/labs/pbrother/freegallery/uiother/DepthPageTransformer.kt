@@ -1,6 +1,6 @@
 package com.labs.pbrother.freegallery.uiother
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 
 /**
@@ -9,7 +9,7 @@ import android.view.View
  * https://developer.android.com/training/animation/screen-slide.html
  */
 
-class DepthPageTransformer : ViewPager.PageTransformer {
+class DepthPageTransformer : androidx.viewpager.widget.ViewPager.PageTransformer {
 
     override fun transformPage(page: View, position: Float) {
         val pageWidth = page.width

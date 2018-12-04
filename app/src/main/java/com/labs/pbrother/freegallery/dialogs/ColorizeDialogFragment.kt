@@ -4,8 +4,8 @@ package com.labs.pbrother.freegallery.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 
 
 import android.view.WindowManager
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.dialog_colorize.view.*
  * Created by simon on 07.11.16.
  */
 
-class ColorizeDialogFragment() : DialogFragment() {
+class ColorizeDialogFragment() : androidx.fragment.app.DialogFragment() {
 
     interface ColorDialogListener {
         fun colorOk(color: Int)

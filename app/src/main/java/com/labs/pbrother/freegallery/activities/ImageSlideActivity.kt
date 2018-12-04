@@ -1,19 +1,19 @@
 package com.labs.pbrother.freegallery.activities
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.core.content.FileProvider
+import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
 import com.labs.pbrother.freegallery.*
@@ -353,9 +353,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // A simple pager adapter
-    private inner class ScreenSlidePagerAdapter(val items: List<Item>, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private inner class ScreenSlidePagerAdapter(val items: List<Item>, fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentStatePagerAdapter(fm) {
 
-        override fun getItem(position: Int): Fragment {
+        override fun getItem(position: Int): androidx.fragment.app.Fragment {
             val f = ImagePageFragment()
             f.setmGestureDetector(clickDetector)
             f.setItem(items[position])
@@ -365,7 +365,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         override fun getCount() = items.size
 
         // This is called when notifyDataSetChanged() is called
-        override fun getItemPosition(`object`: Any): Int = FragmentStatePagerAdapter.POSITION_NONE // refresh all fragments when data set changed
+        override fun getItemPosition(`object`: Any): Int = androidx.fragment.app.FragmentStatePagerAdapter.POSITION_NONE // refresh all fragments when data set changed
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

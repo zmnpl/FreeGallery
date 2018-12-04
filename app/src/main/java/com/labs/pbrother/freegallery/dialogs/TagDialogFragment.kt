@@ -4,8 +4,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.dialog_tag.*
  * Created by simon on 07.11.16.
  */
 
-class TagDialogFragment : DialogFragment() {
+class TagDialogFragment : androidx.fragment.app.DialogFragment() {
 
     // Callback Interface
     interface TagDialogListener {
@@ -84,11 +84,13 @@ class TagDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
+        dialog?.let {
+            val adapter = ArrayAdapter(it.context, android.R.layout.select_dialog_item, tags)
+            tagField = it.tagAutocomplete
+            tagField.setAdapter(adapter)
+        }
 
-        val adapter = ArrayAdapter(dialog.context, android.R.layout.select_dialog_item, tags)
-        tagField = dialog.tagAutocomplete
         tagField.threshold = 1
-        tagField.setAdapter(adapter)
         tagField.requestFocus()
 
         // show keyboard ...

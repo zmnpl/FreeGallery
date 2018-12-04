@@ -1,7 +1,7 @@
 package com.labs.pbrother.freegallery.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +52,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
         overviewViewHolder.selectedOverlay.visibility = if (isSelected(position)) View.VISIBLE else View.INVISIBLE
     }
 
-    class ViewHolder(v: View, private val listener: ClickListener?, metaUpdater: MetaUpdatorizer) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
+    class ViewHolder(v: View, private val listener: ClickListener?, metaUpdater: MetaUpdatorizer) : androidx.recyclerview.widget.RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
         var headline = v.OverviewItem_txtHeadline
         var picCount = v.OverviewItem_txtCount
         var textBackground = v.OverviewItem_headerContainer

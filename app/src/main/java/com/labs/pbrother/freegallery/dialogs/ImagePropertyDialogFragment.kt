@@ -3,8 +3,8 @@ package com.labs.pbrother.freegallery.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
@@ -19,7 +19,7 @@ import java.io.File
  * Created by simon on 07.11.16.
  */
 
-class ImagePropertyDialogFragment : DialogFragment() {
+class ImagePropertyDialogFragment : androidx.fragment.app.DialogFragment() {
 
     private lateinit var item: Item
     private lateinit var listener: ImagePropertyDialogListener
@@ -59,25 +59,48 @@ class ImagePropertyDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         val f = File(item.path)
-        dialog.imgproperty_txtPath.text = f?.parent ?: ""
-        dialog.imgproperty_txtTags.text = item.tagString
-        if (item.tagString.length == 0) {
-            dialog.imgproperty_lblTags.visibility = View.INVISIBLE
-            dialog.imgproperty_txtTags.visibility = View.INVISIBLE
+//        dialog?.let {
+//            it.imgproperty_txtPath.text = f?.parent ?: ""
+//            it.imgproperty_txtTags.text = item.tagString
+//            if (item.tagString.length == 0) {
+//                it.imgproperty_lblTags.visibility = View.INVISIBLE
+//                it.imgproperty_txtTags.visibility = View.INVISIBLE
+//            }
+//            it.imgproperty_txtName.text = item.fileName
+//            it.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
+//            it.imgproperty_txtSize.text = byteSizeToNiceString(item.size)
+//            it.imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
+//
+//            // Exif
+//            it.imgproperty_txtLatitude.text = item.latitude.toString()
+//            it.imgproperty_txtLongitude.text = item.longitude.toString()
+//            it.imgproperty_txtIso.text = item.iso.toString()
+//            it.imgproperty_txtCameraModel.text = item.camera
+//            //dialog.imgproperty_txtShutter.text = item.exposureTimeSeconds()
+//
+//            it.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+//        }
+        dialog?.apply {
+            imgproperty_txtPath.text = f?.parent ?: ""
+            imgproperty_txtTags.text = item.tagString
+            if (item.tagString.length == 0) {
+                imgproperty_lblTags.visibility = View.INVISIBLE
+                imgproperty_txtTags.visibility = View.INVISIBLE
+            }
+            imgproperty_txtName.text = item.fileName
+            imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
+            imgproperty_txtSize.text = byteSizeToNiceString(item.size)
+            imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
+
+            // Exif
+            imgproperty_txtLatitude.text = item.latitude.toString()
+            imgproperty_txtLongitude.text = item.longitude.toString()
+            imgproperty_txtIso.text = item.iso.toString()
+            imgproperty_txtCameraModel.text = item.camera
+            //dialog.imgproperty_txtShutter.text = item.exposureTimeSeconds()
+
+            window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         }
-        dialog.imgproperty_txtName.text = item.fileName
-        dialog.imgproperty_txtDateAdded.text = unixToReadableDate(item.dateAdded)
-        dialog.imgproperty_txtSize.text = byteSizeToNiceString(item.size)
-        dialog.imgproperty_txtDimensions.text = String.format("%d px", item.width) + " x " + String.format("%d px", item.height)
-
-        // Exif
-        dialog.imgproperty_txtLatitude.text = item.latitude.toString()
-        dialog.imgproperty_txtLongitude.text = item.longitude.toString()
-        dialog.imgproperty_txtIso.text = item.iso.toString()
-        dialog.imgproperty_txtCameraModel.text = item.camera
-        //dialog.imgproperty_txtShutter.text = item.exposureTimeSeconds()
-
-        dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
     }
 
     fun setItem(item: Item) {

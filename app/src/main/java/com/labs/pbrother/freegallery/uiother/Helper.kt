@@ -1,6 +1,6 @@
 package com.labs.pbrother.freegallery.uiother
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * Created by simon on 27.08.17.

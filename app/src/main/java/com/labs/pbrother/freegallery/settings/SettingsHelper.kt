@@ -3,7 +3,7 @@ package com.labs.pbrother.freegallery.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.controller.Item

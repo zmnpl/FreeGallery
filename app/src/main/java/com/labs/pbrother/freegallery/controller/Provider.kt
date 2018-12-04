@@ -4,8 +4,8 @@ import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v4.content.FileProvider
-import android.support.v4.provider.DocumentFile
+import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
 import android.util.SparseArray
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.app
@@ -144,7 +144,7 @@ class Provider() : MetaUpdatorizer {
 
     fun findSDUri(path: String): String {
         //First we get `DocumentFile` from the `TreeUri` which in our case is `sdCardUri`.
-        var documentFile: DocumentFile? = DocumentFile.fromTreeUri(app, Uri.parse(prefs.sdCardUri))
+        var documentFile: androidx.documentfile.provider.DocumentFile? = androidx.documentfile.provider.DocumentFile.fromTreeUri(app, Uri.parse(prefs.sdCardUri))
 
         val parts = path.split("/")
 

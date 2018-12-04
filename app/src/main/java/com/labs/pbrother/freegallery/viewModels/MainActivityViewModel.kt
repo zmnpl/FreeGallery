@@ -1,10 +1,10 @@
 package com.labs.pbrother.freegallery.viewModels
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem

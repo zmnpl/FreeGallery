@@ -2,7 +2,7 @@ package com.labs.pbrother.freegallery.adapters
 
 import android.content.Context
 import android.provider.MediaStore
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +64,7 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    class ViewHolder(v: View, private val listener: ClickListener?) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
+    class ViewHolder(v: View, private val listener: ClickListener?) : androidx.recyclerview.widget.RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
         var pic: ImageView = v.CollectionItem_imgPicture
         var videoIconOverlay = v.CollectionItem_videoItemOverlay
         var selectedOverlay = v.CollectionItem_selectedOverlay

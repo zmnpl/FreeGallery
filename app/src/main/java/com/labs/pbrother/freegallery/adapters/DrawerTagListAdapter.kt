@@ -1,7 +1,7 @@
 package com.labs.pbrother.freegallery.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +41,7 @@ class DrawerTagListAdapter(private val clickListener: ViewHolder.ClickListener,
         overviewViewHolder.count.text = collection.count.toString()
     }
 
-    class ViewHolder(v: View, private val listener: ClickListener?) : RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
+    class ViewHolder(v: View, private val listener: ClickListener?) : androidx.recyclerview.widget.RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener {
         var tagIcon = v.drawerTagListItemTagSymbol
         var text = v.drawerTagListItemText
         var count = v.drawerTagListItemCount

@@ -2,7 +2,7 @@ package com.labs.pbrother.freegallery.activities
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.labs.pbrother.freegallery.R
 import kotlinx.android.synthetic.main.activity_license.*
 import org.xmlpull.v1.XmlPullParserException

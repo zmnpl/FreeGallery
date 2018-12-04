@@ -6,7 +6,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.preference.DialogPreference
 import android.preference.Preference
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.View
 import com.labs.pbrother.freegallery.R

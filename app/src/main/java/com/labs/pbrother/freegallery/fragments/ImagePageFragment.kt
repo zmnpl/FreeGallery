@@ -6,9 +6,9 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
-import android.support.v7.graphics.Palette
+import androidx.fragment.app.Fragment
+import androidx.core.content.FileProvider
+import androidx.palette.graphics.Palette
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +42,7 @@ import java.io.File
 /**
  * Created by simon on 30.12.15.
  */
-class ImagePageFragment() : Fragment() {
+class ImagePageFragment() : androidx.fragment.app.Fragment() {
 
     private lateinit var imageView: SubsamplingScaleImageView
     private lateinit var vidView: ImageView
@@ -184,7 +184,7 @@ class ImagePageFragment() : Fragment() {
     fun setBackgroundColorBasedOnImage() {
         if (useImageColorAsBackground) {
             doAsync {
-                val foo = Palette.from(BitmapFactory.decodeFile(item.path)).generate()
+                val foo = androidx.palette.graphics.Palette.from(BitmapFactory.decodeFile(item.path)).generate()
                 var color = foo.getDarkVibrantColor(0)
                 if (0 == color) foo.getDarkMutedColor(0)
                 if (0 == color) color = foo.getVibrantColor(0)

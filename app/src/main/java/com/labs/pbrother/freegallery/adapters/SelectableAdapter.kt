@@ -1,6 +1,6 @@
 package com.labs.pbrother.freegallery.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseBooleanArray
 import java.util.*
 
@@ -15,7 +15,7 @@ import java.util.*
  */
 
 
-abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class SelectableAdapter<VH : androidx.recyclerview.widget.RecyclerView.ViewHolder> : androidx.recyclerview.widget.RecyclerView.Adapter<VH>() {
 
     private val selectedItems: SparseBooleanArray = SparseBooleanArray()
 

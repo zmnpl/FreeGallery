@@ -1,14 +1,14 @@
 package com.labs.pbrother.freegallery.fragments
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
 import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.R
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_overview.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
+class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
     interface OnMainFragmentInteractionListener {
         fun setToolbarDefaultColor()
@@ -56,7 +56,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
             rv?.overviewRecycler?.apply {
                 setHasFixedSize(true)
                 val ctx = activity as Context
-                layoutManager = GridLayoutManager(ctx, prefs.mainColumnsInPortrait)
+                layoutManager = androidx.recyclerview.widget.GridLayoutManager(ctx, prefs.mainColumnsInPortrait)
                 addItemDecoration(ItemOffsetDecoration(ctx, R.dimen.collection_picture_padding, prefs.mainColumnsInPortrait))
             }
             rv?.swipeRefreshMain?.setOnRefreshListener { refresh() }
@@ -70,7 +70,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
 
         viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
-                val fract = activity as FragmentActivity
+                val fract = activity as androidx.fragment.app.FragmentActivity
                 adapter = OverviewRecyclerViewAdapter(this, fract, overviewItems, Provider())
                 adapter.setHasStableIds(true)
                 overviewRecycler.adapter = adapter
@@ -83,12 +83,12 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_overview, menu)
+        inflater.inflate(R.menu.menu_overview, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             R.id.menu_refresh -> {
                 swipeRefreshMain.isRefreshing = true
@@ -181,7 +181,7 @@ class OverviewFragment : Fragment(), OverviewRecyclerViewAdapter.ViewHolder.Clic
         cols += zoom
         if (cols < 1) cols = 1
         prefs.mainColumnsInPortrait = cols
-        overviewRecycler.layoutManager = GridLayoutManager(activity, cols)
+        overviewRecycler.layoutManager = androidx.recyclerview.widget.GridLayoutManager(activity, cols)
     }
 
     private inner class ActionModeCallback : ActionMode.Callback {

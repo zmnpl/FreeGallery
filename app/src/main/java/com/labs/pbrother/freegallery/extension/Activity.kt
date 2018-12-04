@@ -1,7 +1,7 @@
 package com.labs.pbrother.freegallery.extension
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.labs.pbrother.freegallery.READ_REQUEST_CODE
 
 fun AppCompatActivity.openSAFTreeSelection() {
