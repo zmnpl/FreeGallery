@@ -134,7 +134,7 @@ internal class MediaResolver(private val context: Context) {
         ci.id == context.getString(R.string.timelineName) -> allItems()
         ci.type == TYPE_FOLDER -> getItemsForBucketPath(ci.id, Item.SORT_ORDER)
         ci.type == TYPE_TAG -> tagItems(ci.id)
-        else -> TreeSet<Item>()
+        else -> TreeSet()
     }
 
     private fun getItemsForBucketPath(path: String, sortOrder: Int): TreeSet<Item> {
@@ -316,7 +316,7 @@ internal class MediaResolver(private val context: Context) {
 
     private fun orderedItemsTreeSet(sortOrder: Int): TreeSet<Item> = when (sortOrder) {
         Item.SORT_ASC -> TreeSet(Collections.reverseOrder())
-        else -> TreeSet<Item>()
+        else -> TreeSet()
     }
 
     private fun thumbForBucketId(bucketid: String): String {

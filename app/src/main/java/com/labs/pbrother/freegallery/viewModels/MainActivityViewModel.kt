@@ -72,7 +72,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun selectedItems(selection: List<Int>): List<Item> {
         val result = ArrayList<Item>()
-        selection.forEach() {
+        selection.forEach {
             val ci = items.value?.get(it)
             if (null != ci) result.add(ci)
         }
@@ -81,7 +81,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     private fun selectedOverviewItems(selection: List<Int>): List<CollectionItem> {
         val result = ArrayList<CollectionItem>()
-        selection.forEach() {
+        selection.forEach {
             val ci = overviewItems.value?.get(it)
             if (null != ci) result.add(ci)
         }

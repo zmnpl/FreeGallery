@@ -26,13 +26,9 @@ class ImageSlideActivityViewModel(application: Application) : AndroidViewModel(a
         items.postValue(foo.itemsFor(collection))
     }
 
-    fun trashItems(items: List<Item>): Int = foo.trashItems(items)
-
     fun itemIdOf(index: Int): String = items.value?.get(index)?.id ?: ""
 
     fun itemAt(index: Int): Item? = items.value?.get(index)
-
-    fun tagItems(items: List<Item>, tag: String) = items.forEach { tagItem(it, tag) }
 
     fun copyTags(oldPath: String, newPath: String) {
         foo.copyTags(oldPath, newPath)

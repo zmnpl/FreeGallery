@@ -42,7 +42,7 @@ import java.io.File
 /**
  * Created by simon on 30.12.15.
  */
-class ImagePageFragment() : androidx.fragment.app.Fragment() {
+class ImagePageFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var imageView: SubsamplingScaleImageView
     private lateinit var vidView: ImageView
@@ -101,13 +101,13 @@ class ImagePageFragment() : androidx.fragment.app.Fragment() {
                 DefaultRenderersFactory(context),
                 DefaultTrackSelector(), DefaultLoadControl())
 
-        exoView.setPlayer(exoPlayer)
-
-        exoPlayer?.setPlayWhenReady(playWhenReady)
-        exoPlayer?.seekTo(currentWindow, playbackPosition)
-
-        val mediaSource = buildMediaSource(uri);
-        exoPlayer?.prepare(mediaSource, true, false)
+        exoView.player = exoPlayer
+        exoPlayer?.apply {
+            playWhenReady = playWhenReady
+            seekTo(currentWindow, playbackPosition)
+            val mediaSource = buildMediaSource(uri)
+            prepare(mediaSource, true, false)
+        }
 
         imageView.visibility = View.INVISIBLE
         exoView.visibility = View.VISIBLE
@@ -122,12 +122,12 @@ class ImagePageFragment() : androidx.fragment.app.Fragment() {
             null)
 
     private fun releasePlayer() {
-        if (exoPlayer != null) {
-            playbackPosition = exoPlayer?.getCurrentPosition() ?: 0
-            currentWindow = exoPlayer?.getCurrentWindowIndex() ?: 0
-            playWhenReady = exoPlayer?.getPlayWhenReady() ?: false
-            exoPlayer?.release();
-            exoPlayer = null;
+        exoPlayer?.apply {
+            playbackPosition = currentPosition
+            currentWindow = currentWindowIndex
+            playWhenReady = playWhenReady
+            release()
+            exoPlayer = null
         }
     }
 
@@ -151,7 +151,7 @@ class ImagePageFragment() : androidx.fragment.app.Fragment() {
                 }
             }
             else -> {
-                // TODO - evaluate if worth it to make own video activity
+                // TODO - evaluate if worth it to make own video activity/fragment
                 if (false) {
                     initializePlayer(Uri.parse(item.fileUriString))
                 } else {

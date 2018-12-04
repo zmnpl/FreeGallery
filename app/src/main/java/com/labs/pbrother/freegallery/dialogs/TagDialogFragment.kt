@@ -95,7 +95,7 @@ class TagDialogFragment : androidx.fragment.app.DialogFragment() {
 
         // show keyboard ...
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm?.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
 

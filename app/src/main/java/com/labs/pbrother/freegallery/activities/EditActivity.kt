@@ -60,7 +60,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     override fun onStart() {
         super.onStart()
-        cropper.setImageUriAsync(itemUri);
+        cropper.setImageUriAsync(itemUri)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,11 +80,11 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
             }
             R.id.menu_flipHorizontal -> {
                 cropper.flipImageHorizontally()
-                return true;
+                return true
             }
             R.id.menu_flipVertical -> {
                 cropper.flipImageVertically()
-                return true;
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
@@ -95,8 +95,8 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         var newFileName = versionedOutputFileName(itemUri.path)
         doAsync {
             val outStream = FileOutputStream(newFileName)
-            croppedBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            outStream?.close()
+            croppedBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            outStream.close()
             val scanjob = arrayOf(newFileName)
             MediaScannerConnection.scanFile(applicationContext, scanjob, null, null)
             uiThread {
@@ -110,7 +110,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     private fun versionedOutputFileName(originalPath: String): String {
         var originalFile = File(originalPath)
-        var version = 0;
+        var version = 0
         var hit = false
         var testfile: File?
 

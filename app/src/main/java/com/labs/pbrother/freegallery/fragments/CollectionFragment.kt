@@ -120,11 +120,11 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (cid == getString(R.string.trashName)) {
-            inflater?.inflate(R.menu.menu_collection_trash, menu)
+            inflater.inflate(R.menu.menu_collection_trash, menu)
         } else {
-            inflater?.inflate(R.menu.menu_collection, menu)
+            inflater.inflate(R.menu.menu_collection, menu)
             if (viewModel.collectionType == TYPE_TAG && cid != getString(R.string.timelineName)) {
-                menu?.findItem(R.id.menu_deleteTag)?.isVisible = true
+                menu.findItem(R.id.menu_deleteTag)?.isVisible = true
             }
         }
         super.onCreateOptionsMenu(menu, inflater)
@@ -204,7 +204,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             doAsync {
                 viewModel.emptyTrash()
                 uiThread {
-                    TODO()
+                    NavHostFragment.findNavController(this@CollectionFragment).navigate(CollectionFragmentDirections.action_go_to_overview())
                 }
             }
         }
@@ -229,7 +229,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
         }
         adapter.clearSelection()
-        var i = 0;
+        var i = 0
         while (i < adapter.itemCount) {
             adapter.toggleSelection(i)
             i++

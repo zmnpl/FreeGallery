@@ -25,12 +25,6 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
                                     private val metaUpdater: MetaUpdatorizer)
     : SelectableAdapter<CollectionRecyclerViewAdapter.ViewHolder>() {
 
-    fun removeAt(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, items.size)
-    }
-
     fun removeMultiple(positions: List<Int>) {
         // reverse sortOrder to delete from the last to the first
         Collections.sort(positions, Collections.reverseOrder<Any>())

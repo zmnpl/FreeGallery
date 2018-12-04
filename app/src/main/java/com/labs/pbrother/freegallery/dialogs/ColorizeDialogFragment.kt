@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 
 import android.view.WindowManager
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.activities.MainActivity
 import com.labs.pbrother.freegallery.prefs
 import kotlinx.android.synthetic.main.dialog_colorize.view.*
 
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.dialog_colorize.view.*
  * Created by simon on 07.11.16.
  */
 
-class ColorizeDialogFragment() : androidx.fragment.app.DialogFragment() {
+class ColorizeDialogFragment : androidx.fragment.app.DialogFragment() {
 
     interface ColorDialogListener {
         fun colorOk(color: Int)
@@ -38,14 +39,8 @@ class ColorizeDialogFragment() : androidx.fragment.app.DialogFragment() {
         //val opacitySlider = mainView.colorDialogOpacityslider
 
         lobsterPicker.color = actvty.getColor(R.color.accent)
+        // TODO - get color for lobsterPicker from current collectino
 
-        // TODO - if (activity is CollectionActivity) {
-        if (false) {
-            val actualColor = 0//(activity as CollectionActivity).collectionColor
-            if (null != actualColor) {
-                lobsterPicker.color = actualColor
-            }
-        }
 
         //opacitySlider.opacity = 255
         lobsterPicker.addDecorator(shadeSlider)

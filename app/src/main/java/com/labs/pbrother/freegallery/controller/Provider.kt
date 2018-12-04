@@ -25,7 +25,7 @@ import kotlin.collections.LinkedHashMap
  * Created by simon on 22.02.17.
  */
 
-class Provider() : MetaUpdatorizer {
+class Provider : MetaUpdatorizer {
 
     private val resolver: MediaResolver = MediaResolver(app)
     private val deletions = SparseArray<ArrayList<TrashLog>>()
@@ -199,7 +199,7 @@ class Provider() : MetaUpdatorizer {
             }
 
             val foo = trashed.map { it.originalPath }
-            val work = foo.toTypedArray<String>()
+            val work = foo.toTypedArray()
             MediaScannerConnection.scanFile(app, work, null, null)
             val db = MyDb(app)
             db.deleteTrashEntries(trashed.map { it.trashPath })
@@ -236,7 +236,7 @@ class Provider() : MetaUpdatorizer {
         }
 
         // scan old paths
-        val work = log.map { it.originalPath }.toTypedArray<String>()
+        val work = log.map { it.originalPath }.toTypedArray()
         MediaScannerConnection.scanFile(app, work, null, null)
 
         return log
@@ -279,7 +279,7 @@ class Provider() : MetaUpdatorizer {
         }
         db.deleteTrashEntries(untrash)
 
-        val work = scan.toTypedArray<String>()
+        val work = scan.toTypedArray()
         MediaScannerConnection.scanFile(app, work, null, null)
     }
 

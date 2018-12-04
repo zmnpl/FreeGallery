@@ -107,9 +107,9 @@ class SettingsHelper(val context: Context) {
         }
 
     var columnsInPortrait: Int
-        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))!!
+        get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))
         set(value) {
-            sharedPref.edit().apply() {
+            sharedPref.edit().apply {
                 putInt(KEY_PREF_STYLE_COLUMNS, value)
                 apply()
             }
@@ -118,7 +118,7 @@ class SettingsHelper(val context: Context) {
     var mainColumnsInPortrait: Int
         get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_MAIN_COLUMNS, 2))
         set(value) {
-            sharedPref.edit().apply() {
+            sharedPref.edit().apply {
                 putInt(KEY_PREF_STYLE_MAIN_COLUMNS, value)
                 apply()
             }
@@ -127,7 +127,7 @@ class SettingsHelper(val context: Context) {
     var sdCardUri: String
         get() = sharedPref.getString((KEY_SDURI), "")
         set(value) {
-            sharedPref.edit().apply() {
+            sharedPref.edit().apply {
                 putString(KEY_SDURI, value)
                 apply()
             }
@@ -136,7 +136,7 @@ class SettingsHelper(val context: Context) {
     var sdCardRootPath: String
         get() = sharedPref.getString((KEY_SDROOT), "/NOUSABLEPATH")
         set(value) {
-            sharedPref.edit().apply() {
+            sharedPref.edit().apply {
                 putString(KEY_SDROOT, value)
                 apply()
             }

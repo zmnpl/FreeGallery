@@ -26,11 +26,6 @@ import org.jetbrains.anko.uiThread
 
 class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewAdapter.ViewHolder.ClickListener, ColorizeDialogFragment.ColorDialogListener {
 
-    interface OnMainFragmentInteractionListener {
-        fun setToolbarDefaultColor()
-        fun setToolbarDefaultName()
-    }
-
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var adapter: OverviewRecyclerViewAdapter
     private var actionMode: ActionMode? = null
@@ -89,7 +84,7 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             R.id.menu_refresh -> {
                 swipeRefreshMain.isRefreshing = true
                 refresh()
@@ -156,7 +151,7 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
 
     override fun colorCancel() {}
     override fun colorOk(color: Int) {
-        viewModel.colorizeMultiple(selection ?: ArrayList<Int>(), color)
+        viewModel.colorizeMultiple(selection ?: ArrayList(), color)
         adapter.notifyDataSetChanged()
         selection = null
         actionModeCollectionItems.clear()

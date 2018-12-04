@@ -149,7 +149,7 @@ fun Context.tagSymbol(): IconicsDrawable {
 }
 
 fun Context.getImageContentUri(imageFile: File): Uri? {
-    val filePath = imageFile.getAbsolutePath()
+    val filePath = imageFile.absolutePath
     val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Images.Media._ID),

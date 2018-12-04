@@ -55,7 +55,7 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
         get() = tagsList.joinToString { ", " }
 
     fun addAllTags(tags: HashSet<String>) {
-        this.tags = tags;
+        this.tags = tags
     }
 
     val isOnSDCard: Boolean
@@ -103,7 +103,7 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
         get() = if (type == TYPE_IMAGE) {
             var make = exif.getAttribute(ExifInterface.TAG_MAKE) ?: ""
             if (make != "") {
-                make = make + ", "
+                make += ", "
             }
             val model = exif.getAttribute(ExifInterface.TAG_MODEL) ?: ""
             make + model

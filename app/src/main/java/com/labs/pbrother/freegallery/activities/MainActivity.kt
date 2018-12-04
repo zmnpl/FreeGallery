@@ -36,7 +36,6 @@ import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickListener {
 
-    private val TAG_HOME = "*HOME*"
     private lateinit var viewModel: MainActivityViewModel
     private var onTablet = false
     private var reloadPlz = false
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     }
 
     override fun onBackPressed() {
-        drawerResult?.deselect()
+        drawerResult.deselect()
         super.onBackPressed()
     }
 
@@ -107,7 +106,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     }
 
     private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java!!)
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         viewModel.drawerItems.observe(this, Observer { drawerItems ->
             if (null != drawerItems) addDrawerItems(drawerItems)
         })
@@ -214,7 +213,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
         // SD card uri selected
         if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
-            var uri: Uri? = data?.getData()
+            var uri: Uri? = data?.data
             val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             contentResolver.takePersistableUriPermission(uri, takeFlags)
             prefs.sdCardUri = uri.toString()

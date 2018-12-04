@@ -81,7 +81,7 @@ class ImagePropertyDialogFragment : androidx.fragment.app.DialogFragment() {
 //            it.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 //        }
         dialog?.apply {
-            imgproperty_txtPath.text = f?.parent ?: ""
+            imgproperty_txtPath.text = f.parent ?: ""
             imgproperty_txtTags.text = item.tagString
             if (item.tagString.length == 0) {
                 imgproperty_lblTags.visibility = View.INVISIBLE

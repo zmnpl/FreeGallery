@@ -22,8 +22,6 @@ class DrawerTagListAdapter(private val clickListener: ViewHolder.ClickListener,
 
     override fun getItemId(position: Int): Long = position.toLong()
 
-    fun getItemStringId(position: Int): String = collections[position].id
-
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         // create a new view

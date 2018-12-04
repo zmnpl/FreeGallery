@@ -118,7 +118,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     }
 
     private fun bindViewModel() {
-        viewModel = ViewModelProviders.of(this).get(ImageSlideActivityViewModel::class.java!!)
+        viewModel = ViewModelProviders.of(this).get(ImageSlideActivityViewModel::class.java)
 
         viewModel.items.observe(this, Observer { items ->
             if (null != items) makeViewPager(items)
@@ -338,7 +338,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
                 FileProvider.getUriForFile(
                         this,
                         packageName + ".provider",
-                        File(item?.path)))
+                        File(item.path)))
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
     }
 
@@ -423,10 +423,6 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
                 })
 
         singlepicture_main.setOnTouchListener { view, motionEvent -> clickDetector.onTouchEvent(motionEvent) }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     // Sends message to handler for hiding system bars with specified delay
