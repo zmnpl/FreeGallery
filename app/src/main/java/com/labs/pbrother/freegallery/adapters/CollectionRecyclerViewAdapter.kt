@@ -45,7 +45,7 @@ class CollectionRecyclerViewAdapter(private val clickListener: ViewHolder.ClickL
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val itm = items.get(position)
+        val itm = items[position]
         val img = File(itm.path) // TODO - loading via file faster?
         //Glide.with(context).load(itm.fileUriString()).into(holder.pic);
         Glide.with(context).load(img).into(holder.pic)

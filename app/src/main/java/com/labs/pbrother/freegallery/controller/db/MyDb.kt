@@ -215,7 +215,7 @@ class MyDb(val context: Context) {
     }
 
     fun copyTags(fromID: String, toID: String) {
-        val tags = itemTags().get(fromID)?.toList() ?: ArrayList()
+        val tags = itemTags()[fromID]?.toList() ?: ArrayList()
         val db = dbHelper.writableDatabase
 
         for (tag in tags) {

@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     }
 
     private fun navigateHome() {
-        val currentFragment = nav_host_fragment.childFragmentManager.fragments.get(0)
+        val currentFragment = nav_host_fragment.childFragmentManager.fragments[0]
         val navController = NavHostFragment.findNavController(nav_host_fragment)
         when {
             currentFragment is CollectionFragment -> {
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     }
 
     private fun navigateToCollection(collectionId: String) {
-        val currentFragment = nav_host_fragment.childFragmentManager.fragments.get(0)
+        val currentFragment = nav_host_fragment.childFragmentManager.fragments[0]
         val navController = NavHostFragment.findNavController(nav_host_fragment)
         when {
             currentFragment is CollectionFragment -> {
@@ -209,14 +209,20 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data?.getBooleanExtra(SHOULD_RELOAD, false) ?: false) buildUiSafe()
+        data?.let {
+            if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE
+                    && resultCode == Activity.RESULT_OK
+                    && it.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
 
-        // SD card uri selected
-        if (requestCode === READ_REQUEST_CODE && resultCode === Activity.RESULT_OK) {
-            var uri: Uri? = data?.data
-            val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            contentResolver.takePersistableUriPermission(uri, takeFlags)
-            prefs.sdCardUri = uri.toString()
+            // SD card uri selected
+            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+                it.data?.let {
+                    val uri = it
+                    val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    contentResolver.takePersistableUriPermission(uri, takeFlags)
+                    prefs.sdCardUri = uri.toString()
+                }
+            }
         }
     }
 

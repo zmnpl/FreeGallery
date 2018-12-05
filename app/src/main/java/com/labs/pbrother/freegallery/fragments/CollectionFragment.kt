@@ -185,8 +185,10 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
     }
 
     private fun refresh() {
-        if (!(swipeRefreshCollection?.isRefreshing
-                        ?: true)) swipeRefreshCollection.isRefreshing = true
+        swipeRefreshCollection?.apply {
+            if(!isRefreshing) isRefreshing = true
+        }
+
         doAsync {
             viewModel.refreshCollection(cid)
             viewModel.refreshItems()
