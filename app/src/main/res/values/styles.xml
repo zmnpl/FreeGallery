@@ -40,7 +40,7 @@
         <item name="android:windowBackground">@color/nerd_windowBackground</item>
         <item name="android:textColorPrimary">@color/nerd_primary_text</item>
         <item name="android:textColorSecondary">@color/nerd_secondary_text</item>
-
+        <item name="actionModeBackground">@color/nerd_primary</item>
         <!-- <item name="android:statusBarColor">@andrliveColorolor/transparent</item> -->
 
         <!-- MaterialDrawer specific values -->

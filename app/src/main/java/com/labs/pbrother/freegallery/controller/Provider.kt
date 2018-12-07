@@ -40,14 +40,14 @@ class Provider : MetaUpdatorizer {
         get() {
             val collectionItems = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            collectionItems.put(timeline.id, timeline)
+            collectionItems[timeline.id] = timeline
 
             resolver.overviewCollections.forEach {
-                collectionItems.put(it.id, it)
+                collectionItems[it.id] = it
             }
 
             val trash = trash
-            if (trash.count > 0) collectionItems.put(trash.id, trash)
+            if (trash.count > 0) collectionItems[trash.id] = trash
 
             overviewCache.putAll(collectionItems)
             return ArrayList(collectionItems.values)
@@ -57,15 +57,15 @@ class Provider : MetaUpdatorizer {
         get() {
             val collectionItems = LinkedHashMap<String, CollectionItem>()
             val timeline = timeline
-            collectionItems.put(app.getString(R.string.timelineName), timeline)
+            collectionItems[app.getString(R.string.timelineName)] = timeline
 
             resolver.tagCollections.forEach {
                 tagCache.add(it.id)
-                collectionItems.put(it.id, it)
+                collectionItems[it.id] = it
             }
 
             val trash = trash
-            if (trash.count > 0) collectionItems.put(trash.id, trash)
+            if (trash.count > 0) collectionItems[trash.id] = trash
 
             drawerCache.putAll(collectionItems)
             return ArrayList(collectionItems.values)
@@ -79,7 +79,7 @@ class Provider : MetaUpdatorizer {
         }
         val items = resolver.itemsForCollection(ci)
         val itemsList = ArrayList(items)
-        itemCache.put(ci.id, itemsList)
+        itemCache[ci.id] = itemsList
         return itemsList
     }
 
@@ -90,7 +90,7 @@ class Provider : MetaUpdatorizer {
     }
 
     fun itemForUri(uri: Uri): Item {
-        var path = app.getRealPathFromURI(uri)
+        val path = app.getRealPathFromURI(uri)
         if ("" != path && null != path) {
             return resolver.makeSingleItemFromPath(path)
         }

@@ -13,9 +13,11 @@ import android.view.Menu
 import android.view.MenuItem
 import com.labs.pbrother.freegallery.CROP_SAVED
 import com.labs.pbrother.freegallery.R
+import com.labs.pbrother.freegallery.prefs
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_edit.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
@@ -43,8 +45,11 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         setResult(Activity.RESULT_OK, resultIntent)
         setContentView(R.layout.activity_edit)
 
+        setTheme(prefs.theme)
+        main_toolbar.backgroundColor = prefs.colorPrimary
         setSupportActionBar(main_toolbar)
         supportActionBar?.title = getString(R.string.editToolbarText)
+
 
         itemUri = Uri.parse(intent.getStringExtra(EXTRA_URI_STRING) ?: "")
         resultIntent.putExtra(ORIGINAL_PATH, itemUri.path)
@@ -56,6 +61,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
         cropper = cropImageView
         cropper.setOnCropImageCompleteListener(this)
         cropper.guidelines = CropImageView.Guidelines.ON
+        cropper.backgroundColor = prefs.colorPrimary
     }
 
     override fun onStart() {
@@ -92,7 +98,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
     private fun save() {
         val croppedBmp = cropper.croppedImage
-        var newFileName = versionedOutputFileName(itemUri.path)
+        val newFileName = versionedOutputFileName(itemUri.path)
         doAsync {
             val outStream = FileOutputStream(newFileName)
             croppedBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
@@ -109,13 +115,13 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
     }
 
     private fun versionedOutputFileName(originalPath: String): String {
-        var originalFile = File(originalPath)
+        val originalFile = File(originalPath)
         var version = 0
         var hit = false
         var testfile: File?
 
         val extension = originalFile.extension
-        val fileName = originalFile.name.removeSuffix("." + extension)
+        val fileName = originalFile.name.removeSuffix(".$extension")
         val basePath = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/FreeGallery"
         File(basePath).mkdirs()
         while (!hit) {

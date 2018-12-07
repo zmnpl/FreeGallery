@@ -75,9 +75,8 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPrefe
 
     }
 
-    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
-        return a.getInteger(index, DEFAULT_COLOR)
-    }
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any =
+            a.getInteger(index, DEFAULT_COLOR)
 
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
@@ -136,13 +135,9 @@ class ColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPrefe
             @JvmField
             val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
 
-                override fun createFromParcel(`in`: Parcel): SavedState {
-                    return SavedState(`in`)
-                }
+                override fun createFromParcel(`in`: Parcel): SavedState = SavedState(`in`)
 
-                override fun newArray(size: Int): Array<SavedState?> {
-                    return arrayOfNulls(size)
-                }
+                override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
             }
         }
     }

@@ -60,7 +60,7 @@ class MyDb(val context: Context) {
                     } else {
                         val foo = HashSet<String>()
                         foo.add(it.tag)
-                        itemTags.put(it.path, foo)
+                        itemTags[it.path] = foo
                     }
                 }
 
@@ -202,7 +202,7 @@ class MyDb(val context: Context) {
             return dbHelper.writableDatabase
                     .insertOrThrow(
                             Tag.TABLE_NAME,
-                            Tag.COLUMN_ITEM_TAG to itemId + "@" + tag,
+                            Tag.COLUMN_ITEM_TAG to "$itemId@$tag",
                             Tag.COLUMN_TAG to tag,
                             Tag.COLUMN_ITEM_ID to itemId)
         } catch (e: Exception) {
@@ -220,7 +220,7 @@ class MyDb(val context: Context) {
 
         for (tag in tags) {
             try {
-                db.insertOrThrow(Tag.TABLE_NAME, Tag.COLUMN_ITEM_TAG to toID + "@" + tag, Tag.COLUMN_TAG to tag, Tag.COLUMN_ITEM_ID to toID)
+                db.insertOrThrow(Tag.TABLE_NAME, Tag.COLUMN_ITEM_TAG to "$toID@$tag", Tag.COLUMN_TAG to tag, Tag.COLUMN_ITEM_ID to toID)
             } catch (e: Exception) {
                 // item was already tagged with this one
                 if (e is SQLiteConstraintException) {

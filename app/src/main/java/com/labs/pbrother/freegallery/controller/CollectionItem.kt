@@ -47,7 +47,7 @@ data class CollectionItem constructor(val id: String = "",
      * @return File url to thumbnail; default from first image in collection.
      */
     val thumbUrl: String
-        get() = "file://" + thumb
+        get() = "file://$thumb"
 
     /**
      * Love this collection

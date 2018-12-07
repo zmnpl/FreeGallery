@@ -42,7 +42,7 @@ data class Item constructor(var type: Int = TYPE_IMAGE,
         get() = path
 
     val fileUriString: String
-        get() = "file://" + path
+        get() = "file://$path"
 
 
     val fileName: String

@@ -156,18 +156,18 @@ fun Context.getImageContentUri(imageFile: File): Uri? {
             MediaStore.Images.Media.DATA + "=? ",
             arrayOf(filePath), null)
 
-    if (cursor != null && cursor.moveToFirst()) {
+    return if (cursor != null && cursor.moveToFirst()) {
         val id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
         cursor.close()
-        return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
+        Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
     } else {
         if (imageFile.exists()) {
             val values = ContentValues()
             values.put(MediaStore.Images.Media.DATA, filePath)
-            return contentResolver.insert(
+            contentResolver.insert(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         } else {
-            return null
+            null
         }
     }
 }

@@ -81,9 +81,7 @@ class SettingsHelper(val context: Context) {
     }
 
     val orientationFromExif: Boolean
-        get() {
-            return sharedPref.getBoolean(KEY_PREF_EXIF_ORIENTATION, true)
-        }
+        get() = sharedPref.getBoolean(KEY_PREF_EXIF_ORIENTATION, true)
 
     val orderBy: Int
         get() {
@@ -102,9 +100,7 @@ class SettingsHelper(val context: Context) {
         }
 
     val useImageColorAsBackground: Boolean
-        get() {
-            return sharedPref.getBoolean(KEY_PREF_STYLE_COLOR_IMAGE_BACKGROUND, true)
-        }
+        get() = sharedPref.getBoolean(KEY_PREF_STYLE_COLOR_IMAGE_BACKGROUND, true)
 
     var columnsInPortrait: Int
         get() = Integer.valueOf(sharedPref.getInt(KEY_PREF_STYLE_COLUMNS, 4))
@@ -186,7 +182,5 @@ class SettingsHelper(val context: Context) {
         }
 
     val highlightColorAccent: Int
-        get() {
-            return ContextCompat.getColor(context, R.color.accent)
-        }
+        get() = ContextCompat.getColor(context, R.color.accent)
 }

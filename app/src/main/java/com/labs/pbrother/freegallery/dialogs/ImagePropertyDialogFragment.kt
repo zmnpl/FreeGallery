@@ -83,7 +83,7 @@ class ImagePropertyDialogFragment : androidx.fragment.app.DialogFragment() {
         dialog?.apply {
             imgproperty_txtPath.text = f.parent ?: ""
             imgproperty_txtTags.text = item.tagString
-            if (item.tagString.length == 0) {
+            if (item.tagString.isBlank()) {
                 imgproperty_lblTags.visibility = View.INVISIBLE
                 imgproperty_txtTags.visibility = View.INVISIBLE
             }

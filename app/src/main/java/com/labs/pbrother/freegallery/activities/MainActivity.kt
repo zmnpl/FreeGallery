@@ -122,10 +122,10 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     private fun addDrawerHomeItem() {
         drawerResult.addItem(drawerHomeItem()
-                .withOnDrawerItemClickListener({ view, position, drawerItem ->
+                .withOnDrawerItemClickListener { view, position, drawerItem ->
                     navigateHome()
                     false
-                }))
+                })
     }
 
     private fun addDrawerItems(drawerItems: ArrayList<CollectionItem>) {
@@ -145,14 +145,14 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     private fun navigateHome() {
         val currentFragment = nav_host_fragment.childFragmentManager.fragments[0]
         val navController = NavHostFragment.findNavController(nav_host_fragment)
-        when {
-            currentFragment is CollectionFragment -> {
+        when (currentFragment) {
+            is CollectionFragment -> {
                 navController.navigate(CollectionFragmentDirections.action_go_to_overview())
             }
-            currentFragment is OverviewFragment -> {
+            is OverviewFragment -> {
                 // Nothing to do here ... already there.
             }
-            currentFragment is AboutFragment -> {
+            is AboutFragment -> {
                 navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationOverview())
             }
         }
@@ -161,14 +161,14 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     private fun navigateToCollection(collectionId: String) {
         val currentFragment = nav_host_fragment.childFragmentManager.fragments[0]
         val navController = NavHostFragment.findNavController(nav_host_fragment)
-        when {
-            currentFragment is CollectionFragment -> {
+        when (currentFragment) {
+            is CollectionFragment -> {
                 navController.navigate(CollectionFragmentDirections.action_collectionFragment_self(collectionId))
             }
-            currentFragment is OverviewFragment -> {
+            is OverviewFragment -> {
                 navController.navigate(OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId))
             }
-            currentFragment is AboutFragment -> {
+            is AboutFragment -> {
                 navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationCollection(collectionId))
             }
         }
@@ -209,14 +209,14 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
+        data?.let { dt ->
             if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE
                     && resultCode == Activity.RESULT_OK
-                    && it.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+                    && dt.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
 
             // SD card uri selected
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-                it.data?.let {
+                dt.data?.let {
                     val uri = it
                     val takeFlags = intent.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     contentResolver.takePersistableUriPermission(uri, takeFlags)

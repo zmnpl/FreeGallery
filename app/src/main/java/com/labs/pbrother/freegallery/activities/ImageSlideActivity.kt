@@ -313,7 +313,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         intent.putExtra(Intent.EXTRA_STREAM,
                 FileProvider.getUriForFile(
                         this,
-                        packageName + ".provider",
+                        "$packageName.provider",
                         File(item?.path)))
         startActivity(Intent.createChooser(intent, resources.getString(R.string.shareinsult)))
     }
@@ -337,13 +337,13 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         intent.putExtra(Intent.EXTRA_STREAM,
                 FileProvider.getUriForFile(
                         this,
-                        packageName + ".provider",
+                        "$packageName.provider",
                         File(item.path)))
         this.startActivity(Intent.createChooser(intent, resources.getString(R.string.setaswhat)))
     }
 
     private fun edit() {
-        var uristring = viewModel.itemAt(image_pager.currentItem)?.fileUriString
+        val uristring = viewModel.itemAt(image_pager.currentItem)?.fileUriString
         startActivityForResult(
                 intentFor<EditActivity>(EditActivity.EXTRA_URI_STRING to uristring), EDIT_ACTIVITY_REQUEST_CODE)
     }

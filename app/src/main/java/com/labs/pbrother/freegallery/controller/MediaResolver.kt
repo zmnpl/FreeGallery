@@ -21,11 +21,7 @@ import kotlin.collections.ArrayList
  */
 internal class MediaResolver(private val context: Context) {
 
-    private val db: MyDb
-
-    init {
-        db = MyDb(context)
-    }
+    private val db: MyDb = MyDb(context)
 
     companion object {
         private val IMAGE_DEFAULT_SORT_ORDER = MediaStore.Images.Media.DATE_ADDED + " DESC"
@@ -148,7 +144,7 @@ internal class MediaResolver(private val context: Context) {
     private fun imagesForBucket(path: String, sortOrder: Int, tags: HashMap<String, HashSet<String>>): TreeSet<Item> {
         val images = orderedItemsTreeSet(sortOrder)
         val SELECTION = MediaStore.Images.Media.DATA + " LIKE (?)"
-        val SELECTION_ARGS = arrayOf(path + "%")
+        val SELECTION_ARGS = arrayOf("$path%")
 
         val c = context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -171,7 +167,7 @@ internal class MediaResolver(private val context: Context) {
     private fun vidsForBucket(path: String, sortOrder: Int, tags: HashMap<String, HashSet<String>>): TreeSet<Item> {
         val vids = orderedItemsTreeSet(sortOrder)
         val SELECTION = MediaStore.Video.Media.DATA + " LIKE (?)"
-        val SELECTION_ARGS = arrayOf(path + "%")
+        val SELECTION_ARGS = arrayOf("$path%")
 
         val c = context.contentResolver.query(
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,

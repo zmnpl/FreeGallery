@@ -90,7 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:gravity="center"></LinearLayout>
+            android:gravity="center"/>
 
     </LinearLayout>
 
