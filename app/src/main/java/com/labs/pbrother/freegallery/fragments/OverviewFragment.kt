@@ -105,7 +105,7 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
                 return true
             }
             R.id.menu_license -> {
-                val action = OverviewFragmentDirections.action_destinationOverview_to_aboutFragment()
+                val action = OverviewFragmentDirections.actionDestinationOverviewToAboutFragment()
                 NavHostFragment.findNavController(this).navigate(action)
                 return true
             }
@@ -120,7 +120,7 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
             return
         }
 
-        val action = OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(adapter.getItemStringId(position))
+        val action = OverviewFragmentDirections.actionOverviewFragmentToCollectionFragment(adapter.getItemStringId(position))
         NavHostFragment.findNavController(this).navigate(action)
     }
 

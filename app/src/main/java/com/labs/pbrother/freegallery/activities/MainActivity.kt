@@ -147,13 +147,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         val navController = NavHostFragment.findNavController(nav_host_fragment)
         when (currentFragment) {
             is CollectionFragment -> {
-                navController.navigate(CollectionFragmentDirections.action_go_to_overview())
+                navController.navigate(CollectionFragmentDirections.actionGoToOverview())
             }
             is OverviewFragment -> {
                 // Nothing to do here ... already there.
             }
             is AboutFragment -> {
-                navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationOverview())
+                navController.navigate(AboutFragmentDirections.actionDestinationAboutToDestinationOverview())
             }
         }
     }
@@ -163,13 +163,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         val navController = NavHostFragment.findNavController(nav_host_fragment)
         when (currentFragment) {
             is CollectionFragment -> {
-                navController.navigate(CollectionFragmentDirections.action_collectionFragment_self(collectionId))
+                navController.navigate(CollectionFragmentDirections.actionCollectionFragmentSelf(collectionId))
             }
             is OverviewFragment -> {
-                navController.navigate(OverviewFragmentDirections.action_overviewFragment_to_collectionFragment(collectionId))
+                navController.navigate(OverviewFragmentDirections.actionOverviewFragmentToCollectionFragment(collectionId))
             }
             is AboutFragment -> {
-                navController.navigate(AboutFragmentDirections.action_destinationAbout_to_destinationCollection(collectionId))
+                navController.navigate(AboutFragmentDirections.actionDestinationAboutToDestinationCollection(collectionId))
             }
         }
         //val args = Bundle()

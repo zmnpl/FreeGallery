@@ -139,7 +139,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             }
             R.id.menu_deleteTag -> {
                 viewModel.deleteTag()
-                NavHostFragment.findNavController(this).navigate(CollectionFragmentDirections.action_go_to_overview())
+                NavHostFragment.findNavController(this).navigate(CollectionFragmentDirections.actionGoToOverview())
                 return true
             }
             R.id.menu_refresh -> {
@@ -206,7 +206,7 @@ class CollectionFragment : Fragment(), CollectionRecyclerViewAdapter.ViewHolder.
             doAsync {
                 viewModel.emptyTrash()
                 uiThread {
-                    NavHostFragment.findNavController(this@CollectionFragment).navigate(CollectionFragmentDirections.action_go_to_overview())
+                    NavHostFragment.findNavController(this@CollectionFragment).navigate(CollectionFragmentDirections.actionGoToOverview())
                 }
             }
         }
