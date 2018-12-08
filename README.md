@@ -2,16 +2,13 @@ This is my approach on an Android Gallery app. I started mostly because my previ
 Please excuse, that I cannot open source the commit history. I was too stupid in the beginning and stored my signing keys within the project.
 
 Warning:
-This app is in a very early state and very likely contains a lot of bugs. Use with caution and at your own risk. Especially when deleting images.
-
-I don't think the app is ready for an app store yet. If you still want to try it, you can of course build if from the sources or install a compiled version, which should always be quite current, from this Link:
-https://smnpl.de/apk/app-FreeGallery.apk
+This app is in an early state and very likely contains bugs of any sort. Use with caution and at your own risk. Especially when deleting images.
 
 ## Features
 
 * Minimal Design
 * A global image timeline
-* View Folders
+* View Folders (And hide them)
 * Create own collections using #tags
 * Give folders and tags custom colors, to quickly find them later
 * Love a folder, so bring it up in the overview
@@ -27,15 +24,15 @@ https://smnpl.de/apk/app-FreeGallery.apk
 
 
 ## TODO's
-* Lots of cleanup
-* Lots of bugfixing
-* Tag / Date Backup
-* Maybe make Overview and Collection one activity, with Fragments
-* When opened from other app as image viewer, derive folder and show as swipeable collection
-* Edit image intent
-* Image rotation function
-* Video playback (?)
-* ... A lot more ... 
+* [] Lots of cleanup
+* [] Lots of bugfixing
+* [] Tag / Date Backup
+* [x] Maybe make Overview and Collection one activity, with Fragments
+* [] When opened from other app as image viewer, derive folder and show as swipeable collection
+* [] Edit image intent
+* [x] Image rotation function
+* [] Video playback (?)
+* [x] Hide Folders
 
 ## Contribution ##
 
