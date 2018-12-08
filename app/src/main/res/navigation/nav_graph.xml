@@ -13,7 +13,8 @@
         <action
             android:id="@+id/action_overviewFragment_to_collectionFragment"
             app:destination="@+id/destinationCollection"
-            app:popUpTo="@+id/destinationOverview" />
+            app:popUpTo="@+id/destinationOverview"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_destinationOverview_to_aboutFragment"
             app:destination="@id/destinationAbout" />

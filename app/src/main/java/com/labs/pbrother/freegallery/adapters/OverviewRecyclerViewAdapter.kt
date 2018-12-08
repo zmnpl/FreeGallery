@@ -41,6 +41,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
         overviewViewHolder.picCount.text = collection.count.toString()
         overviewViewHolder.textBackground.setBackgroundColor(adjustColorAlpha(collection.color, 0.75F))
         overviewViewHolder.favToggle.isChecked = collection.isLoved
+        if(collection.hide) overviewViewHolder.hiddenIndicator.visibility = View.VISIBLE
         overviewViewHolder.favToggle.setOnClickListener { v ->
             val ft = v as ToggleButton
             metaUpdater.loveCollection(collection, ft.isChecked)
@@ -58,6 +59,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
         var textBackground = v.OverviewItem_headerContainer
         var thumb = v.OverviewItem_imgThumb
         var favToggle = v.OverviewItem_FavouriteToggle
+        var hiddenIndicator = v.OverviewItem_isHidden
         var selectedOverlay = v.OverviewItem_selectedOverlay
         private var itemFrame = v.OverviewItem_ItemFrame
 
