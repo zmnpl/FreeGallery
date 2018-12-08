@@ -36,6 +36,7 @@ class OverviewRecyclerViewAdapter(private val clickListener: ViewHolder.ClickLis
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(overviewViewHolder: ViewHolder, position: Int) {
         val collection = this.collections[position]
+        overviewViewHolder.hiddenIndicator.visibility = View.INVISIBLE
 
         overviewViewHolder.headline.text = collection.displayName
         overviewViewHolder.picCount.text = collection.count.toString()
