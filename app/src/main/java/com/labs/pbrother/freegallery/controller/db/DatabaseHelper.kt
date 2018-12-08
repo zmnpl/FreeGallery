@@ -1,8 +1,10 @@
 package com.labs.pbrother.freegallery.controller.db
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import com.labs.pbrother.freegallery.controller.CollectionMeta
 import com.labs.pbrother.freegallery.controller.ItemTag
 import com.labs.pbrother.freegallery.controller.TrashItem
@@ -15,7 +17,7 @@ import org.jetbrains.anko.db.*
 class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDatabaseOpenHelper.DB_NAME, null, MyDatabaseOpenHelper.DB_VERSION) {
     companion object {
         val DB_NAME = "FG.db"
-        val DB_VERSION = 37
+        val DB_VERSION = 39
 
         private var instance: MyDatabaseOpenHelper? = null
 
@@ -32,7 +34,8 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
             CollectionMetaEntry._ID to INTEGER + UNIQUE,
             CollectionMetaEntry.COLUMN_COLLECTION_ID to TEXT + UNIQUE + PRIMARY_KEY,
             CollectionMetaEntry.COLUMN_LOVED to INTEGER,
-            CollectionMetaEntry.COLUMN_COLOR to INTEGER
+            CollectionMetaEntry.COLUMN_COLOR to INTEGER,
+            CollectionMetaEntry.COLUMN_HIDE to INTEGER
     )
 
     private fun createTagTable(db: SQLiteDatabase) = db.createTable(Tag.TABLE_NAME, true,
@@ -72,7 +75,20 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onCreate(db)
         if (oldVersion < 30) update29(db, oldVersion, newVersion)
+        if (oldVersion < 39) update39(db)
         onCreate(db)
+    }
+
+    fun update39(db: SQLiteDatabase) {
+        // migrate collection meta
+        try {
+            db.execSQL("ALTER TABLE ${CollectionMetaEntry.TABLE_NAME} ADD COLUMN ${CollectionMetaEntry.COLUMN_HIDE} INTEGER")
+        } catch(e: SQLiteException) {
+            print(e.message)
+        }
+        val update = ContentValues()
+        update.put(CollectionMetaEntry.COLUMN_HIDE, 0)
+        db.update(CollectionMetaEntry.TABLE_NAME, update, null, null)
     }
 
     fun update29(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -82,7 +98,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
 
         // migrate collection meta
         val collectionMetaParser = rowParser { collectionId: String, loved: Int, color: Int ->
-            CollectionMeta(collectionId, 1 == loved, color)
+            CollectionMeta(collectionId, 1 == loved, color, false)
         }
 
         val collectionMetas = db.select(CollectionMetaEntry.TABLE_NAME,

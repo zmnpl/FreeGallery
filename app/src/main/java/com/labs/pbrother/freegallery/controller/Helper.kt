@@ -8,7 +8,7 @@ import android.provider.MediaStore
  */
 
 
-data class CollectionMeta(val id: String, val loved: Boolean, val color: Int)
+data class CollectionMeta(val id: String, val loved: Boolean, val color: Int, val hide: Boolean = false)
 
 data class ItemTag(val path: String, val tag: String)
 data class TrashLog(val originalPath: String, val trashPath: String)
@@ -61,6 +61,8 @@ interface MetaUpdatorizer {
     fun colorizeCollection(collection: CollectionItem, colorid: Int?): Int
 
     fun uncolorCollection(collection: CollectionItem): Int
+
+    fun hideCollection(collection: CollectionItem, hide: Boolean = false)
 
     // for items
     fun tagItem(item: Item, tag: String)

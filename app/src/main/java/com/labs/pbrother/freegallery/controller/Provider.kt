@@ -4,9 +4,8 @@ import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
-import androidx.documentfile.provider.DocumentFile
 import android.util.SparseArray
+import androidx.core.content.FileProvider
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.Cache.drawerCache
@@ -288,7 +287,7 @@ class Provider : MetaUpdatorizer {
     override fun loveCollection(collection: CollectionItem, loved: Boolean) {
         val db = MyDb(app)
         collection.love(loved)
-        db.insertUpdateCollectionMeta(collection.id, loved, collection.color)
+        db.insertUpdateCollectionMeta(collection.id, loved, collection.color, collection.hide)
     }
 
     override fun colorizeCollection(collection: CollectionItem, c: Int?): Int {
@@ -298,11 +297,20 @@ class Provider : MetaUpdatorizer {
         collection.colorize(color)
         overviewCache[collection.id]?.colorize(color)
         drawerCache[collection.id]?.colorize(color)
-        db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color)
+        db.insertUpdateCollectionMeta(collection.id, collection.isLoved, color, collection.hide)
         return color
     }
 
     override fun uncolorCollection(collection: CollectionItem) = colorizeCollection(collection, null)
+
+    override fun hideCollection(collection: CollectionItem, hide: Boolean) {
+        val db = MyDb(app)
+        collection.hide = hide
+        overviewCache[collection.id]?.hide = hide
+        drawerCache[collection.id]?.hide = hide
+        db.insertUpdateCollectionMeta(collection.id, collection.isLoved, collection.color, hide)
+    }
+
 
     fun tagItems(items: List<Item>, tag: String) {
         tagCache.add(tag)

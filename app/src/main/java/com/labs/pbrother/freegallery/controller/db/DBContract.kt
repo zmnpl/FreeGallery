@@ -14,6 +14,7 @@ class DBContract {
             val COLUMN_COLLECTION_ID = "collectionid"
             val COLUMN_LOVED = "lovestatus"
             val COLUMN_COLOR = "colorid"
+            val COLUMN_HIDE = "hide"
         }
     }
 

@@ -8,7 +8,8 @@ data class CollectionItem constructor(val id: String = "",
                                       var thumb: String = "",
                                       var count: Int = 0,
                                       var color: Int = 0,
-                                      var isLoved: Boolean = false
+                                      var isLoved: Boolean = false,
+                                      var hide: Boolean = false
 ) : Comparable<CollectionItem> {
 
     val displayName: String = makeDisplayName()
@@ -59,6 +60,15 @@ data class CollectionItem constructor(val id: String = "",
     }
 
     /**
+     * Hide this collection
+     *
+     * @param h
+     */
+    fun hide(h: Boolean) {
+        hide = h
+    }
+
+    /**
      * Setter method
      *
      * @param colorId
@@ -72,7 +82,8 @@ data class CollectionItem constructor(val id: String = "",
      */
     fun infuseMeta(meta: CollectionMeta) {
         this.colorize(meta.color)
-        this.love(meta.loved)
+        this.isLoved = meta.loved
+        this.hide = meta.hide
     }
 
     override operator fun compareTo(other: CollectionItem): Int = sortRegular(other)

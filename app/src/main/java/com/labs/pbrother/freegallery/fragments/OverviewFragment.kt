@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
+import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
+import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
@@ -98,6 +100,10 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
                 applyZoom(+1)
                 return true
             }
+            R.id.menu_show_hidden -> {
+                showHidden()
+                return true
+            }
             R.id.menu_license -> {
                 val action = OverviewFragmentDirections.action_destinationOverview_to_aboutFragment()
                 NavHostFragment.findNavController(this).navigate(action)
@@ -147,6 +153,20 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Functionality
+    fun hideSelection() {
+        viewModel.hideOverviewItems(selection ?: ArrayList(), true)
+        viewModel.refreshOverviewItems()
+        Toast.makeText(app, getString(R.string.hidden), Toast.LENGTH_SHORT)
+    }
+
+    fun unhideSelection() {
+        viewModel.hideOverviewItems(selection ?: ArrayList())
+    }
+
+    fun showHidden() {
+        viewModel.refreshOverviewItems(true)
+    }
+
     // Callbacks
 
     override fun colorCancel() {}
@@ -190,12 +210,18 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             selection = adapter.getSelectedItems()
             when (item.itemId) {
-                R.id.overviewselection_menu_hidegroup -> {
+                R.id.overviewselection_menu_colorizegroup -> {
+                    ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
                     mode.finish()
                     return true
                 }
-                R.id.overviewselection_menu_colorizegroup -> {
-                    ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
+                R.id.overviewselection_menu_hidegroup -> {
+                    hideSelection()
+                    mode.finish()
+                    return true
+                }
+                R.id.overviewselection_menu_unhidegroup -> {
+                    unhideSelection()
                     mode.finish()
                     return true
                 }

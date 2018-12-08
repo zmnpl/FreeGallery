@@ -108,7 +108,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         // initialize DecorView
         initDecorView()
 
-        // hideOverviewItem - show necessary to correctly display everything
+        // hideOverviewItems - show necessary to correctly display everything
         hideSystemUI()
         showSystemUI()
         setToolbarPadding()
@@ -165,7 +165,7 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        // Trigger the initial hideOverviewItem() shortly after the activity has been
+        // Trigger the initial hideOverviewItems() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(INITIAL_HIDE_DELAY)
@@ -372,8 +372,8 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
         super.onWindowFocusChanged(hasFocus)
 
         // When the window loses focus (e.g. the action overflows is shown),
-        // cancel any pending hideOverviewItem action. When the window gains focus,
-        // hideOverviewItem the system UI.
+        // cancel any pending hideOverviewItems action. When the window gains focus,
+        // hideOverviewItems the system UI.
         if (hasFocus) {
             delayedHide(INITIAL_HIDE_DELAY)
         } else {
@@ -436,9 +436,9 @@ class ImageSlideActivity : AppCompatActivity(), TagDialogFragment.TagDialogListe
     private fun hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hideOverviewItem and show.
-        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hideOverviewItem nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hideOverviewItem status bar
+        // doesn't resize when the system bars hideOverviewItems and show.
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hideOverviewItems nav bar
+                or View.SYSTEM_UI_FLAG_FULLSCREEN // hideOverviewItems status bar
                 or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 

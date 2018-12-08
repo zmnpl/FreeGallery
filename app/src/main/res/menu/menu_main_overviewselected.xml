@@ -5,10 +5,19 @@
         android:id="@+id/overviewselection_menu_colorizegroup"
         android:orderInCategory="200"
         android:title="@string/actionColorizeGroup"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_colorize_white_24dp"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/overviewselection_menu_hidegroup"
         android:orderInCategory="200"
         android:title="@string/actionHideGroup"
+        android:icon="@drawable/ic_visibility_off_white_24dp"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/overviewselection_menu_unhidegroup"
+        android:orderInCategory="300"
+        android:title="@string/actionUnHideGroup"
+        android:icon="@drawable/ic_visibility_white_24dp"
         app:showAsAction="never" />
 </menu>
