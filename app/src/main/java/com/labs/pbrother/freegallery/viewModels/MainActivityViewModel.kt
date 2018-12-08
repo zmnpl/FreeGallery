@@ -1,10 +1,10 @@
 package com.labs.pbrother.freegallery.viewModels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
@@ -28,6 +28,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var items = MutableLiveData<ArrayList<Item>>()
     var toolbarColor = MutableLiveData<Int>()
     var toolbarText = MutableLiveData<String>()
+
 
     val collectionType
         get() = collectionItem.value?.type
@@ -57,8 +58,20 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         drawerItems.postValue(provider.drawerItems)
     }
 
-    fun refreshOverviewItems() {
-        overviewItems.postValue(provider.overviewItems)
+    fun refreshOverviewItems(showHiddenCollectionItems: Boolean = false) {
+        if (showHiddenCollectionItems) {
+            overviewItems.postValue(provider.overviewItems)
+            return
+        }
+
+        val overview = ArrayList(provider.overviewItems.filter {
+            it.hide == false
+        })
+        overviewItems.postValue(overview)
+    }
+
+    fun showHiddenOverviewItems() {
+        refreshOverviewItems(true)
     }
 
     fun setToolbarDefaults() {
@@ -88,8 +101,10 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         return result
     }
 
-    fun hideOverviewItem(itemIndexes: List<Int>) {
-        TODO()
+    fun hideOverviewItems(itemIndexes: List<Int>, hide: Boolean = false) {
+        for (item in selectedOverviewItems(itemIndexes)) {
+            provider.hideCollection(item, hide)
+        }
     }
 
     fun colorizeMultiple(itemIndexes: List<Int>, color: Int) {

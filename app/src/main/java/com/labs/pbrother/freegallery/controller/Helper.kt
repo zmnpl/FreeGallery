@@ -62,6 +62,8 @@ interface MetaUpdatorizer {
 
     fun uncolorCollection(collection: CollectionItem): Int
 
+    fun hideCollection(collection: CollectionItem, hide: Boolean = false)
+
     // for items
     fun tagItem(item: Item, tag: String)
 

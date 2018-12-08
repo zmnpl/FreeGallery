@@ -98,6 +98,10 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
                 applyZoom(+1)
                 return true
             }
+            R.id.menu_show_hidden -> {
+                showHidden()
+                return true
+            }
             R.id.menu_license -> {
                 val action = OverviewFragmentDirections.action_destinationOverview_to_aboutFragment()
                 NavHostFragment.findNavController(this).navigate(action)
@@ -147,6 +151,18 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Functionality
+    fun hideSelection() {
+        viewModel.hideOverviewItems(selection ?: ArrayList(), true)
+    }
+
+    fun unhideSelection() {
+        viewModel.hideOverviewItems(selection ?: ArrayList())
+    }
+
+    fun showHidden() {
+        viewModel.refreshOverviewItems(true)
+    }
+
     // Callbacks
 
     override fun colorCancel() {}
@@ -190,12 +206,18 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             selection = adapter.getSelectedItems()
             when (item.itemId) {
-                R.id.overviewselection_menu_hidegroup -> {
+                R.id.overviewselection_menu_colorizegroup -> {
+                    ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
                     mode.finish()
                     return true
                 }
-                R.id.overviewselection_menu_colorizegroup -> {
-                    ColorizeDialogFragment().show(childFragmentManager, "colorizedialog")
+                R.id.overviewselection_menu_hidegroup -> {
+                    hideSelection()
+                    mode.finish()
+                    return true
+                }
+                R.id.overviewselection_menu_unhidegroup -> {
+                    unhideSelection()
                     mode.finish()
                     return true
                 }

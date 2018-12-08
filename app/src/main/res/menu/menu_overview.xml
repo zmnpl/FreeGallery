@@ -31,6 +31,13 @@
     </item>
 
     <item
+        android:id="@+id/menu_show_hidden"
+        android:orderInCategory="130"
+        android:title="@string/menu_show_hidden"
+        android:icon="@drawable/ic_visibility_white_24dp"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_license"
         android:orderInCategory="130"
         android:title="@string/prefLicense"

@@ -47,6 +47,7 @@ class EditActivity : AppCompatActivity(), CropImageView.OnCropImageCompleteListe
 
         setTheme(prefs.theme)
         main_toolbar.backgroundColor = prefs.colorPrimary
+        main_toolbar.popupTheme = prefs.popupTheme
         setSupportActionBar(main_toolbar)
         supportActionBar?.title = getString(R.string.editToolbarText)
 

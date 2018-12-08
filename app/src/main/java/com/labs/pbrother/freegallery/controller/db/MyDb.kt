@@ -239,20 +239,22 @@ class MyDb(val context: Context) {
      * @param loved
      * @param color
      */
-    fun insertUpdateCollectionMeta(identifier: String, loved: Boolean, color: Int) {
+    fun insertUpdateCollectionMeta(identifier: String, loved: Boolean, color: Int, hide: Boolean) {
         try {
             dbHelper.writableDatabase.insertOrThrow(
                     CollectionMetaEntry.TABLE_NAME,
                     CollectionMetaEntry.COLUMN_COLLECTION_ID to identifier,
                     CollectionMetaEntry.COLUMN_LOVED to if (loved) 1 else 0,
-                    CollectionMetaEntry.COLUMN_COLOR to color
+                    CollectionMetaEntry.COLUMN_COLOR to color,
+                    CollectionMetaEntry.COLUMN_HIDE to if (hide) 1 else 0
             )
         } catch (e: Exception) {
             if (e is SQLiteConstraintException) {
                 dbHelper.writableDatabase
                         .update(CollectionMetaEntry.TABLE_NAME,
                                 CollectionMetaEntry.COLUMN_LOVED to if (loved) 1 else 0,
-                                CollectionMetaEntry.COLUMN_COLOR to color)
+                                CollectionMetaEntry.COLUMN_COLOR to color,
+                                CollectionMetaEntry.COLUMN_HIDE to if(hide) 1 else 0)
                         .whereArgs("${CollectionMetaEntry.COLUMN_COLLECTION_ID} = {id}",
                                 "id" to identifier)
                         .exec()
