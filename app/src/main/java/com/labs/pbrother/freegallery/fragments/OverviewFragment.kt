@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
+import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
+import com.labs.pbrother.freegallery.app
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Provider
 import com.labs.pbrother.freegallery.dialogs.ColorizeDialogFragment
@@ -153,6 +155,8 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
     // Functionality
     fun hideSelection() {
         viewModel.hideOverviewItems(selection ?: ArrayList(), true)
+        viewModel.refreshOverviewItems()
+        Toast.makeText(app, getString(R.string.hidden), Toast.LENGTH_SHORT)
     }
 
     fun unhideSelection() {

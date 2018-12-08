@@ -74,7 +74,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onCreate(db)
-       // if (oldVersion < 30) update29(db, oldVersion, newVersion)
+        if (oldVersion < 30) update29(db, oldVersion, newVersion)
         if (oldVersion < 39) update39(db)
         onCreate(db)
     }
@@ -82,7 +82,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, MyDataba
     fun update39(db: SQLiteDatabase) {
         // migrate collection meta
         try {
-            db.execSQL("ALTER TABLE ${CollectionMetaEntry.TABLE_NAME} ADD COLUMN IF NOT EXISTS ${CollectionMetaEntry.COLUMN_HIDE} INTEGER")
+            db.execSQL("ALTER TABLE ${CollectionMetaEntry.TABLE_NAME} ADD COLUMN ${CollectionMetaEntry.COLUMN_HIDE} INTEGER")
         } catch(e: SQLiteException) {
             print(e.message)
         }

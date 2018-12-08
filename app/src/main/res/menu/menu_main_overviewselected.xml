@@ -19,5 +19,5 @@
         android:orderInCategory="300"
         android:title="@string/actionUnHideGroup"
         android:icon="@drawable/ic_visibility_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>
