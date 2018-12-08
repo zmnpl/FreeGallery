@@ -20,10 +20,11 @@ class MyDb(val context: Context) {
     private val collectionMetaProjection = arrayOf(
             CollectionMetaEntry.COLUMN_COLLECTION_ID,
             CollectionMetaEntry.COLUMN_LOVED,
-            CollectionMetaEntry.COLUMN_COLOR)
+            CollectionMetaEntry.COLUMN_COLOR,
+            CollectionMetaEntry.COLUMN_HIDE)
 
-    private val collectionMetaParser = rowParser { collectionId: String, loved: Int, color: Int ->
-        CollectionMeta(collectionId, 1 == loved, color)
+    private val collectionMetaParser = rowParser { collectionId: String, loved: Int, color: Int, hide: Int ->
+        CollectionMeta(collectionId, 1 == loved, color, 1 == hide)
     }
 
     // tags

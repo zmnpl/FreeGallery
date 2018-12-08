@@ -8,7 +8,8 @@ data class CollectionItem constructor(val id: String = "",
                                       var thumb: String = "",
                                       var count: Int = 0,
                                       var color: Int = 0,
-                                      var isLoved: Boolean = false
+                                      var isLoved: Boolean = false,
+                                      var hide: Boolean = false
 ) : Comparable<CollectionItem> {
 
     val displayName: String = makeDisplayName()
@@ -56,6 +57,15 @@ data class CollectionItem constructor(val id: String = "",
      */
     fun love(lv: Boolean) {
         isLoved = lv
+    }
+
+    /**
+     * Hide this collection
+     *
+     * @param h
+     */
+    fun hide(h: Boolean) {
+        hide = h
     }
 
     /**
