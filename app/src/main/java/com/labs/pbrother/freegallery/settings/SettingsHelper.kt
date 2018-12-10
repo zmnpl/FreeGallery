@@ -35,6 +35,8 @@ class SettingsHelper(val context: Context) {
         @JvmStatic
         val KEY_PREF_EXIF_ORIENTATION = "pref_key_orientation_exif"
         @JvmStatic
+        val KEY_PREF_SHOW_INTRO = "pref_key_show_intro"
+        @JvmStatic
         val KEY_SDURI = "SDCARDURI"
         @JvmStatic
         val KEY_SDROOT = "SDCARDROOTPATH"
@@ -96,6 +98,15 @@ class SettingsHelper(val context: Context) {
                 else -> {
                     ORDER_BY_DATE_ADDED
                 }
+            }
+        }
+
+    var showIntro: Boolean
+        get() = sharedPref.getBoolean(KEY_PREF_SHOW_INTRO, true)
+        set(value) {
+            sharedPref.edit().apply {
+                putBoolean(KEY_PREF_SHOW_INTRO, value)
+                apply()
             }
         }
 

@@ -46,4 +46,7 @@
     <string name="ankoLink">https://github.com/Kotlin/anko</string>
     <string name="ankoInfo">Ank by Jetbrains is licensed under Apache 2.0</string>
 
+    <string name="appIntroName">AppIntro</string>
+    <string name="appIntroLink">https://github.com/paolorotolo/AppIntro</string>
+    <string name="appIntroInfo">AppIntro by Paolo Rotolo is licensed under Apache 2.0</string>
 </resources>

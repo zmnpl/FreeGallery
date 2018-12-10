@@ -58,5 +58,10 @@
             android:key="pref_key_orientation_exif"
             android:title="@string/prefUseExifOrientation" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_key_show_intro"
+            android:title="@string/prefShowIntro" />
+
     </PreferenceCategory>
 </PreferenceScreen>

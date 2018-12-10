@@ -55,6 +55,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         main_layout?.backgroundColor = prefs.colorPrimary
         main_layout_tablet?.backgroundColor = prefs.colorPrimary
 
+
+
+        //if (prefs.showIntro) {
+            this@MainActivity.startActivity<IntroActivity>()
+            prefs.showIntro = false
+        //}
+
         makeDrawer()
         bindViewModel()
     }
@@ -276,7 +283,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                             Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                TODO()
+                // TODO
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
