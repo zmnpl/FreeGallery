@@ -58,6 +58,14 @@
                         android:layout_gravity="center_horizontal"
                         android:text="@string/license" />
 
+                    <TextView
+                        android:id="@+id/about_githuburl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:autoLink="web"
+                        android:text="@string/githubUrl" />
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

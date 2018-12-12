@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.app.Activity
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,7 +18,7 @@ import com.labs.pbrother.freegallery.R
 import kotlinx.android.synthetic.main.activity_intro.*
 import androidx.annotation.ColorInt
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder
-
+import com.mikepenz.ionicons_typeface_library.Ionicons
 
 
 class IntroActivity : AppIntro() {
@@ -42,6 +43,7 @@ class IntroActivity : AppIntro() {
             title = getString(R.string.intro_timeline_title)
             description = getString(R.string.intro_timeline_description)
             bgColor = getColor(R.color.introBGTimeline)
+            imageDrawable = R.drawable.ic_camera_roll_white_120dp
         }
         addSlide(AppIntroFragment.newInstance(timelinePage))
 
@@ -50,6 +52,7 @@ class IntroActivity : AppIntro() {
             title = getString(R.string.intro_tags_title)
             description = getString(R.string.intro_tags_description)
             bgColor = getColor(R.color.introBGTags)
+            imageDrawable = R.drawable.ic_bookmark_white_120dp
         }
         addSlide(AppIntroFragment.newInstance(tagsPage))
 
@@ -58,6 +61,7 @@ class IntroActivity : AppIntro() {
             title = getString(R.string.intro_colors_title)
             description = getString(R.string.intro_colors_description)
             bgColor = getColor(R.color.introBGColors)
+            imageDrawable = R.drawable.ic_colorize_white_120dp
         }
         addSlide(AppIntroFragment.newInstance(colorsPage))
 
@@ -66,6 +70,7 @@ class IntroActivity : AppIntro() {
             title = getString(R.string.intro_permissions_title)
             description = getString(R.string.intro_permissions_description)
             bgColor = getColor(R.color.introBGPermissions)
+            imageDrawable = R.drawable.ic_lock_open_white_120dp
         }
         addSlide(AppIntroFragment.newInstance(permissionsPage))
 

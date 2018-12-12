@@ -2,17 +2,15 @@ package com.labs.pbrother.freegallery.activities
 
 import android.Manifest
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
@@ -32,7 +30,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.uiThread
 
 
 class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickListener {
@@ -53,10 +50,10 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         main_layout?.backgroundColor = prefs.colorPrimary
         main_layout_tablet?.backgroundColor = prefs.colorPrimary
 
-        //if (prefs.showIntro) {
+        if (prefs.showIntro) {
             this@MainActivity.startActivity<IntroActivity>()
             prefs.showIntro = false
-        //}
+        }
 
         makeDrawer()
         bindViewModel()
@@ -182,16 +179,12 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     // User Interface BuildingOnCollectionFragmentInteractionListener
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private fun buildUiSafe() {
-        if (permissionsGood) {
-            refresh()
-        }
-    }
-
     private fun refresh() {
-        doAsync {
-            viewModel.refreshDrawerItems()
-            viewModel.refreshOverviewItems()
+        if (permissionsGood) {
+            doAsync {
+                viewModel.refreshDrawerItems()
+                viewModel.refreshOverviewItems()
+            }
         }
     }
 
@@ -210,7 +203,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         data?.let { dt ->
             if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE
                     && resultCode == Activity.RESULT_OK
-                    && dt.getBooleanExtra(SHOULD_RELOAD, false)) buildUiSafe()
+                    && dt.getBooleanExtra(SHOULD_RELOAD, false)) refresh()
 
             // SD card uri selected
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -245,9 +238,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     fun setToolbarTitle(title: String) {
         supportActionBar?.title = title
     }
-
-    // Collection view fragment callbacks
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // clicks on item in navigation drawer
 
@@ -289,7 +279,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         when (requestCode) {
             PERMISSION_READ_WRITE_STORAGE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    buildUiSafe()
+                    refresh()
                 } else {
                     Toast.makeText(application, getString(R.string.noReadPermissionToast), Toast.LENGTH_LONG)
                     finish()

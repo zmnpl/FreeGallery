@@ -30,6 +30,7 @@
 
     <!-- About -->
     <string name="aboutLibs">Libraries</string>
+    <string name="githubUrl">https://github.com/zmnpl/FreeGallery</string>
 
     <!-- Edit -->
     <string name="editToolbarText">Edit</string>

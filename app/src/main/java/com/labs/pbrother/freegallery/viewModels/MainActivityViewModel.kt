@@ -29,7 +29,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var toolbarColor = MutableLiveData<Int>()
     var toolbarText = MutableLiveData<String>()
 
-
     val collectionType
         get() = collectionItem.value?.type
 
