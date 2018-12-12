@@ -28,4 +28,12 @@
     <color name="itemPreview">#40000000</color>
     <color name="colorHighlightDefault">#33212121</color>
 
+
+    <color name="introDevider">#e91e63</color>
+    <color name="introBGHello">#212121</color>
+    <color name="introBGTimeline">#212121</color>
+    <color name="introBGTags">#212121</color>
+    <color name="introBGColors">#212121</color>
+    <color name="introBGPermissions">#212121</color>
+
 </resources>

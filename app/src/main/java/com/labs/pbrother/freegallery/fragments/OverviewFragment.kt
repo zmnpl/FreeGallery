@@ -63,7 +63,6 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (!swipeRefreshMain.isRefreshing) swipeRefreshMain.isRefreshing = true
 
         viewModel.overviewItems.observe(viewLifecycleOwner, Observer { overviewItems ->
             if (overviewItems != null) {
@@ -78,6 +77,11 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
         doAsync {
             viewModel.setToolbarDefaults()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -179,7 +183,7 @@ class OverviewFragment : androidx.fragment.app.Fragment(), OverviewRecyclerViewA
 
     // trigger refresh of data
     private fun refresh() {
-        swipeRefreshMain.isRefreshing = true
+        if (!swipeRefreshMain.isRefreshing) swipeRefreshMain.isRefreshing = true
         doAsync {
             viewModel.refreshDrawerItems()
             viewModel.refreshOverviewItems()

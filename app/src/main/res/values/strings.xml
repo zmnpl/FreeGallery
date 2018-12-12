@@ -14,11 +14,22 @@
     <string name="noWritePermissionToast">No write permission, no edit.</string>
     <string name="noReadPermissionToast">No read permission, no gallery :(</string>
     <string name="hidden">Hidden</string>
+    <string name="app_intro">Welcome to FG</string>
+
+    <!-- Intro -->
+    <string name="intro_hello_title">Welcome to FreeGallery</string>
+    <string name="intro_hello_description">A simple, no-fuzz, no-spy, no-ads gallery app. The next slides will show you the few core features.\nI hope you enjoy it.</string>
+    <string name="intro_tags_title">Tags</string>
+    <string name="intro_tags_description">Never lose a funny image of your drunken friend in the depths of your phone again.</string>
+    <string name="intro_timeline_title">Timeline</string>
+    <string name="intro_timeline_description">Always there.\nIt contains all your pictures in chronological order.</string>
+    <string name="intro_colors_title">Colors</string>
+    <string name="intro_colors_description">Assign colors to tags and folders. Make them easier to find.</string>
+    <string name="intro_permissions_title">I need to access your phones storage</string>
+    <string name="intro_permissions_description">This is necessary to access your pictures. Without it I\'m useless.</string>
 
     <!-- About -->
     <string name="aboutLibs">Libraries</string>
-    <string name="apk_link">https://smnpl.de/apk/app-FreeGallery.apk</string>
-    <string name="apk_link_hint">Get latest version:</string>
 
     <!-- Edit -->
     <string name="editToolbarText">Edit</string>
@@ -130,8 +141,11 @@
     </string-array>
     <string name="prefOrderByDefault">Date added</string>
 
+    <string name="prefShowIntro">Show intro on next app start</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_intro">IntroActivity</string>
 
 
 </resources>
