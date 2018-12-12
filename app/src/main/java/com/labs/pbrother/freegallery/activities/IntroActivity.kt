@@ -33,7 +33,7 @@ class IntroActivity : AppIntro() {
             title = getString(R.string.intro_hello_title)
             description = getString(R.string.intro_hello_description)
             bgColor = getColor(R.color.introBGHello)
-            //imageDrawable = R.drawable.crop_image_menu_rotate_right
+            imageDrawable = R.mipmap.bgbird
         }
         addSlide(AppIntroFragment.newInstance(helloPage))
 
@@ -55,8 +55,8 @@ class IntroActivity : AppIntro() {
 
         val colorsPage = SliderPage()
         colorsPage.apply {
-            title = getString(R.string.intro_tags_title)
-            description = getString(R.string.intro_tags_description)
+            title = getString(R.string.intro_colors_title)
+            description = getString(R.string.intro_colors_description)
             bgColor = getColor(R.color.introBGColors)
         }
         addSlide(AppIntroFragment.newInstance(colorsPage))
@@ -72,8 +72,8 @@ class IntroActivity : AppIntro() {
         askForPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 5)
         // OPTIONAL METHODS
         // Override bar/separator color.
-        setBarColor(Color.parseColor("#000000"))
-        setSeparatorColor(Color.parseColor("#2196F3"))
+        //setBarColor(Color.parseColor("#000000"))
+        setSeparatorColor(getColor(R.color.introDevider))
 
         // Hide Skip/Done button.
         showSkipButton(false)

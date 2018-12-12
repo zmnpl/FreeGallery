@@ -29,10 +29,11 @@
     <color name="colorHighlightDefault">#33212121</color>
 
 
-    <color name="introBGHello">#ffa000</color>
-    <color name="introBGTimeline">#388e3c</color>
-    <color name="introBGTags">#1976d2</color>
-    <color name="introBGColors">#512da8</color>
-    <color name="introBGPermissions">#d32f2f</color>
+    <color name="introDevider">#e91e63</color>
+    <color name="introBGHello">#212121</color>
+    <color name="introBGTimeline">#212121</color>
+    <color name="introBGTags">#212121</color>
+    <color name="introBGColors">#212121</color>
+    <color name="introBGPermissions">#212121</color>
 
 </resources>

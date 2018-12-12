@@ -21,6 +21,7 @@ import com.labs.pbrother.freegallery.*
 import com.labs.pbrother.freegallery.adapters.DrawerTagListAdapter
 import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.extension.drawerHomeItem
+import com.labs.pbrother.freegallery.extension.permissionsGood
 import com.labs.pbrother.freegallery.extension.primaryDrawerItemFromItem
 import com.labs.pbrother.freegallery.fragments.*
 import com.labs.pbrother.freegallery.viewModels.MainActivityViewModel
@@ -38,13 +39,10 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     private lateinit var viewModel: MainActivityViewModel
     private var onTablet = false
-    private var reloadPlz = false
-    private var permissionsGood = false
     private lateinit var drawerResult: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        reloadPlz = true
         onTablet = main_layout_tablet != null
 
         setTheme(prefs.theme)
@@ -54,8 +52,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
         main_layout?.backgroundColor = prefs.colorPrimary
         main_layout_tablet?.backgroundColor = prefs.colorPrimary
-
-
 
         //if (prefs.showIntro) {
             this@MainActivity.startActivity<IntroActivity>()
@@ -189,18 +185,13 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     private fun buildUiSafe() {
         if (permissionsGood) {
             refresh()
-            reloadPlz = false
         }
     }
 
     private fun refresh() {
-        //swipeRefreshMain.isRefreshing = true
         doAsync {
             viewModel.refreshDrawerItems()
             viewModel.refreshOverviewItems()
-            uiThread {
-                //swipeRefreshMain.isRefreshing = false
-            }
         }
     }
 
@@ -209,8 +200,8 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     override fun onResume() {
         super.onResume()
-        requestPermissions()
-        if (reloadPlz) buildUiSafe()
+        //requestPermissions()
+        //if (reloadPlz) buildUiSafe()
         main_toolbar.popupTheme = prefs.popupTheme
     }
 
@@ -277,9 +268,7 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     //@TargetApi(Build.VERSION_CODES.M)
     private fun requestPermissions() {
-        val checkRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        val checkWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (PackageManager.PERMISSION_GRANTED != checkRead || PackageManager.PERMISSION_GRANTED != checkWrite) {
+        if (!permissionsGood) {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                             Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -287,16 +276,12 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-
             } else {
-                // No explanation needed, we can request the permission.
                 requestPermissions(
                         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         PERMISSION_READ_WRITE_STORAGE
                 )
             }
-        } else {
-            permissionsGood = true
         }
     }
 
@@ -304,7 +289,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
         when (requestCode) {
             PERMISSION_READ_WRITE_STORAGE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    permissionsGood = true
                     buildUiSafe()
                 } else {
                     Toast.makeText(application, getString(R.string.noReadPermissionToast), Toast.LENGTH_LONG)

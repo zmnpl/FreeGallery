@@ -1,8 +1,10 @@
 package com.labs.pbrother.freegallery.extension
 
+import android.Manifest
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
@@ -11,6 +13,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.view.Surface
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adjustColorAlpha
 import com.labs.pbrother.freegallery.controller.CollectionItem
@@ -26,6 +29,11 @@ val PORTRAIT = "p"
 val LANDSCAPE = "l"
 val REVERSE_PORTRAIT = "rp"
 val REVERSE_LANDSCAPE = "rl"
+
+val Context.permissionsGood
+    get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            || PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
 
 fun Context.getNavBarWidth(): Int {
     val r = resources
