@@ -35,12 +35,10 @@ import org.jetbrains.anko.startActivity
 class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickListener {
 
     private lateinit var viewModel: MainActivityViewModel
-    private var onTablet = false
     private lateinit var drawerResult: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onTablet = main_layout_tablet != null
 
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
@@ -66,7 +64,9 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     private fun makeDrawer() {
         drawerResult = drawer {
-            if (onTablet) buildViewOnly = true
+            main_layout_tablet?.let {
+                buildViewOnly = true
+            }
 
             toolbar = main_toolbar
 
