@@ -88,6 +88,12 @@ class IntroActivity : AppIntro() {
         // NOTE: you will probably need to ask VIBRATE permission in Manifest.
         //setVibrate(true);
         //setVibrateIntensity(30);
+
+        //setFadeAnimation() // OR
+        //setZoomAnimation() // OR
+        //setFlowAnimation() // OR
+        //setSlideOverAnimation() // OR
+        setDepthAnimation() // OR
     }
 
     override fun onSkipPressed(currentFragment: Fragment) {

@@ -3,6 +3,7 @@ package com.labs.pbrother.freegallery.fragments
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import android.view.*
 import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
+import com.labs.pbrother.freegallery.PERMISSION_READ_WRITE_STORAGE
 import com.labs.pbrother.freegallery.R
 import com.labs.pbrother.freegallery.adapters.OverviewRecyclerViewAdapter
 import com.labs.pbrother.freegallery.app

@@ -40,6 +40,11 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //if (prefs.showIntro) {
+            this@MainActivity.startActivity<IntroActivity>()
+            prefs.showIntro = false
+        //}
+
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
         setSupportActionBar(main_toolbar)
@@ -47,11 +52,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
         main_layout?.backgroundColor = prefs.colorPrimary
         main_layout_tablet?.backgroundColor = prefs.colorPrimary
-
-        if (prefs.showIntro) {
-            this@MainActivity.startActivity<IntroActivity>()
-            prefs.showIntro = false
-        }
 
         makeDrawer()
         bindViewModel()
@@ -201,10 +201,6 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //super.onActivityResult(requestCode, resultCode, data)
         data?.let { dt ->
-            if (requestCode == COLLECTION_ACTIVITY_REQUEST_CODE
-                    && resultCode == Activity.RESULT_OK
-                    && dt.getBooleanExtra(SHOULD_RELOAD, false)) refresh()
-
             // SD card uri selected
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
                 dt.data?.let {
