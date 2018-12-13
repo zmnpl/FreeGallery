@@ -11,6 +11,7 @@ import com.labs.pbrother.freegallery.controller.CollectionItem
 import com.labs.pbrother.freegallery.controller.Item
 import com.labs.pbrother.freegallery.controller.Item.Companion.SORT_DESC
 import com.labs.pbrother.freegallery.controller.Provider
+import com.labs.pbrother.freegallery.extension.permissionsGood
 import com.labs.pbrother.freegallery.prefs
 import org.jetbrains.anko.doAsync
 import java.io.File
@@ -39,9 +40,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         get() = provider.tags()
 
     init {
-        doAsync {
-            refreshDrawerItems()
-            refreshOverviewItems()
+        if (app.permissionsGood) {
+            doAsync {
+                refreshDrawerItems()
+                refreshOverviewItems()
+            }
         }
     }
 
@@ -66,6 +69,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         val overview = ArrayList(provider.overviewItems.filter {
             it.hide == false
         })
+
         overviewItems.postValue(overview)
     }
 

@@ -20,7 +20,7 @@ import androidx.annotation.ColorInt
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder
 import com.mikepenz.ionicons_typeface_library.Ionicons
 
-
+val APP_INTRO_REQUEST_CODE = 123
 class IntroActivity : AppIntro() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

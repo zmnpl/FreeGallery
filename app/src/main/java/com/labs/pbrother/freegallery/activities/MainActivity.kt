@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 
 
 class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickListener {
@@ -40,10 +41,9 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //if (prefs.showIntro) {
-            this@MainActivity.startActivity<IntroActivity>()
-            prefs.showIntro = false
-        //}
+        if (prefs.showIntro) {
+            this@MainActivity.startActivityForResult<IntroActivity>(APP_INTRO_REQUEST_CODE)
+        }
 
         setTheme(prefs.theme)
         setContentView(R.layout.activity_main)
@@ -200,6 +200,11 @@ class MainActivity : AppCompatActivity(), DrawerTagListAdapter.ViewHolder.ClickL
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == APP_INTRO_REQUEST_CODE) {
+            refresh() // coming from first start
+            prefs.showIntro = false
+        }
+
         data?.let { dt ->
             // SD card uri selected
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
