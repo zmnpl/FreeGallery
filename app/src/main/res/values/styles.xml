@@ -32,15 +32,16 @@
 
     <!-- Dark -->
     <style name="NerdAppBase" parent="MaterialDrawerTheme">
-        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:colorPrimary">@color/nerd_primary</item>
-        <item name="android:colorPrimaryDark">@color/nerd_primary_dark</item>
-        <item name="android:colorAccent">@color/nerd_accent</item>
+        <item name="colorPrimary">@color/nerd_primary</item>
+        <item name="colorPrimaryDark">@color/nerd_primary_dark</item>
+        <item name="colorAccent">@color/nerd_accent</item>
         <item name="android:windowBackground">@color/nerd_windowBackground</item>
         <item name="android:textColorPrimary">@color/nerd_primary_text</item>
         <item name="android:textColorSecondary">@color/nerd_secondary_text</item>
         <item name="actionModeBackground">@color/nerd_primary</item>
+        <!--<item name="actionModeBackground">@color/nerd_primary</item> -->
         <!-- <item name="android:statusBarColor">@andrliveColorolor/transparent</item> -->
 
         <!-- MaterialDrawer specific values -->
